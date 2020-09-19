@@ -7,10 +7,11 @@ from routes.main_routes import data
 
 app = Flask(__name__)
 
+
 # ===== Blueprints Registration =====
 app.register_blueprint(data, url_prefix="/")
 
-
+'''
 #TESTING FUNCTIONS
 movielist = scrapper_lib.cathay_scraper()
 print("★★★Now Showing★★★")
@@ -24,3 +25,4 @@ for i in movielist:
         print("Description: ",movie[0]['overview'])
         print("=========================================")
         print("=========================================")
+'''
