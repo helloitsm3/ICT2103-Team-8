@@ -10,7 +10,7 @@
     <a href="https://github.com/helloitsm3/ICT2103-Team-8">
         <img src="./static/popcorn.svg" alt="Logo" width="200" height="auto">
     </a>
-    <p align="center">
+    <p align="center" style="margin-top: 30px">
         A web application written in Flask to keep track of user activity as well as to recommend movies based on their watch list.
         <br />
         <a href="https://github.com/helloitsm3/ICT2103-Team-8"><strong>Explore the docs »</strong></a>
