@@ -10,4 +10,4 @@ def getHome():
 
 @data.route("/")
 def main():
-    return "Welcome to the main page"
+    return render_template("main.html")
