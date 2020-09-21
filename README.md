@@ -57,35 +57,37 @@ The overall objective of this course project is to design and develop a database
 
 ```sh
 Framework
-    - Python with flask
-    - PostgreSQL / MongoDB
-    - https://github.com/helloitsm3/ICT2103-Team-8
+  - python with flask
+  - postgresql / MongoDB
+  - https://github.com/helloitsm3/ICT2103-Team-8
 
 Movie Dataset
-    - crawling of "now showing" dataset
-    - old_idea of using static dataset:
-        https://www.kaggle.com/rounakbanik/the-movies-dataset?select=ratings.csv
+  - crawling of "now showing" dataset
+  - old_idea of using static dataset https://www.kaggle.com/rounakbanik/the-movies-dataset?select=ratings.csv
 
 Ideas
-    - https://letterboxd.com/
-    - timeout to live dataset (24hrs fetch once)
-    - can track activities of users
+  - https://letterboxd.com/
+  - timeout to live dataset (24hrs fetch once)
+  - can track activities of users
 
-19 Sep TASK BREAKDOWN
 
-1. Data crawling (Ian)
-2. CSV Reader / Writer
-3. Login / Registration system
-4. Database connection
-5. upload inital static dataset
-6. Web design
-
-- Sign in / out page
-- Home page
-- Profile page
-- update profile page
-- Analytics page
-- Movie details page (Full / analytics data)
+19 Sept TASK BREAKDOWN
+  1. Data crawling (Ian)
+  2. CSV Reader / Writer
+  3. Login / Registration system
+  4. Database connection
+  5. upload inital static dataset
+  6. Web design
+    - Sign in / out page
+    - Home page
+    - Profile page
+    - update profile page
+    - Analytics page
+    - Movie details page (Full / analytics data)
+  7. User movie lists
+  8. Review system
+  9. Rating system
+  10. Filter movie list based on user search
 ```
 
 ## Getting Started
