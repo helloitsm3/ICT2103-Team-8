@@ -26,6 +26,8 @@ class Database:
 
         self.cursor = self.conn.cursor()
 
+    # This function will return the current connection
+    # of the database use this to interact with database query
     def getCursor(self):
         return self.cursor
 

@@ -1,6 +1,6 @@
 from flask import Flask
-import scrapper.movie_data_lib as movie_lib
-import scrapper.scrapper_lib as scrapper_lib
+import scripts.scrapper.movie_data_lib as movie_lib
+import scripts.scrapper.scrapper_lib as scrapper_lib
 
 # ===== Routing =====
 from routes.main_routes import data
