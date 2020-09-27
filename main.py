@@ -13,6 +13,9 @@ app = Flask(__name__)
 # ===== Blueprints Registration =====
 app.register_blueprint(data, url_prefix="/")
 
+data = Database()
+data.initMySQLTable()
+
 """
 #TESTING FUNCTIONS
 movielist = scrapper_lib.cathay_scraper()
