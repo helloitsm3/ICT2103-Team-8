@@ -1,4 +1,6 @@
 from flask import Flask
+from scripts.database import Database
+
 import scripts.scrapper.movie_data_lib as movie_lib
 import scripts.scrapper.scrapper_lib as scrapper_lib
 
@@ -7,7 +9,6 @@ from routes.main_routes import data
 
 
 app = Flask(__name__)
-
 
 # ===== Blueprints Registration =====
 app.register_blueprint(data, url_prefix="/")
