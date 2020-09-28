@@ -43,11 +43,11 @@ header.masthead {
 }
 header.masthead h2 {
   font-size: 2rem;
-  padding-bottom: 2rem;
+  padding-bottom:2rem;
 }
 @media (min-width: 992px) {
   header.masthead {
-    height: 100vh;
+    height: 70vh;
     min-height: 40rem;
     padding-top: 4.5rem;
     padding-bottom: 0;
@@ -57,12 +57,15 @@ header.masthead h2 {
   }
   header.masthead h2 {
     font-size: 2rem;
-    padding-bottom: 2rem;
+    padding-bottom:2rem;
   }
 }
 @media (min-width: 1200px) {
   header.masthead h2 {
     font-size: 3rem;
+  }
+  header.masthead {
+    height: 70vh;
   }
 }
 .btn-primary {
