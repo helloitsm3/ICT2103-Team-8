@@ -149,8 +149,12 @@ class Database:
             """
         )
 
+        # self.mysql_cursor.execute(
+        #     "INSERT INTO Role (role_tag, role_name) VALUES ('admin', 'Administrator');"
+        # )
+
         self.mysql_cursor.execute(
-            "INSERT INTO Role (role_tag, role_name) VALUES ('admin', 'Administrator');"
+            "INSERT INTO User (username, email, password, role_id) VALUES ('admin', 'admin@db.com', MD5('password1'), 1)"
         )
 
         print("Successfully Created Tables")
