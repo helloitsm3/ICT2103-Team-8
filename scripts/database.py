@@ -40,6 +40,7 @@ class Database:
                 passwd=DB_MYSQL_PASS,
                 database=DB_MYSQL_NAME,
             )
+            self.mysql_conn.autocommit = True
             self.mysql_cursor = self.mysql_conn.cursor()
             # self.postgres_cursor = self.postgres_conn.cursor()
         except:
@@ -48,39 +49,34 @@ class Database:
     def getMySQLCursor(self):
         return self.mysql_cursor
 
+    def getMySQLConn(self):
+        return self.mysql_conn
+
     # Function to create all necessary tables
     def initMySQLTable(self):
-        # MYSQL DIRECTOR TABLE
-        self.mysql_cursor.execute(
-            """ 
-                CREATE TABLE IF NOT EXISTS Director (
-                    director_id int AUTO_INCREMENT,
-                    movie_id int,
-
-                    name VARCHAR(255) NOT NULL,
-
-                    PRIMARY KEY (director_id)
-            )"""
-        )
-
-        # MYSQL MOVIE TABLE
+        # MYSQL ROLE TABLE
         self.mysql_cursor.execute(
             """
-                CREATE TABLE IF NOT EXISTS Movie (
-                    ratings int NOT NULL,
-                    run_time int NOT NULL,
+                CREATE TABLE IF NOT EXISTS Role (
+                    role_id INT PRIMARY KEY AUTO_INCREMENT,
+                    role_tag VARCHAR(25) UNIQUE,
+                    role_name VARCHAR(25) UNIQUE
+                )"""
+        )
 
-                    poster_path VARCHAR(255) NOT NULL,
-                    writer VARCHAR(255) NOT NULL,
-                    plot VARCHAR(255) NOT NULL,
-                    country VARCHAR(255) NOT NULL,
-                    genre VARCHAR(25) NOT NULL,
-                    title VARCHAR(100) NOT NULL,
-                    overview VARCHAR(255) NOT NULL,
-                    original_language VARCHAR(255) NOT NULL,
-                    release_date TIMESTAMP,
+        # MYSQL USER TABLE
+        self.mysql_cursor.execute(
+            """
+                CREATE TABLE IF NOT EXISTS User (
+                    user_id INT PRIMARY KEY AUTO_INCREMENT,
+                    username VARCHAR(100) NOT NULL UNIQUE,
+                    email VARCHAR(100) NOT NULL,
+                    password VARCHAR(255) NOT NULL,
+                    role_id INT,
+                    movie_id INT,
+                    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
 
-                    PRIMARY KEY (movie_id)
+                    FOREIGN KEY (role_id) REFERENCES Role(role_id)
                 )"""
         )
 
@@ -88,92 +84,73 @@ class Database:
         self.mysql_cursor.execute(
             """
                 CREATE TABLE IF NOT EXISTS Genre (
-                    genre_id int AUTO_INCREMENT,
-                    name VARCHAR(255) NOT NULL,
-
-                    PRIMARY KEY (genre_id)
+                    genre_id INT PRIMARY KEY AUTO_INCREMENT,
+                    name VARCHAR(255) NOT NULL
                 )"""
-        )
-
-        # MYSQL REVIEW TABLE
-        self.mysql_cursor.execute(
-            """
-                CREATE TABLE IF NOT EXISTS Review (
-                    review_id int AUTO_INCREMENT,                    
-                    points int NOT NULL,
-
-                    review VARCHAR(255) NOT NULL,
-                    date_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-
-                    PRIMARY KEY (review_id)
-            )"""
-        )
-
-        # MYSQL CAST TABLE
-        self.mysql_cursor.execute(
-            """ 
-                CREATE TABLE IF NOT EXISTS Cast (
-                    cast_id int AUTO_INCREMENT,
-
-                    full_name VARCHAR(255) NOT NULL,
-                    description VARCHAR(255) NOT NULL,
-
-                    PRIMARY KEY (cast_id)
-            )"""
         )
 
         # MYSQL COUNTRY TABLE
         self.mysql_cursor.execute(
             """ 
                 CREATE TABLE IF NOT EXISTS Country (
-                    country_id int AUTO_INCREMENT,
-                    country_name VARCHAR(255) NOT NULL,
-
-                    PRIMARY KEY (country_id)
+                    country_id INT PRIMARY KEY AUTO_INCREMENT,
+                    country_name VARCHAR(100) NOT NULL
             )"""
         )
 
-        # MYSQL USER TABLE
+        # MYSQL REVIEW TABLE
         self.mysql_cursor.execute(
             """
-                CREATE TABLE IF NOT EXISTS User (
-                    user_name VARCHAR(50), 
-                    user_id int AUTO_INCREMENT,
-                    user_password VARCHAR(100) NOT NULL,
-                    movie_id int,
-                    email VARCHAR(255),
-                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    PRIMARY KEY (user_id),
-                    FOREIGN KEY (movies_id) REFERENCES Movie(movie_id)
-                )"""
+                CREATE TABLE IF NOT EXISTS Review (    
+                    review_id INT PRIMARY KEY AUTO_INCREMENT,             
+                    points INT NOT NULL,
+                    author INT NOT NULL,
+                    review VARCHAR(2500) NOT NULL,
+                    date_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    
+                    FOREIGN KEY (author) REFERENCES User(user_id)
+            )"""
         )
 
-        # ALTER TABLE COMMAND
+        # MYSQL MOVIE TABLE
+        self.mysql_cursor.execute(
+            """ 
+                CREATE TABLE IF NOT EXISTS Movie (
+                    movie_id INT PRIMARY KEY AUTO_INCREMENT,
+                    ratings INT,
+                    run_time INT,
+                    country_id INT,
+                    writer_id INT,
+                    director_id INT,
+                    review_id INT,
+                    genre_id INT,
+                    cast_id INT,
+
+                    poster_path VARCHAR(255) NOT NULL,
+                    plot VARCHAR(2500) NOT NULL,
+                    title VARCHAR(100) NOT NULL,
+                    overview VARCHAR(255) NOT NULL,
+                    original_language VARCHAR(15) NOT NULL,
+                    release_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+
+                    FOREIGN KEY (country_id) REFERENCES Country(country_id),
+                    FOREIGN KEY (writer_id) REFERENCES User(user_id),
+                    FOREIGN KEY (director_id) REFERENCES User(user_id),
+                    FOREIGN KEY (cast_id) REFERENCES User(user_id),
+                    FOREIGN KEY (review_id) REFERENCES Review(review_id),
+                    FOREIGN KEY (genre_id) REFERENCES Genre(genre_id)
+            )"""
+        )
+
+        # ALTER USER TABLE COMMAND
         self.mysql_cursor.execute(
             """
-            ALTER TABLE Director ADD movie_id int AUTO_INCREMENT,
-            ALTER TABLE Director ADD FOREIGN KEY (movie_id) REFERENCES Movie(movie_id)
+            ALTER TABLE User ADD FOREIGN KEY (movie_id) REFERENCES Movie(movie_id);
             """
         )
 
         self.mysql_cursor.execute(
-            """
-                ALTER TABLE Movie ADD cast_id int NOT NULL,
-                ALTER TABLE Movie ADD director_id int NOT NULL,
-                ALTER TABLE Movie ADD country_id int NOT NULL,
-                ALTER TABLE Movie ADD review_id int NOT NULL,
-
-                ALTER TABLE Movie ADD FOREIGN KEY (cast_id) REFERENCES Cast(cast_id),
-                ALTER TABLE Movie ADD FOREIGN KEY (director_id) REFERENCES Director(director_id),
-                ALTER TABLE Movie ADD FOREIGN KEY (country_id) REFERENCES Country(country_id),
-                ALTER TABLE Movie ADD FOREIGN KEY (review_id) REFERENCES Review(review_id)
-            """
-        )
-        self.mysql_cursor.execute(
-            """
-                ALTER TABLE Review ADDauthor_id int,
-                ALTER TABLE Review ADD FOREIGN KEY (author_id) REFERENCES User(user_id)
-            """
+            "INSERT INTO Role (role_tag, role_name) VALUES ('admin', 'Administrator');"
         )
 
         print("Successfully Created Tables")
