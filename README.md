@@ -105,6 +105,8 @@ git clone with SSH   git@github.com:helloitsm3/ICT2103-Team-8.git
 
 2. Install the necessary libraries
 
+CMD
+
 ```sh
 # This creates a virtual environment so that when you install the libraries
 # it's only isolated to this environment
@@ -124,6 +126,29 @@ git clone with SSH   git@github.com:helloitsm3/ICT2103-Team-8.git
 
 # Runs the flask project
 5. flask run
+```
+
+Powershell
+
+```powershell
+# This creates a virtual environment so that when you install the libraries
+# it's only isolated to this environment
+1. python -m venv venv (optional)
+    # This is to activate the virtual environment you just downloaded
+    - venv\Scripts\activate.ps1
+
+# This installs all the require libraries needed for this project
+2. pip install -r requirements.txt
+
+# Sets the main.py file as the main app for flask
+3. $env:FLASK_APP="main.py"
+
+# Sets the project environment to development so that the project will refresh upon
+# changes to the code without needing to restart the server
+4. $env:FLASK_ENV="development"
+
+# Runs the flask project
+5. python -m flask run
 ```
 
 <!-- LICENSE -->
