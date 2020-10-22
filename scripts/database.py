@@ -1,6 +1,9 @@
 import os
 import psycopg2
 import mysql.connector
+import pymongo
+
+from pymongo import MongoClient
 
 
 # POSTGRESQL VAR
@@ -15,12 +18,15 @@ DB_MYSQL_HOST = os.getenv("DB_MYSQL_HOST")
 DB_MYSQL_USER = os.getenv("DB_MYSQL_USER")
 DB_MYSQL_PASS = os.getenv("DB_MYSQL_PASS")
 
+# MONGODB VAR
+DB_MONGO_URL = os.getenv("DB_MONGO_URL")
+
 
 class Database:
     def __init__(self, database="mysql"):
         try:
             if database == "postgresql":
-                self.postgres_conn = psycopg2.connect(
+                self.db_conn = psycopg2.connect(
                     """
                     dbname={0}
                     host={1}
@@ -34,16 +40,24 @@ class Database:
                         DB_POSTGRESQL_PASS,
                     )
                 )
+                self.postgres_cursor = self.db_conn.cursor()
+                print("Successfully connectedd to PostgreSQL Database")
+
             elif database == "mysql":
-                self.mysql_conn = mysql.connector.connect(
+                self.db_conn = mysql.connector.connect(
                     host=DB_MYSQL_HOST,
                     user=DB_MYSQL_USER,
                     passwd=DB_MYSQL_PASS,
                     database=DB_MYSQL_NAME,
                 )
-            self.mysql_conn.autocommit = True
-            self.mysql_cursor = self.mysql_conn.cursor()
-            # self.postgres_cursor = self.postgres_conn.cursor()
+
+                self.db_conn.autocommit = True
+                self.mysql_cursor = self.db_conn.cursor()
+                print("Successfully connectedd to MySQL Database")
+
+            elif "mongo" in database:
+                self.db_conn = MongoClient(DB_MONGO_URL)
+                print("Successfully connected to Mongo Database")
         except:
             print("Fail to connect to the database")
 

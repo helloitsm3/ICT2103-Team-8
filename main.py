@@ -13,8 +13,8 @@ app = Flask(__name__)
 # ===== Blueprints Registration =====
 app.register_blueprint(data, url_prefix="/")
 
-data = Database()
-data.initMySQLTable()
+data = Database(database="mongo")
+# data.initMySQLTable()
 
 """
 #TESTING FUNCTIONS
