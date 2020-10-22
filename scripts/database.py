@@ -17,29 +17,30 @@ DB_MYSQL_PASS = os.getenv("DB_MYSQL_PASS")
 
 
 class Database:
-    def __init__(self):
+    def __init__(self, database="mysql"):
         try:
-            # self.postgres_conn = psycopg2.connect(
-            #     """
-            #     dbname={0}
-            #     host={1}
-            #     user={2}
-            #     password={3}
-            #     sslmode=require
-            #     """.format(
-            #         DB_POSTGRESQL_NAME,
-            #         DB_POSTGRESQL_HOST,
-            #         DB_POSTGRESQL_USER,
-            #         DB_POSTGRESQL_PASS,
-            #     )
-            # )
-
-            self.mysql_conn = mysql.connector.connect(
-                host=DB_MYSQL_HOST,
-                user=DB_MYSQL_USER,
-                passwd=DB_MYSQL_PASS,
-                database=DB_MYSQL_NAME,
-            )
+            if database == "postgresql":
+                self.postgres_conn = psycopg2.connect(
+                    """
+                    dbname={0}
+                    host={1}
+                    user={2}
+                    password={3}
+                    sslmode=require
+                    """.format(
+                        DB_POSTGRESQL_NAME,
+                        DB_POSTGRESQL_HOST,
+                        DB_POSTGRESQL_USER,
+                        DB_POSTGRESQL_PASS,
+                    )
+                )
+            elif database == "mysql":
+                self.mysql_conn = mysql.connector.connect(
+                    host=DB_MYSQL_HOST,
+                    user=DB_MYSQL_USER,
+                    passwd=DB_MYSQL_PASS,
+                    database=DB_MYSQL_NAME,
+                )
             self.mysql_conn.autocommit = True
             self.mysql_cursor = self.mysql_conn.cursor()
             # self.postgres_cursor = self.postgres_conn.cursor()
