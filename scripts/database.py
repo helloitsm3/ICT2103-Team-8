@@ -70,6 +70,17 @@ class Database:
     def getDBConn(self):
         return self.db_conn
 
+    # insert a movie into DB
+    #TODO ADD "NOT EXIST" clause so that it doesn't insert duplicate movie
+    def insertMovie(self,runtime,poster,plot,title,release):
+
+        insert_movie = ("INSERT INTO Movie "
+               "(ratings, run_time, poster_path, plot, title,release_date) "
+               "VALUES (%s, %s, %s, %s, %s, %s)")
+        data_movie = ('4',runtime,poster,plot,title,release)
+
+        self.db_cursor.execute(insert_movie, data_movie)
+
     # Function to create all necessary tables
     def initMySQLTable(self):
         try:

@@ -14,7 +14,7 @@ app = Flask(__name__)
 app.register_blueprint(data, url_prefix="/")
 
 data = Database(database="mysql")
-data.getMySQLCursor()
+data.getDBCursor()
 
 """
 #TESTING FUNCTIONS
