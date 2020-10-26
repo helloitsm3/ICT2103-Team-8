@@ -14,6 +14,11 @@ def getShowing():
     movies = movie_controller.getCathayMovie()
     return render_template("nowshowing.html", movies = movies)
 
+@data.route("/moviedetail.html", methods=['POST'])
+def getMovieDetail():
+    poster = request.form['posterurl[]']
+    return render_template("moviedetail.html", poster = poster)
+
 @data.route("/")
 def main():
     images = movie_controller.getCathayMainPosters()

@@ -27,25 +27,18 @@
 
         {% for movie in movies%}
           <div class="card">
-              <img class="card-img-top" src="{{movie}}" alt="Card image cap">
-            </div>
+             <!--  <img class="card-img-top" src="{{movie}}" alt="Card image cap">-->
+
+            <form action="moviedetail.html" method="post">
+              <input type="image" class="card-img-top" name = "posterurl" value="{{movie}}" alt="poster" src="{{movie}}">
+            </form>
+          </div>
 
         {% endfor %}
         </div>
     </div>
 
-    <div class="row justify-content-center">
 
-        {% for image in images%}
-          <div class="card">
-              <img class="card-img-top" src="{{image}}" alt="Card image cap">
-            </div>
-
-        {% endfor %}
-
-
-
-    </div>
   </div>
 </section>
 <!-- footer-->
