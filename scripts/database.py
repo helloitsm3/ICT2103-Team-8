@@ -81,6 +81,13 @@ class Database:
 
         self.db_cursor.execute(insert_movie, data_movie)
 
+    # select a movie from db using poster url
+    def fetchMovie(self, url):
+        fetch_movie = ("SELECT from Movie WHERE poster_path = '%s'")
+        poster_url = (url)
+
+        self.db_cursor.execute(fetch_movie, poster_url)
+
     # Function to create all necessary tables
     def initMySQLTable(self):
         try:
