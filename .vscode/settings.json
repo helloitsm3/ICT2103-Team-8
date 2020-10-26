@@ -1,3 +1,9 @@
 {
-    "python.pythonPath": "venv\\Scripts\\python.exe"
+    "python.pythonPath": "venv\\Scripts\\python.exe",
+    "python.formatting.autopep8Args": [
+        "--max-line-length=200"
+    ],
+    "editor.wordWrapColumn": 200,
+    "python.linting.pylintEnabled": true,
+    "python.linting.enabled": true
 }

@@ -42,7 +42,7 @@ class Database:
                     )
                 )
                 self.db_cursor = self.db_conn.cursor()
-                print("Successfully connectedd to PostgreSQL Database")
+                print("Successfully connected to PostgreSQL Database")
 
             elif database == "mysql":
                 self.db_conn = mysql.connector.connect(
@@ -54,7 +54,7 @@ class Database:
 
                 self.db_conn.autocommit = True
                 self.db_cursor = self.db_conn.cursor()
-                print("Successfully connectedd to MySQL Database")
+                print("Successfully connected to MySQL Database")
 
             elif "mongo" in database:
                 self.db_conn = MongoClient(DB_MONGO_URL)
@@ -71,125 +71,122 @@ class Database:
         return self.db_conn
 
     # insert a movie into DB
-    #TODO ADD "NOT EXIST" clause so that it doesn't insert duplicate movie
-    def insertMovie(self,runtime,poster,plot,title,release):
+    # TODO ADD "NOT EXIST" clause so that it doesn't insert duplicate movie
+    def insertMovie(self, runtime, poster, plot, title, release):
 
-        insert_movie = ("INSERT INTO Movie "
-               "(ratings, run_time, poster_path, plot, title,release_date) "
-               "VALUES (%s, %s, %s, %s, %s, %s)")
-        data_movie = ('4',runtime,poster,plot,title,release)
+        insert_movie = (
+            "INSERT INTO Movie "
+            "(ratings, run_time, poster_path, plot, title,release_date) "
+            "VALUES (%s, %s, %s, %s, %s, %s)"
+        )
+        data_movie = ("4", runtime, poster, plot, title, release)
 
         self.db_cursor.execute(insert_movie, data_movie)
 
     # Function to create all necessary tables
     def initMySQLTable(self):
         try:
-            # MYSQL ROLE TABLE
-            self.db_cursor.execute(
-                """
-                    CREATE TABLE IF NOT EXISTS Role (
-                        role_id INT PRIMARY KEY AUTO_INCREMENT,
-                        role_tag VARCHAR(25) UNIQUE,
-                        role_name VARCHAR(25) UNIQUE
-                    )"""
-            )
-
             # MYSQL USER TABLE
             self.db_cursor.execute(
                 """
                     CREATE TABLE IF NOT EXISTS User (
-                        user_id INT PRIMARY KEY AUTO_INCREMENT,
-                        username VARCHAR(100) NOT NULL UNIQUE,
-                        email VARCHAR(100) NOT NULL,
-                        password VARCHAR(255) NOT NULL,
-                        role_id INT,
+                        user_id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
                         movie_id INT,
-                        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-
-                        FOREIGN KEY (role_id) REFERENCES Role(role_id)
+                        username VARCHAR(50) NOT NULL UNIQUE,
+                        email VARCHAR(50) NOT NULL,
+                        password VARCHAR(255) NOT NULL,
+                        role_id VARCHAR(25),
+                        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
                     )"""
-            )
-
-            # MYSQL GENRE TABLE
-            self.db_cursor.execute(
-                """
-                    CREATE TABLE IF NOT EXISTS Genre (
-                        genre_id INT PRIMARY KEY AUTO_INCREMENT,
-                        name VARCHAR(255) NOT NULL
-                    )"""
-            )
-
-            # MYSQL COUNTRY TABLE
-            self.db_cursor.execute(
-                """ 
-                    CREATE TABLE IF NOT EXISTS Country (
-                        country_id INT PRIMARY KEY AUTO_INCREMENT,
-                        country_name VARCHAR(100) NOT NULL
-                )"""
             )
 
             # MYSQL REVIEW TABLE
             self.db_cursor.execute(
                 """
-                    CREATE TABLE IF NOT EXISTS Review (    
-                        review_id INT PRIMARY KEY AUTO_INCREMENT,             
-                        points INT NOT NULL,
-                        author INT NOT NULL,
-                        review VARCHAR(2500) NOT NULL,
-                        date_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    CREATE TABLE IF NOT EXISTS Review (
+                        review_id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
+                        author_id INT,                        
+                        points DECIMAL(3, 2),
+                        review VARCHAR(2500),
+                        date_create DATETIME DEFAULT CURRENT_TIMESTAMP,                       
                         
-                        FOREIGN KEY (author) REFERENCES User(user_id)
+                        CHECK (points > 0 AND points <= 5),
+                        FOREIGN KEY (author_id) REFERENCES User(user_id) ON DELETE CASCADE
+                    )"""
+            )
+
+            # MYSQL DIRECTOR TABLE
+            self.db_cursor.execute(
+                """ 
+                    CREATE TABLE IF NOT EXISTS Director (
+                        director_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+                        director_name VARCHAR(100) NOT NULL UNIQUE
                 )"""
             )
 
             # MYSQL MOVIE TABLE
             self.db_cursor.execute(
-                """ 
+                """
                     CREATE TABLE IF NOT EXISTS Movie (
-                        movie_id INT PRIMARY KEY AUTO_INCREMENT,
-                        ratings INT,
-                        run_time INT,
-                        country_id INT,
-                        writer_id INT,
-                        director_id INT,
+                        movie_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+                        ratings DECIMAL(3, 2),
+                        genre VARCHAR(100),
+                        country VARCHAR(100),
                         review_id INT,
-                        genre_id INT,
-                        cast_id INT,
-
-                        poster_path VARCHAR(255) NOT NULL,
-                        plot VARCHAR(2500) NOT NULL,
-                        title VARCHAR(100) NOT NULL,
-                        overview VARCHAR(255) NOT NULL,
-                        original_language VARCHAR(15) NOT NULL,
+                        director_id INT,
+                        run_time INT,
+                        poster_path VARCHAR(250),
+                        plot VARCHAR(2500),
+                        title VARCHAR(150),
+                        overview VARCHAR(2500),
+                        original_language VARCHAR(25),
+                        writers VARCHAR(1000),
+                        casts VARCHAR(1000),
                         release_date DATETIME DEFAULT CURRENT_TIMESTAMP,
 
-                        FOREIGN KEY (country_id) REFERENCES Country(country_id),
-                        FOREIGN KEY (writer_id) REFERENCES User(user_id),
-                        FOREIGN KEY (director_id) REFERENCES User(user_id),
-                        FOREIGN KEY (cast_id) REFERENCES User(user_id),
+                        CHECK (ratings > 0 AND ratings <= 5),
                         FOREIGN KEY (review_id) REFERENCES Review(review_id),
-                        FOREIGN KEY (genre_id) REFERENCES Genre(genre_id)
+                        FOREIGN KEY (director_id) REFERENCES Director(director_id)
                 )"""
             )
 
-            # ALTER USER TABLE COMMAND
+            # MYSQL MOVIELIST TABLE
             self.db_cursor.execute(
                 """
-                ALTER TABLE User ADD FOREIGN KEY (movie_id) REFERENCES Movie(movie_id);
-                """
+                    CREATE TABLE IF NOT EXISTS MovieList (
+                        user_id INT,
+                        movie_id INT,
+
+                        FOREIGN KEY (user_id) REFERENCES User(user_id),
+                        FOREIGN KEY (movie_id) REFERENCES Movie(movie_id)
+                )"""
             )
 
-            # self.mysql_cursor.execute(
-            #     "INSERT INTO Role (role_tag, role_name) VALUES ('admin', 'Administrator');"
-            # )
-
-            # self.mysql_cursor.execute(
-            #     "INSERT INTO User (username, email, password, role_id) VALUES ('admin', 'admin@db.com', MD5('password1'), 1)"
-            # )
-
+            # MYSQL TIMESLOT TABLE
             self.db_cursor.execute(
-                "SELECT DECODE('password1', 'secret') AS 'password' FROM 'User'"
+                """ 
+                    CREATE TABLE IF NOT EXISTS Timeslot (
+                        showtime_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+                        slots VARCHAR(100),
+                        date_showing DATETIME DEFAULT CURRENT_TIMESTAMP
+                )"""
             )
+
+            # MYSQL SHOWTIME TABLE
+            self.db_cursor.execute(
+                """
+                    CREATE TABLE IF NOT EXISTS Showtime (
+                        movie_id INT,
+                        showtime_id INT,
+
+                        FOREIGN KEY (showtime_id) REFERENCES Timeslot(showtime_id),
+                        FOREIGN KEY (movie_id) REFERENCES Movie(movie_id)
+                )"""
+            )
+
+            # self.db_cursor.execute(
+            #     "SELECT DECODE('password1', 'secret') AS 'password' FROM 'User'"
+            # )
 
             print("Successfully Created Tables")
         except AttributeError:
@@ -207,3 +204,23 @@ class Database:
     #     # Return status: 0 == connected
     #     # Return status: 1 == not connected
     #     return "Connected" if self.postgres_conn.closed == 0 else "Disconnected"
+
+    def createUser(self, username, email, password, role):
+        try:
+            self.mysql_cursor.execute(
+                "INSERT INTO User (username, email, password, role_id) VALUES ({0}, {1}, MD5({2}), {3})".format(
+                    username, email, password, role
+                )
+            )
+        except AttributeError:
+            print(
+                "Failed to get DB Cursor. Please make sure you're using a SQL Database"
+            )
+
+    def decodePassword(self, password):
+        try:
+            pass
+        except AttributeError:
+            print(
+                "Failed to get DB Cursor. Please make sure you're using a SQL Database"
+            )
