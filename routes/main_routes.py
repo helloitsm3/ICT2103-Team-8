@@ -9,12 +9,14 @@ data = Blueprint("main_api", __name__)
 def getHome():
     return '{"Data": "Welcome to the homepage"}'
 
-@data.route("/nowshowing.html")
+@data.route("/nowshowing")
 def getShowing():
     movies = movie_controller.getCathayMovie()
+    print(movies)
+    
     return render_template("nowshowing.html", movies = movies)
 
-@data.route("/moviedetail.html", methods=['POST'])
+@data.route("/moviedetail", methods=['POST'])
 def getMovieDetail():
     poster = request.form['posterurl[]']
     return render_template("moviedetail.html", poster = poster)
@@ -23,3 +25,7 @@ def getMovieDetail():
 def main():
     images = movie_controller.getCathayMainPosters()
     return render_template("main.html", images = images)
+
+@data.route("/nowshowing/<moviename>", methods=['GET', 'POST'])
+def getNowShowingMovies(moviename):
+    return moviename

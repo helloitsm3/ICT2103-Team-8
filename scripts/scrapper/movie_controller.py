@@ -62,7 +62,7 @@ def getCathayMovie():
             continue
         # check if invalid poster
         if movie['Poster'] != 'N/A':
-            movies.append(movie['Poster'])
+            movies.append({ "poster": movie['Poster'], "title": movie["Title"].lower().replace(" ", "-") })
             plot = movie['Plot']
             print(plot, movie['Title'])
             db.insertMovie(movie['Runtime'], movie['Poster'], movie['Plot'], movie['Title'], movie['Released'])

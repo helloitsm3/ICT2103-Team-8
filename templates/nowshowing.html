@@ -1,18 +1,12 @@
-
 {% extends 'base.html' %} {% block head %} {% endblock %} {% block body %}
 
-<header
-  class="masthead-showing"
-  >
+<header class="masthead-showing">
   <div class="container h-100">
     <div
       class="row h-100 align-items-center justify-content-center text-center"
-    >
-
-    </div>
+    ></div>
   </div>
 </header>
-
 
 <!-- Now Showing -->
 <section class="page-section" id="about">
@@ -23,22 +17,26 @@
         <hr class="divider light my-4" />
         <p class="text-white-50 mb-4">Cathay Cinema</p>
       </div>
-        <div class="row justify-content-center">
-
+      <div class="row justify-content-center">
         {% for movie in movies%}
-          <div class="card">
-             <!--  <img class="card-img-top" src="{{movie}}" alt="Card image cap">-->
+        <div class="card">
+          <!--  <img class="card-img-top" src="{{movie}}" alt="Card image cap">-->
 
-            <form action="moviedetail.html" method="post">
-              <input type="image" class="card-img-top" name = "posterurl" value="{{movie}}" alt="poster" src="{{movie}}">
-            </form>
-          </div>
+          <form action="/nowshowing/{{ movie['title']}}" method="POST">
+            <input
+              type="image"
+              class="card-img-top"
+              name="posterurl"
+              value="{{ movie['poster'] }}"
+              alt="poster"
+              src="{{ movie['poster'] }}"
+            />
+          </form>
+        </div>
 
         {% endfor %}
-        </div>
+      </div>
     </div>
-
-
   </div>
 </section>
 <!-- footer-->
