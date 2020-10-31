@@ -116,6 +116,12 @@ class Database:
         poster_url = url
 
         self.db_cursor.execute(fetch_movie, poster_url)
+        self.db_cursor.close()
+        self.db_conn.close()
+
+    def cleanConnection(self):
+        self.db_cursor.close()
+        self.db_conn.close()
 
     # Function to create all necessary tables
     def initMySQLTable(self):
@@ -218,6 +224,9 @@ class Database:
                         FOREIGN KEY (movie_id) REFERENCES Movie(movie_id)
                 )"""
             )
+
+            self.db_cursor.close()
+            self.db_conn.close()
 
             print("Successfully Created Tables")
         except AttributeError:
