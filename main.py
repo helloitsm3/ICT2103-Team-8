@@ -7,11 +7,15 @@ import scripts.scrapper.scrapper_lib as scrapper_lib
 # ===== Routing =====
 from routes.main_routes import data
 
+import os
 
 app = Flask(__name__)
+app.secret_key = os.urandom(12)
+app.run()
 
 # ===== Blueprints Registration =====
 app.register_blueprint(data, url_prefix="/")
+
 
 """
 #TESTING FUNCTIONS
