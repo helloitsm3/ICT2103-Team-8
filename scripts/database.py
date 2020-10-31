@@ -176,7 +176,8 @@ class Database:
 
                         CHECK (ratings > 0 AND ratings <= 5),
                         FOREIGN KEY (review_id) REFERENCES Review(review_id),
-                        FOREIGN KEY (director_id) REFERENCES Director(director_id)
+                        FOREIGN KEY (director_id) REFERENCES Director(director_id),
+                        CONSTRAINT UC_Movie UNIQUE (title, poster_path, release_date)
                 )"""
             )
 
