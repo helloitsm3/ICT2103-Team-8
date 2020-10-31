@@ -63,7 +63,11 @@ def getCathayMovie():
         if movie["Response"] == "False":
             continue
         # check if invalid poster
-        if movie["Poster"] != "N/A":
+        if (
+            movie["Poster"] != "N/A"
+            and movie["Released"] != "N/A"
+            and movie["Runtime"] != "N/A"
+        ):
             movies.append(
                 {
                     "poster": movie["Poster"],
@@ -71,16 +75,14 @@ def getCathayMovie():
                 }
             )
             plot = movie["Plot"]
-            # print(plot, movie["Title"])
 
-            if movie["Released"] != "N/A" and movie["Runtime"] != "N/A":
-                db.insertMovie(
-                    movie["Runtime"].replace(" min", ""),
-                    movie["Poster"],
-                    movie["Plot"],
-                    movie["Title"],
-                    datetime.strptime(movie["Released"], "%d %b %Y"),
-                )
+            db.insertMovie(
+                movie["Runtime"].replace(" min", ""),
+                movie["Poster"],
+                movie["Plot"],
+                movie["Title"],
+                datetime.strptime(movie["Released"], "%d %b %Y"),
+            )
 
         else:
             continue

@@ -4,6 +4,7 @@ import mysql.connector
 import pymongo
 
 from pymongo import MongoClient
+from mysql.connector.errors import IntegrityError
 
 
 # POSTGRESQL VAR
@@ -97,14 +98,17 @@ class Database:
     # insert a movie into DB
     # TODO ADD "NOT EXIST" clause so that it doesn't insert duplicate movie
     def insertMovie(self, runtime, poster, plot, title, release):
-        insert_movie = (
-            "INSERT INTO Movie "
-            "(ratings, run_time, poster_path, plot, title,release_date) "
-            "VALUES (%s, %s, %s, %s, %s, %s)"
-        )
-        data_movie = ("4", runtime, poster, plot, title, release)
+        try:
+            insert_movie = (
+                "INSERT INTO Movie "
+                "(ratings, run_time, poster_path, plot, title,release_date) "
+                "VALUES (%s, %s, %s, %s, %s, %s)"
+            )
+            data_movie = ("4", runtime, poster, plot, title, release)
 
-        self.db_cursor.execute(insert_movie, data_movie)
+            self.db_cursor.execute(insert_movie, data_movie)
+        except IntegrityError:
+            print("Failed to insert Movie: {0} as it already exist".format(title))
 
     # select a movie from db using poster url
     def fetchMovie(self, url):
