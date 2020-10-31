@@ -9,7 +9,7 @@
     />
     <meta name="description" content="" />
     <meta name="author" content="" />
-    <title>MoviesDB</title>
+    <title>MoviesDB {% block title %}{% endblock %}</title>
     <!-- google fonts-->
     <link
       href="https://fonts.googleapis.com/css?family=Merriweather+Sans:400,700"
@@ -73,7 +73,7 @@
       </div>
     </nav>
 
-    {% block body %}{% endblock %}
+    {% block content %}{% endblock %}
 
     <!-- bootstrap core JS-->
     <script

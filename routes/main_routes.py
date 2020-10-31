@@ -6,12 +6,6 @@ data = Blueprint("main_api", __name__)
 from flask import Flask, flash, redirect, render_template, request, session, abort
 
 
-@data.route("/home")
-def getHome():
-
-    return '{"Data": "Welcome to the homepage"}'
-
-
 @data.route("/nowshowing")
 def getShowing():
     movies = movie_controller.getCathayMovie()
