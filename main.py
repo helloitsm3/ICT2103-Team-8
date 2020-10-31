@@ -1,5 +1,5 @@
 from flask import Flask
-from scripts.database import Database
+from scripts.user import User
 
 import scripts.scrapper.movie_data_lib as movie_lib
 import scripts.scrapper.scrapper_lib as scrapper_lib
@@ -12,10 +12,6 @@ app = Flask(__name__)
 
 # ===== Blueprints Registration =====
 app.register_blueprint(data, url_prefix="/")
-
-data = Database(database="mysql")
-# Only call once
-# data.initMySQLTable()
 
 """
 #TESTING FUNCTIONS

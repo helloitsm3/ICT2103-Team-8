@@ -18,15 +18,21 @@ DB_MYSQL_HOST = os.getenv("DB_MYSQL_HOST")
 DB_MYSQL_USER = os.getenv("DB_MYSQL_USER")
 DB_MYSQL_PASS = os.getenv("DB_MYSQL_PASS")
 
+# LOCAL MYSQL VAR
+DB_LOCAL_MYSQL_NAME = os.getenv("DB_LOCAL_MYSQL_NAME")
+DB_LOCAL_MYSQL_HOST = os.getenv("DB_LOCAL_MYSQL_HOST")
+DB_LOCAL_MYSQL_USER = os.getenv("DB_LOCAL_MYSQL_USER")
+DB_LOCAL_MYSQL_PASS = os.getenv("DB_LOCAL_MYSQL_PASS")
+
 # MONGODB VAR
 DB_MONGO_URL = os.getenv("DB_MONGO_URL")
 
 
 class Database:
     def __init__(self, database="mysql"):
-        try:
-            self.database = database
-            if database == "postgresql":
+        self.database = database
+        if database == "postgresql":
+            try:
                 self.db_conn = psycopg2.connect(
                     """
                     dbname={0}
@@ -43,8 +49,11 @@ class Database:
                 )
                 self.db_cursor = self.db_conn.cursor()
                 print("Successfully connected to PostgreSQL Database")
+            except:
+                print("Failed to connect to PostgreSQL AWS Database")
 
-            elif database == "mysql":
+        elif database == "mysql":
+            try:
                 self.db_conn = mysql.connector.connect(
                     host=DB_MYSQL_HOST,
                     user=DB_MYSQL_USER,
@@ -54,13 +63,28 @@ class Database:
 
                 self.db_conn.autocommit = True
                 self.db_cursor = self.db_conn.cursor()
-                print("Successfully connected to MySQL Database")
+                print("Successfully connected to MySQL AWS Database")
+            except mysql.connector.errors.InterfaceError:
+                try:
+                    self.db_conn = mysql.connector.connect(
+                        host=DB_LOCAL_MYSQL_HOST,
+                        user=DB_LOCAL_MYSQL_USER,
+                        passwd=DB_LOCAL_MYSQL_PASS,
+                        database=DB_LOCAL_MYSQL_NAME,
+                    )
 
-            elif "mongo" in database:
+                    self.db_conn.autocommit = True
+                    self.db_cursor = self.db_conn.cursor()
+                    print("Successfully connected to MySQL Local Database")
+                except:
+                    print("Failed to connect to MySQL Database")
+
+        elif "mongo" in database:
+            try:
                 self.db_conn = MongoClient(DB_MONGO_URL)
                 print("Successfully connected to Mongo Database")
-        except:
-            print("Fail to connect to the database")
+            except:
+                print("Failed to connect to MongoDB")
 
     def getDBCursor(self):
         if "mongo" not in self.database:
@@ -85,8 +109,8 @@ class Database:
 
     # select a movie from db using poster url
     def fetchMovie(self, url):
-        fetch_movie = ("SELECT from Movie WHERE poster_path = '%s'")
-        poster_url = (url)
+        fetch_movie = "SELECT from Movie WHERE poster_path = '%s'"
+        poster_url = url
 
         self.db_cursor.execute(fetch_movie, poster_url)
 
@@ -191,42 +215,19 @@ class Database:
                 )"""
             )
 
-            # self.db_cursor.execute(
-            #     "SELECT DECODE('password1', 'secret') AS 'password' FROM 'User'"
-            # )
-
             print("Successfully Created Tables")
         except AttributeError:
             print(
                 "Failed to get DB Cursor. Are you trying to use cursor when querying mongodb? Try switch to PostgreSQL or MySQL"
             )
 
-    # This function will return the current connection
-    # of the database use this to interact with database query
-    # def getCursor(self):
-    #     return self.postgres_cursor
-
-    # def getDBConnStatus(self):
-    #     # DB STATUS CODE
-    #     # Return status: 0 == connected
-    #     # Return status: 1 == not connected
-    #     return "Connected" if self.postgres_conn.closed == 0 else "Disconnected"
-
-    def createUser(self, username, email, password, role):
-        try:
-            self.mysql_cursor.execute(
-                "INSERT INTO User (username, email, password, role_id) VALUES ({0}, {1}, MD5({2}), {3})".format(
-                    username, email, password, role
-                )
-            )
-        except AttributeError:
-            print(
-                "Failed to get DB Cursor. Please make sure you're using a SQL Database"
-            )
-
     def decodePassword(self, password):
         try:
-            pass
+            self.db_cursor.execute(
+                "SELECT DECODE({0}, 'secret') AS 'password' FROM 'User'".format(
+                    password
+                )
+            )
         except AttributeError:
             print(
                 "Failed to get DB Cursor. Please make sure you're using a SQL Database"

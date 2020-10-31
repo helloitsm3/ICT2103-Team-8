@@ -5,5 +5,7 @@
     ],
     "editor.wordWrapColumn": 200,
     "python.linting.pylintEnabled": true,
-    "python.linting.enabled": true
+    "python.linting.enabled": true,
+    "editor.formatOnSave": true,
+    "python.formatting.provider": "black"
 }
