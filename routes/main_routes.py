@@ -41,4 +41,6 @@ def do_admin_login():
         session["logged_in"] = True
     else:
         flash("wrong password!")
-    return main()
+    return redirect(url_for("main_api.main"))
+
+@data.route("/register")
