@@ -4,6 +4,7 @@ import mysql.connector
 import pymongo
 
 from pymongo import MongoClient
+from mysql.connector.errors import IntegrityError
 
 
 # POSTGRESQL VAR
@@ -97,15 +98,17 @@ class Database:
     # insert a movie into DB
     # TODO ADD "NOT EXIST" clause so that it doesn't insert duplicate movie
     def insertMovie(self, runtime, poster, plot, title, release):
+        try:
+            insert_movie = (
+                "INSERT INTO Movie "
+                "(ratings, run_time, poster_path, plot, title,release_date) "
+                "VALUES (%s, %s, %s, %s, %s, %s)"
+            )
+            data_movie = ("4", runtime, poster, plot, title, release)
 
-        insert_movie = (
-            "INSERT INTO Movie "
-            "(ratings, run_time, poster_path, plot, title,release_date) "
-            "VALUES (%s, %s, %s, %s, %s, %s)"
-        )
-        data_movie = ("4", runtime, poster, plot, title, release)
-
-        self.db_cursor.execute(insert_movie, data_movie)
+            self.db_cursor.execute(insert_movie, data_movie)
+        except IntegrityError:
+            print("Failed to insert Movie: {0} as it already exist".format(title))
 
     # select a movie from db using poster url
     def fetchMovie(self, url):
@@ -177,7 +180,8 @@ class Database:
 
                         CHECK (ratings > 0 AND ratings <= 5),
                         FOREIGN KEY (review_id) REFERENCES Review(review_id),
-                        FOREIGN KEY (director_id) REFERENCES Director(director_id)
+                        FOREIGN KEY (director_id) REFERENCES Director(director_id),
+                        CONSTRAINT UC_Movie UNIQUE (title, poster_path, release_date)
                 )"""
             )
 
@@ -219,16 +223,4 @@ class Database:
         except AttributeError:
             print(
                 "Failed to get DB Cursor. Are you trying to use cursor when querying mongodb? Try switch to PostgreSQL or MySQL"
-            )
-
-    def decodePassword(self, password):
-        try:
-            self.db_cursor.execute(
-                "SELECT DECODE({0}, 'secret') AS 'password' FROM 'User'".format(
-                    password
-                )
-            )
-        except AttributeError:
-            print(
-                "Failed to get DB Cursor. Please make sure you're using a SQL Database"
             )

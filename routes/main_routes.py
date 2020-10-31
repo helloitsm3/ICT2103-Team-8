@@ -15,7 +15,6 @@ def getHome():
 @data.route("/nowshowing")
 def getShowing():
     movies = movie_controller.getCathayMovie()
-    print(movies)
 
     return render_template("nowshowing.html", movies=movies)
 
