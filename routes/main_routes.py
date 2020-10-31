@@ -49,4 +49,7 @@ def do_admin_login():
         flash("wrong password!")
     return redirect(url_for("main_api.main"))
 
+
 @data.route("/register")
+def user_register():
+    return render_template("register.html")
