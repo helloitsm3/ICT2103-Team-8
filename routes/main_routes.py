@@ -77,3 +77,4 @@ def register_user():
         return redirect(url_for("main_api.main"))
     else:
         return render_template("register.html")
+        return render_template("register.html")
