@@ -9,7 +9,7 @@ Functions to process and collect movie, and insert into database.
 import scripts.scrapper.movie_data_lib as movie_lib
 import scripts.scrapper.scrapper_lib as scrapper_lib
 from scripts.database import Database
-
+from datetime import datetime
 
 """
 This function gets top 4 posters for the main page
@@ -52,6 +52,7 @@ def getCathayMovie():
     db = Database()
     movies = []
     movielist = scrapper_lib.cathay_scraper()
+
     for i in movielist:
         movie = movie_lib.omdb_fetch(i)
         # if it fails, its probably because of the ":" character confusing the api
@@ -70,14 +71,16 @@ def getCathayMovie():
                 }
             )
             plot = movie["Plot"]
-            print(plot, movie["Title"])
-            db.insertMovie(
-                movie["Runtime"],
-                movie["Poster"],
-                movie["Plot"],
-                movie["Title"],
-                movie["Released"],
-            )
+            # print(plot, movie["Title"])
+
+            if movie["Released"] != "N/A" and movie["Runtime"] != "N/A":
+                db.insertMovie(
+                    movie["Runtime"].replace(" min", ""),
+                    movie["Poster"],
+                    movie["Plot"],
+                    movie["Title"],
+                    datetime.strptime(movie["Released"], "%d %b %Y"),
+                )
 
         else:
             continue

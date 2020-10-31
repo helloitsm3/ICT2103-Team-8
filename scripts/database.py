@@ -97,7 +97,6 @@ class Database:
     # insert a movie into DB
     # TODO ADD "NOT EXIST" clause so that it doesn't insert duplicate movie
     def insertMovie(self, runtime, poster, plot, title, release):
-
         insert_movie = (
             "INSERT INTO Movie "
             "(ratings, run_time, poster_path, plot, title,release_date) "
@@ -219,16 +218,4 @@ class Database:
         except AttributeError:
             print(
                 "Failed to get DB Cursor. Are you trying to use cursor when querying mongodb? Try switch to PostgreSQL or MySQL"
-            )
-
-    def decodePassword(self, password):
-        try:
-            self.db_cursor.execute(
-                "SELECT DECODE({0}, 'secret') AS 'password' FROM 'User'".format(
-                    password
-                )
-            )
-        except AttributeError:
-            print(
-                "Failed to get DB Cursor. Please make sure you're using a SQL Database"
             )
