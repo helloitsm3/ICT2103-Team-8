@@ -1,7 +1,7 @@
 from scripts.user import User
 from datetime import datetime
 from scripts.database import Database
-from flask import Blueprint, render_template, request, redirect, url_for, session
+from flask import Blueprint, render_template, request, redirect, url_for, session, flash
 
 import scripts.scrapper.movie_controller as movie_controller
 
@@ -91,6 +91,7 @@ def do_admin_login():
             session["logged_in"] = user.fetchUser(
                 request.form["username"], request.form["password"]
             )
+            flash("Successfully Logged In", "info")
             print("Successfully Logged In")
             return redirect(url_for("main_api.main"))
     else:
@@ -106,6 +107,7 @@ def do_admin_login():
 def logout():
     if session.get("logged_in"):
         session["logged_in"] = False
+        flash("Successfully Logged out", "info")
         print("Successfully Logged out")
 
     return redirect(url_for("main_api.main"))
@@ -120,12 +122,18 @@ def register_user():
         confirmpassword = request.form["confirmpassword"]
 
         if password == confirmpassword:
-            user = User(username, email, password)
-            print("Successfully created user {0}".format(username))
+            user = User()
+            try:
+                user.createUser(username, email, password)
+                flash("Your account has been created successfully", "info")
+                print("Successfully created user {0}".format(username))
+            except:
+                flash("Username taken", "err")
+                print("Username taken")
         else:
+            flash("Confirm Password is not the same as password", "err")
             print("Confirm Password is not the same as password")
 
         return redirect(url_for("main_api.main"))
     else:
-        return render_template("register.html")
         return render_template("register.html")
