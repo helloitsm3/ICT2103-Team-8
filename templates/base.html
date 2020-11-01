@@ -40,7 +40,11 @@
             <a class="nav-link js-scroll-trigger" href="">Films</a>
           </li>
           <li class="nav-item">
+            {% if session.get("logged_in") %}
+            <a class="nav-link js-scroll-trigger" href="/logout">Sign out</a>
+            {% else %}
             <a class="nav-link js-scroll-trigger" href="/login">Sign in</a>
+            {% endif %}
           </li>
           <li class="nav-item">
             <a class="nav-link js-scroll-trigger" href="/register">Create Account</a>

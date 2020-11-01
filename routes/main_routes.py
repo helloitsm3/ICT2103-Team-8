@@ -91,16 +91,22 @@ def do_admin_login():
             session["logged_in"] = user.fetchUser(
                 request.form["username"], request.form["password"]
             )
-            flash("Successfully Logged In", "info")
-            print("Successfully Logged In")
-            return redirect(url_for("main_api.main"))
+            if session["logged_in"]:
+                flash("Successfully Logged In", "info")
+                print("Successfully Logged In")
+                return redirect(url_for("main_api.main"))
+            else:
+                flash("User login failed", "err")
+                print(session["logged_in"])
+                return render_template("login.html")
     else:
         if not session.get("logged_in"):
             return render_template("login.html")
         else:
+            flash("You have already signed in", "info")
             return redirect(url_for("main_api.main"))
 
-    return redirect(url_for("main_api.main"))
+    # return redirect(url_for("main_api.main"))
 
 
 @data.route("/logout")
@@ -121,19 +127,27 @@ def register_user():
         password = request.form["password"]
         confirmpassword = request.form["confirmpassword"]
 
-        if password == confirmpassword:
-            user = User()
-            try:
-                user.createUser(username, email, password)
-                flash("Your account has been created successfully", "info")
-                print("Successfully created user {0}".format(username))
-            except:
-                flash("Username taken", "err")
-                print("Username taken")
-        else:
-            flash("Confirm Password is not the same as password", "err")
-            print("Confirm Password is not the same as password")
+        if username != "" and email != "" and password != "":
+            if password == confirmpassword:
+                user = User()
+                try:
+                    user.createUser(username, email, password)
+                    flash("Your account has been created successfully", "info")
+                    print("Successfully created user {0}".format(username))
+                    return redirect(url_for("main_api.main"))
+                except:
+                    flash("Username taken", "err")
+                    print("Username taken")
+                    return render_template("register.html")
 
-        return redirect(url_for("main_api.main"))
+            else:
+                flash("Confirm Password is not the same as password", "err")
+                print("Confirm Password is not the same as password")
+                return render_template("register.html")
+        else:
+            flash("Please enter all fields", "err")
+            print("Please enter all fields")
+            return render_template("register.html")
+
     else:
         return render_template("register.html")
