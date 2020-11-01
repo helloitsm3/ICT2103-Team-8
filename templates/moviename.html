@@ -1,0 +1,37 @@
+
+
+{% extends 'base.html' %} {% block head %} {% endblock %} {% block content %}
+
+
+<!-- Now Showing -->
+<section class="page-section" id="about">
+    <div class="container movie-content">
+        {% for movie in movie_details %}
+            <div class="justify-content-left">
+                <img src={{ movie['poster_path'] }} alt="" />
+            </div>
+            <div class="movie-title">
+                <h1>We Bare Bear: The Movie <span id="movie-year">({{ movie["release_date"].year }})</span></h1>
+                <ul id="movie-details-container">
+                    <li>{{ movie["release_date"].date() }} ({{ movie["country"] }})</li>
+                    <li>{{ movie["genre"] }}</li>
+                    <li>{{ movie["run_time"] }} mins</li>
+                </ul>
+                <ul id="movie-status-container">
+                    <li>⭐ {{ movie["ratings"] }} / 5</li>
+                    <li><button type="button" class="btn btn-primary">❤️ Add to Wishlist</button></li>
+                    <li><button type="button" class="btn btn-primary">⭐ Rate Movie</button></li>
+                </ul>
+            </div>
+        {% endfor %}
+    </div>
+</section>
+<!-- footer-->
+<footer class="bg-dark py-4" id="mainFooter">
+  <div class="container">
+    <div class="small text-center text-muted">
+      Copyright © 2020 - SIT Team 8 ICT 2103
+    </div>
+  </div>
+</footer>
+{% endblock %}

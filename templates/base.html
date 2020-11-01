@@ -57,25 +57,25 @@
         <div class="collapse navbar-collapse" id="navbarResponsive">
           <ul class="navbar-nav ml-auto my-2 my-lg-0">
             <li class="nav-item">
-              <a class="nav-link js-scroll-trigger" href="nowshowing">Now Showing</a>
+              <a class="nav-link js-scroll-trigger" href="/nowshowing">Now Showing</a>
             </li>
             <li class="nav-item">
               <a class="nav-link js-scroll-trigger" href="">Films</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link js-scroll-trigger" href="login">Sign in</a>
+              <a class="nav-link js-scroll-trigger" href="/login">Sign in</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link js-scroll-trigger" href="register">Create Account</a>
+              <a class="nav-link js-scroll-trigger" href="/register">Create Account</a>
             </li>
           </ul>
         </div>
       </div>
+    </nav>
+
+    <!-- Content -->
+    <div>
+      {% block content %}{% endblock %}
     </div>
-  </nav>
-
-  {% block body %}{% endblock %}
-
-    {% block content %}{% endblock %}
-
+  </body>
 </html>

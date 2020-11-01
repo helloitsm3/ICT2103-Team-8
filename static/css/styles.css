@@ -43,7 +43,7 @@ header.masthead {
 }
 header.masthead h2 {
   font-size: 2rem;
-  padding-bottom:2rem;
+  padding-bottom: 2rem;
 }
 @media (min-width: 992px) {
   header.masthead {
@@ -57,7 +57,7 @@ header.masthead h2 {
   }
   header.masthead h2 {
     font-size: 2rem;
-    padding-bottom:2rem;
+    padding-bottom: 2rem;
   }
 }
 @media (min-width: 1200px) {
@@ -68,17 +68,17 @@ header.masthead h2 {
     height: 70vh;
   }
 }
-.card{
-    background-color: transparent;
-    margin-right: 10px;
-    width: 15rem;
+.card {
+  background-color: transparent;
+  margin-right: 10px;
+  width: 15rem;
 }
 header.masthead-show {
-    height: 20vh;
-    min-height: 40rem;
-    padding-top: 4.5rem;
-    padding-bottom: 0;
-  }
+  height: 20vh;
+  min-height: 40rem;
+  padding-top: 4.5rem;
+  padding-bottom: 0;
+}
 .btn-primary {
   color: #fff;
   padding: 2rem, 0.5rem, 2rem, 0.5rem;
@@ -93,4 +93,53 @@ header.masthead-show {
 .page-section {
   background-color: #2c2f33;
   padding: 8rem 0;
+}
+
+/* MOVIENAME.HTML STYLES */
+.movie-content {
+  display: flex;
+  flex-direction: row;
+}
+
+.movie-title {
+  margin-left: 30px;
+}
+
+.movie-title h1 {
+  color: white;
+  font-size: 40px;
+  font-weight: bolder;
+}
+
+#movie-year {
+  font-weight: 300;
+}
+
+#movie-details-container {
+  display: flex;
+  flex-direction: row;
+  color: white;
+  justify-content: space-between;
+  margin-left: -35px;
+}
+
+#movie-details-container li {
+  padding-right: 25px;
+}
+
+#movie-details-container li:first-child {
+  list-style-type: none;
+}
+
+#movie-status-container {
+  display: flex;
+  flex-direction: row;
+  color: white;
+  margin-left: -35px;
+  align-items: center;
+}
+
+#movie-status-container li {
+  list-style-type: none;
+  margin-right: 20px;
 }

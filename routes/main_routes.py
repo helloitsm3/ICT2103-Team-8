@@ -1,4 +1,5 @@
 from scripts.user import User
+from datetime import datetime
 from flask import Blueprint, render_template, request, redirect, url_for, session
 
 import scripts.scrapper.movie_controller as movie_controller
@@ -27,7 +28,26 @@ def main():
 
 @data.route("/nowshowing/<moviename>", methods=["GET", "POST"])
 def getNowShowingMovies(moviename):
-    return moviename
+    movie_details = [
+        {
+            "title": moviename,
+            "poster_path": "https://m.media-amazon.com/images/M/MV5BZTgyOWUyYTctMjQxNy00MDQ5LWFlMDQtODY2ZGEzYjIyYzRmXkEyXkFqcGdeQXVyMjg0MTI5NzQ@._V1_SX300.jpg",
+            "ratings": "4.00",
+            "genre": "Family, Animation, Adventure, Comedy, Mystery",
+            "country": "US",
+            "run_time": "108",
+            "plot": "Hearing-impaired teenager Chang Cheng transfers to a school for children with special needs. However, the world of the hearing-impaired doesn't seem quiet at all. When Chang witnesses the ...",
+            "overview": "",
+            "original_language": "English",
+            "writers": "Daniel Chong, Charlie Parisi, Quinne Larsen, Sooyeon Lee, Yvonne Hsuan Ho",
+            "casts": "",
+            "release_date": datetime.strptime(
+                "2020-06-25 00:00:00", "%Y-%m-%d %H:%M:%S"
+            ),
+        }
+    ]
+
+    return render_template("moviename.html", movie_details=movie_details)
 
 
 @data.route("/login", methods=["GET", "POST"])
