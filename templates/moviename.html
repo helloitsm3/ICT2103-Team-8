@@ -10,18 +10,31 @@
             <div class="justify-content-left">
                 <img src={{ movie['poster_path'] }} alt="" />
             </div>
-            <div class="movie-title">
-                <h1>We Bare Bear: The Movie <span id="movie-year">({{ movie["release_date"].year }})</span></h1>
-                <ul id="movie-details-container">
-                    <li>{{ movie["release_date"].date() }} ({{ movie["country"] }})</li>
-                    <li>{{ movie["genre"] }}</li>
-                    <li>{{ movie["run_time"] }} mins</li>
-                </ul>
-                <ul id="movie-status-container">
-                    <li>⭐ {{ movie["ratings"] }} / 5</li>
-                    <li><button type="button" class="btn btn-primary">❤️ Add to Wishlist</button></li>
-                    <li><button type="button" class="btn btn-primary">⭐ Rate Movie</button></li>
-                </ul>
+
+            <div id="details_container">
+                <div class="movie-title">
+                    <h1>{{ movie["title"] }} <span id="movie-year">({{ movie["release_date"].year }})</span></h1>
+                    <ul id="movie-details-container">
+                        <li>{{ movie["release_date"].date() }} ({{ movie["country"] }})</li>
+                        <li>{{ movie["genre"] }}</li>
+                        <li>{{ movie["run_time"] }} mins</li>
+                    </ul>
+                    <ul id="movie-status-container">
+                        <li>⭐ {{ movie["ratings"] }} / 5</li>
+                        <li><button type="button" class="btn btn-primary">❤️ Add to Wishlist</button></li>
+                        <li><button type="button" class="btn btn-primary">⭐ Rate Movie</button></li>
+                    </ul>
+                </div>
+
+                <div class="overview-container">
+                    <h2>Overview</h2>
+                    <p>{{ movie["plot"] }}</p>
+                </div>
+
+                <div class="overview-container">
+                    <h2>Writers</h2>
+                    <p>{{ movie["writers"] }}</p>
+                </div>
             </div>
         {% endfor %}
     </div>

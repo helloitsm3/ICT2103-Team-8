@@ -112,12 +112,25 @@ class Database:
 
     # select a movie from db using poster url
     def fetchMovie(self, url):
-        fetch_movie = "SELECT from Movie WHERE poster_path = '%s'"
-        poster_url = url
+        fetch_movie = "SELECT * FROM Movie WHERE poster_path=%s"
 
-        self.db_cursor.execute(fetch_movie, poster_url)
+        self.db_cursor.execute(fetch_movie, (url,))
+        movie_data = self.db_cursor.fetchall()
         self.db_cursor.close()
         self.db_conn.close()
+
+        return movie_data
+
+    def fetchMovieByName(self, name):
+        fetch_movie = "SELECT * FROM Movie WHERE LOWER(title)=%s"
+        filtered_name = name.replace("-", " ")
+
+        self.db_cursor.execute(fetch_movie, (filtered_name,))
+        movie_data = self.db_cursor.fetchall()
+        self.db_cursor.close()
+        self.db_conn.close()
+
+        return movie_data
 
     def cleanConnection(self):
         self.db_cursor.close()

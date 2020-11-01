@@ -1,5 +1,6 @@
 from scripts.user import User
 from datetime import datetime
+from scripts.database import Database
 from flask import Blueprint, render_template, request, redirect, url_for, session
 
 import scripts.scrapper.movie_controller as movie_controller
@@ -10,6 +11,7 @@ data = Blueprint("main_api", __name__)
 @data.route("/nowshowing")
 def getShowing():
     movies = movie_controller.getCathayMovie()
+    print(movies)
 
     return render_template("nowshowing.html", movies=movies)
 
@@ -36,7 +38,7 @@ def getNowShowingMovies(moviename):
             "genre": "Family, Animation, Adventure, Comedy, Mystery",
             "country": "US",
             "run_time": "108",
-            "plot": "Hearing-impaired teenager Chang Cheng transfers to a school for children with special needs. However, the world of the hearing-impaired doesn't seem quiet at all. When Chang witnesses the ...",
+            "plot": "When Grizz, Panda, and Ice Bear's love of food trucks and viral videos went out of hand, it catches the attention of Agent Trout from the National Wildlife Control, who pledges to restore the “natural order” by separating them forever. Chased away from their home, the Bears embark on an epic road trip as they seek refuge in Canada, with their journey being filled with new friends, perilous obstacles, and huge parties. The risky journey also forces the Bears to face how they first met and became brothers, in order to keep their family bond from splitting apart.",
             "overview": "",
             "original_language": "English",
             "writers": "Daniel Chong, Charlie Parisi, Quinne Larsen, Sooyeon Lee, Yvonne Hsuan Ho",
@@ -47,7 +49,36 @@ def getNowShowingMovies(moviename):
         }
     ]
 
-    return render_template("moviename.html", movie_details=movie_details)
+    db = Database()
+    movie_det = db.fetchMovieByName(moviename)
+
+    for movie_data in movie_det:
+        movie_ratings = movie_data[1]
+        movie_runtime = movie_data[6]
+        movie_poster_path = movie_data[7]
+        movie_plot = movie_data[8]
+        movie_title = movie_data[9]
+        movie_release_date = datetime.strptime(str(movie_data[14]), "%Y-%m-%d %H:%M:%S")
+
+        movie_details = [
+            {
+                "title": movie_title,
+                "poster_path": movie_poster_path,
+                "ratings": movie_ratings,
+                "genre": "Family, Animation, Adventure, Comedy, Mystery",
+                "country": "US",
+                "run_time": movie_runtime,
+                "plot": movie_plot,
+                "overview": "",
+                "original_language": "English",
+                "writers": "Daniel Chong, Charlie Parisi, Quinne Larsen, Sooyeon Lee, Yvonne Hsuan Ho",
+                "casts": "",
+                "release_date": movie_release_date,
+            }
+        ]
+
+        return render_template("moviename.html", movie_details=movie_details)
+    return "Error 404: Movie not found in our database"
 
 
 @data.route("/login", methods=["GET", "POST"])
