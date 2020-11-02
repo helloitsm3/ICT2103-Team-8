@@ -75,9 +75,31 @@
           </ul>
         </div>
       </div>
-    </nav>
+    </div>
+  </nav>
 
-    <!-- Content -->
-    <div>{% block content %}{% endblock %}</div>
-  </body>
+  <!-- Content -->
+  <div>
+    <!-- Message Flash -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    {% for category, message in messages %}
+    {% if category=='info'%}
+    <div class="alert flash" role="alert" id="flash-info">
+      {{message}}
+    </div>
+    {% elif category=='err' %}
+    <div class="alert flash" role="alert" id="flash-err">
+      {{message}}
+    </div>
+    {% endif %}
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+  </div>
+</body>
+
+</html>
 </html>

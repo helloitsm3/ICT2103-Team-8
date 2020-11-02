@@ -1,7 +1,7 @@
 from scripts.user import User
 from datetime import datetime
 from scripts.database import Database
-from flask import Blueprint, render_template, request, redirect, url_for, session
+from flask import Blueprint, render_template, request, redirect, url_for, session, flash
 
 import scripts.scrapper.movie_controller as movie_controller
 
@@ -90,21 +90,29 @@ def do_admin_login():
             session["logged_in"] = user.fetchUser(
                 request.form["username"], request.form["password"]
             )
-            print("Successfully Logged In")
-            return redirect(url_for("main_api.main"))
+            if session["logged_in"]:
+                flash("Successfully Logged In", "info")
+                print("Successfully Logged In")
+                return redirect(url_for("main_api.main"))
+            else:
+                flash("User login failed", "err")
+                print(session["logged_in"])
+                return render_template("login.html")
     else:
         if not session.get("logged_in"):
             return render_template("login.html")
         else:
+            flash("You have already signed in", "info")
             return redirect(url_for("main_api.main"))
 
-    return redirect(url_for("main_api.main"))
+    # return redirect(url_for("main_api.main"))
 
 
 @data.route("/logout")
 def logout():
     if session.get("logged_in"):
         session["logged_in"] = False
+        flash("Successfully Logged out", "info")
         print("Successfully Logged out")
 
     return redirect(url_for("main_api.main"))
@@ -118,13 +126,27 @@ def register_user():
         password = request.form["password"]
         confirmpassword = request.form["confirmpassword"]
 
-        if password == confirmpassword:
-            user = User(username, email, password)
-            print("Successfully created user {0}".format(username))
-        else:
-            print("Confirm Password is not the same as password")
+        if username != "" and email != "" and password != "":
+            if password == confirmpassword:
+                user = User()
+                try:
+                    user.createUser(username, email, password)
+                    flash("Your account has been created successfully", "info")
+                    print("Successfully created user {0}".format(username))
+                    return redirect(url_for("main_api.main"))
+                except:
+                    flash("Username taken", "err")
+                    print("Username taken")
+                    return render_template("register.html")
 
-        return redirect(url_for("main_api.main"))
+            else:
+                flash("Confirm Password is not the same as password", "err")
+                print("Confirm Password is not the same as password")
+                return render_template("register.html")
+        else:
+            flash("Please enter all fields", "err")
+            print("Please enter all fields")
+            return render_template("register.html")
+
     else:
-        return render_template("register.html")
         return render_template("register.html")

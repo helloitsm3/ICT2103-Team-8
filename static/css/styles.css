@@ -147,6 +147,26 @@ header.masthead-show {
   margin-top: 35px;
 }
 
+.flash{
+  position: absolute;
+  z-index: 10;
+  width: 98%;
+  margin-left: 15px;
+  margin-top: 80px;
+}
+
+#flash-info{
+  background:#2c2f33;
+  border-color: #2c2f33;
+  color: #ffffff;
+}
+
+#flash-err{
+  background: #f5c6cb;
+  border-color: #f5c6cb;
+  color: red;
+}
+}
 .movie-name-image {
   margin-top: 10px;
 }

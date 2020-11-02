@@ -53,4 +53,5 @@ class User:
                 return True
             else:
                 print("User login failed")
+                return False
         self.db.cleanConnection()
