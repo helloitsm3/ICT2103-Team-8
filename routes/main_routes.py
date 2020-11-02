@@ -11,7 +11,10 @@ data = Blueprint("main_api", __name__)
 @data.route("/nowshowing")
 def getShowing():
     movies = movie_controller.getCathayMovie()
-    print(movies)
+    isLoggedIn = session.get("logged_in")
+
+    if isLoggedIn:
+        return render_template("authenticated/auth_nowshowing.html", movies=movies)
 
     return render_template("nowshowing.html", movies=movies)
 
@@ -25,32 +28,21 @@ def getMovieDetail():
 @data.route("/")
 def main():
     images = movie_controller.getCathayMainPosters()
+    isLoggedIn = session.get("logged_in")
+
+    if isLoggedIn:
+        return render_template("authenticated/auth_main.html", images=images)
+
     return render_template("main.html", images=images)
 
 
 @data.route("/nowshowing/<moviename>", methods=["GET", "POST"])
 def getNowShowingMovies(moviename):
-    movie_details = [
-        {
-            "title": moviename,
-            "poster_path": "https://m.media-amazon.com/images/M/MV5BZTgyOWUyYTctMjQxNy00MDQ5LWFlMDQtODY2ZGEzYjIyYzRmXkEyXkFqcGdeQXVyMjg0MTI5NzQ@._V1_SX300.jpg",
-            "ratings": "4.00",
-            "genre": "Family, Animation, Adventure, Comedy, Mystery",
-            "country": "US",
-            "run_time": "108",
-            "plot": "When Grizz, Panda, and Ice Bear's love of food trucks and viral videos went out of hand, it catches the attention of Agent Trout from the National Wildlife Control, who pledges to restore the “natural order” by separating them forever. Chased away from their home, the Bears embark on an epic road trip as they seek refuge in Canada, with their journey being filled with new friends, perilous obstacles, and huge parties. The risky journey also forces the Bears to face how they first met and became brothers, in order to keep their family bond from splitting apart.",
-            "overview": "",
-            "original_language": "English",
-            "writers": "Daniel Chong, Charlie Parisi, Quinne Larsen, Sooyeon Lee, Yvonne Hsuan Ho",
-            "casts": "",
-            "release_date": datetime.strptime(
-                "2020-06-25 00:00:00", "%Y-%m-%d %H:%M:%S"
-            ),
-        }
-    ]
-
     db = Database()
     movie_det = db.fetchMovieByName(moviename)
+    movie_details = []
+
+    isLoggedIn = session.get("logged_in")
 
     for movie_data in movie_det:
         movie_ratings = movie_data[1]
@@ -72,12 +64,19 @@ def getNowShowingMovies(moviename):
                 "overview": "",
                 "original_language": "English",
                 "writers": "Daniel Chong, Charlie Parisi, Quinne Larsen, Sooyeon Lee, Yvonne Hsuan Ho",
-                "casts": "",
+                "casts": "Pedro Pascal, Carl Weathers, Emily Swallow, Nick Nolte, Rio Hackford, Misty Rosas",
                 "release_date": movie_release_date,
             }
         ]
 
-        return render_template("moviename.html", movie_details=movie_details)
+    if len(movie_details) > 0:
+        if isLoggedIn:
+            return render_template(
+                "authenticated/auth_moviename.html", movie_details=movie_details
+            )
+        elif not isLoggedIn:
+            return render_template("moviename.html", movie_details=movie_details)
+
     return "Error 404: Movie not found in our database"
 
 

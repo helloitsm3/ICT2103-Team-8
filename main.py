@@ -11,11 +11,13 @@ import os
 
 app = Flask(__name__)
 app.secret_key = os.urandom(12)
-app.run()
 
 # ===== Blueprints Registration =====
 app.register_blueprint(data, url_prefix="/")
 
+
+if __name__ == "__main__":
+    app.run()
 
 """
 #TESTING FUNCTIONS

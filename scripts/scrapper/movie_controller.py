@@ -31,7 +31,12 @@ def getCathayMainPosters():
             continue
         # check if invalid poster
         if movie["Poster"] != "N/A":
-            images.append(movie["Poster"])
+            images.append(
+                {
+                    "poster": movie["Poster"],
+                    "title": movie["Title"].lower().replace(" ", "-"),
+                }
+            )
         else:
             continue
         if len(images) == 4:
