@@ -153,21 +153,6 @@ class Database:
                     )"""
             )
 
-            # MYSQL REVIEW TABLE
-            self.db_cursor.execute(
-                """
-                    CREATE TABLE IF NOT EXISTS Review (
-                        review_id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
-                        author_id INT,                        
-                        points DECIMAL(3, 2),
-                        review VARCHAR(2500),
-                        date_create DATETIME DEFAULT CURRENT_TIMESTAMP,                       
-                        
-                        CHECK (points > 0 AND points <= 5),
-                        FOREIGN KEY (author_id) REFERENCES User(user_id) ON DELETE CASCADE
-                    )"""
-            )
-
             # MYSQL DIRECTOR TABLE
             self.db_cursor.execute(
                 """ 
@@ -185,7 +170,6 @@ class Database:
                         ratings DECIMAL(3, 2),
                         genre VARCHAR(100),
                         country VARCHAR(100),
-                        review_id INT,
                         director_id INT,
                         run_time INT,
                         poster_path VARCHAR(250),
@@ -198,10 +182,26 @@ class Database:
                         release_date DATETIME DEFAULT CURRENT_TIMESTAMP,
 
                         CHECK (ratings > 0 AND ratings <= 5),
-                        FOREIGN KEY (review_id) REFERENCES Review(review_id),
                         FOREIGN KEY (director_id) REFERENCES Director(director_id),
                         CONSTRAINT UC_Movie UNIQUE (title, poster_path, release_date)
                 )"""
+            )
+
+            # MYSQL REVIEW TABLE
+            self.db_cursor.execute(
+                """
+                    CREATE TABLE IF NOT EXISTS Review (
+                        review_id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
+                        author_id INT,                        
+                        movie_id INT,
+                        points DECIMAL(3, 2),
+                        review VARCHAR(2500),
+                        date_create DATETIME DEFAULT CURRENT_TIMESTAMP,                       
+                        
+                        CHECK (points > 0 AND points <= 5),
+                        FOREIGN KEY (author_id) REFERENCES User(user_id) ON DELETE CASCADE,
+                        FOREIGN KEY (movie_id) REFERENCES Movie(movie_id) ON DELETE CASCADE
+                    )"""
             )
 
             # MYSQL MOVIELIST TABLE
@@ -246,3 +246,17 @@ class Database:
             print(
                 "Failed to get DB Cursor. Are you trying to use cursor when querying mongodb? Try switch to PostgreSQL or MySQL"
             )
+
+    def userSubmitReview(self, author_id, movie_id, points, review):
+        submit_review = "INSERT INTO review (author_id, movie_id, points, review) VALUES (%s, %s, %s, %s)"
+
+        self.db_cursor.execute(
+            submit_review,
+            (
+                author_id,
+                movie_id,
+                points,
+                review,
+            ),
+        )
+        self.cleanConnection()

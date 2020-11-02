@@ -170,3 +170,12 @@ header.masthead-show {
 .movie-name-image {
   margin-top: 10px;
 }
+
+.modal-title {
+  color: black;
+  font-weight: bolder;
+}
+
+.form-group {
+  color: black;
+}

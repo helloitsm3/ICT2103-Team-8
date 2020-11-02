@@ -25,14 +25,17 @@ DROP TABLE IF EXISTS `review`;
 CREATE TABLE `review` (
   `review_id` int NOT NULL AUTO_INCREMENT,
   `author_id` int DEFAULT NULL,
+  `movie_id` int DEFAULT NULL,
   `points` decimal(3,2) DEFAULT NULL,
   `review` varchar(2500) DEFAULT NULL,
   `date_create` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`review_id`),
   KEY `author_id` (`author_id`),
+  KEY `movie_id` (`movie_id`),
   CONSTRAINT `review_ibfk_1` FOREIGN KEY (`author_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE,
+  CONSTRAINT `review_ibfk_2` FOREIGN KEY (`movie_id`) REFERENCES `movie` (`movie_id`) ON DELETE CASCADE,
   CONSTRAINT `review_chk_1` CHECK (((`points` > 0) and (`points` <= 5)))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -41,6 +44,7 @@ CREATE TABLE `review` (
 
 LOCK TABLES `review` WRITE;
 /*!40000 ALTER TABLE `review` DISABLE KEYS */;
+INSERT INTO `review` VALUES (1,1,1,3.00,'This movie is good','2020-11-02 22:37:33');
 /*!40000 ALTER TABLE `review` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -53,4 +57,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-11-01 22:09:53
+-- Dump completed on 2020-11-02 22:41:27

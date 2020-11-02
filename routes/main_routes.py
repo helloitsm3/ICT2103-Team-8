@@ -30,6 +30,9 @@ def main():
     images = movie_controller.getCathayMainPosters()
     isLoggedIn = session.get("logged_in")
 
+    db = Database()
+    db.initMySQLTable()
+
     if isLoggedIn:
         return render_template("authenticated/auth_main.html", images=images)
 
@@ -45,15 +48,20 @@ def getNowShowingMovies(moviename):
     isLoggedIn = session.get("logged_in")
 
     for movie_data in movie_det:
+        movie_id = movie_data[0]
         movie_ratings = movie_data[1]
-        movie_runtime = movie_data[6]
-        movie_poster_path = movie_data[7]
-        movie_plot = movie_data[8]
-        movie_title = movie_data[9]
-        movie_release_date = datetime.strptime(str(movie_data[14]), "%Y-%m-%d %H:%M:%S")
+        movie_genre = movie_data[2]
+        movie_country = movie_data[3]
+        movie_director = movie_data[4]
+        movie_runtime = movie_data[5]
+        movie_poster_path = movie_data[6]
+        movie_plot = movie_data[7]
+        movie_title = movie_data[8]
+        movie_release_date = datetime.strptime(str(movie_data[13]), "%Y-%m-%d %H:%M:%S")
 
         movie_details = [
             {
+                "id": movie_id,
                 "title": movie_title,
                 "poster_path": movie_poster_path,
                 "ratings": movie_ratings,
@@ -71,6 +79,7 @@ def getNowShowingMovies(moviename):
 
     if len(movie_details) > 0:
         if isLoggedIn:
+            session["current_movie"] = movie_id
             return render_template(
                 "authenticated/auth_moviename.html", movie_details=movie_details
             )
@@ -92,11 +101,10 @@ def do_admin_login():
             )
             if session["logged_in"]:
                 flash("Successfully Logged In", "info")
-                print("Successfully Logged In")
+                session["user_data"] = user.getUserData()
                 return redirect(url_for("main_api.main"))
             else:
                 flash("User login failed", "err")
-                print(session["logged_in"])
                 return render_template("login.html")
     else:
         if not session.get("logged_in"):
@@ -115,6 +123,23 @@ def logout():
         flash("Successfully Logged out", "info")
         print("Successfully Logged out")
 
+    return redirect(url_for("main_api.main"))
+
+
+@data.route("/submitreview", methods=["POST"])
+def submit_review():
+    if request.method == "POST":
+        isLoggedIn = session.get("logged_in")
+
+        if isLoggedIn:
+            author_id = session.get("user_data")["id"]
+            rating = request.form["movie_rating"]
+            review = request.form["movie_review"]
+            movie_id = session.get("current_movie")
+
+            db = Database()
+            db.userSubmitReview(author_id, movie_id, rating, review)
+            print("Successfully submitted review")
     return redirect(url_for("main_api.main"))
 
 

@@ -32,7 +32,7 @@ CREATE TABLE `user` (
   `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`user_id`),
   UNIQUE KEY `username` (`username`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -41,7 +41,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (4,NULL,'asdf','asdf@gmail.com','$pbkdf2-sha256$30000$yblXinEOgTBGiJGSUqpVyg$ah0c1fz/eLfHvD80bcWhLh6hyytjT0Hx18NmP40XNJ8','User','2020-10-31 22:55:26');
+INSERT INTO `user` VALUES (1,NULL,'asdf','asdf@gmail.com','$pbkdf2-sha256$30000$B0AIwTjHWMsZg1DqPQfg3A$ruU6ujlOkMgLs7YdyFJtPmPSd2k5lNJqo/SNiveJ2UU','User','2020-11-02 22:34:18');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -54,4 +54,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-11-01 22:09:53
+-- Dump completed on 2020-11-02 22:41:26

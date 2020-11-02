@@ -14,6 +14,7 @@ class User:
         self.email = ""
         self.username = ""
         self.password = ""
+        self.id = ""
 
         # # INSERT USER DATA TO DATABASE
         self.db = Database(database="mysql")
@@ -36,22 +37,37 @@ class User:
         return self.pwd_context.verify(password, hashed)
 
     def fetchUser(self, username, password):
-        self.cursor.execute(
-            "SELECT username, password FROM User WHERE username = %s", (username,)
-        )
+        self.cursor.execute("SELECT * FROM User WHERE username = %s", (username,))
 
         user_data = self.cursor.fetchall()
 
         for i in user_data:
-            tempU = i[0]
-            tempP = i[1]
+            tempId = i[0]
+            tempMovieId = i[1]
+            tempUsername = i[2]
+            tempEmail = i[3]
+            tempPass = i[4]
+            tempRole = i[5]
 
-            if tempU == username and self.verify_pass(password, tempP):
-                self.username = tempU
-                self.password = tempP
+            if tempUsername == username and self.verify_pass(password, tempPass):
+                self.username = tempUsername
+                self.password = tempPass
+                self.role = tempRole
+                self.email = tempEmail
+                self.id = tempId
                 print("User successfully logged in")
                 return True
             else:
                 print("User login failed")
                 return False
         self.db.cleanConnection()
+
+    def getUserData(self):
+        user_data = {
+            "id": self.id,
+            "username": self.username,
+            "email": self.email,
+            "role": self.role,
+        }
+
+        return user_data

@@ -28,7 +28,14 @@ block content %}
             </button>
           </li>
           <li>
-            <button type="button" class="btn btn-primary">⭐ Rate Movie</button>
+            <button
+              type="button"
+              class="btn btn-primary"
+              data-toggle="modal"
+              data-target="#reviewModal"
+            >
+              ⭐ Rate Movie
+            </button>
           </li>
         </ul>
       </div>
@@ -46,6 +53,84 @@ block content %}
       <div class="overview-container">
         <h2>Casts</h2>
         <p>{{ movie["casts"] }}</p>
+      </div>
+
+      <!-- Modal -->
+      <div
+        class="modal fade"
+        id="reviewModal"
+        tabindex="-1"
+        role="dialog"
+        aria-labelledby="reviewModalLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="reviewModalLabel">Review Movie</h5>
+              <button
+                type="button"
+                class="close"
+                data-dismiss="modal"
+                aria-label="Close"
+              >
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <form action="/submitreview" method="POST" id="review_form">
+                <div class="form-group">
+                  <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                      <label class="input-group-text" for="movie_rating">
+                        Rating
+                      </label>
+                    </div>
+                    <select
+                      class="custom-select"
+                      id="movie_rating"
+                      name="movie_rating"
+                    >
+                      <option selected>Choose...</option>
+                      <option value="1.0">1.0</option>
+                      <option value="1.5">1.5</option>
+                      <option value="2.0">2.0</option>
+                      <option value="2.5">2.5</option>
+                      <option value="3.0">3.0</option>
+                      <option value="3.5">3.5</option>
+                      <option value="4.0">4.0</option>
+                      <option value="4.5">4.5</option>
+                      <option value="5.0">5.0</option>
+                    </select>
+                  </div>
+
+                  <label for="exampleFormControlTextarea1">
+                    Write your review
+                  </label>
+                  <textarea
+                    name="movie_review"
+                    class="form-control"
+                    id="exampleFormControlTextarea1"
+                    placeholder="Review..."
+                    rows="3"
+                  ></textarea>
+                </div>
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-dismiss="modal"
+              >
+                Close
+              </button>
+              <button type="submit" class="btn btn-primary" form="review_form">
+                Submit Review
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
     {% endfor %}

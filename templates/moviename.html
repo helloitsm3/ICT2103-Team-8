@@ -22,12 +22,26 @@
         <ul id="movie-status-container">
           <li>⭐ {{ movie["ratings"] }} / 5</li>
           <li>
-            <button type="button" class="btn btn-primary">
+            <button
+              type="button"
+              class="btn btn-primary"
+              data-container="body"
+              data-toggle="popover"
+              data-placement="bottom"
+            >
               ❤️ Add to Wishlist
             </button>
           </li>
           <li>
-            <button type="button" class="btn btn-primary">⭐ Rate Movie</button>
+            <button
+              type="button"
+              class="btn btn-primary"
+              data-container="body"
+              data-toggle="popover"
+              data-placement="bottom"
+            >
+              ⭐ Rate Movie
+            </button>
           </li>
         </ul>
       </div>
@@ -41,13 +55,21 @@
         <h2>Writers</h2>
         <p>{{ movie["writers"] }}</p>
       </div>
-
-      <div class="overview-container">
-        <h2>Casts</h2>
-        <p>{{ movie["casts"] }}</p>
-      </div>
     </div>
+
     {% endfor %}
   </div>
 </section>
+
+<script>
+  $(function () {
+    $('[data-toggle="popover"]').popover({
+      html: true,
+      content: function () {
+        return 'Please <a href="/login">login</a> or <a href="/register">register</a> to continue';
+      },
+    });
+  });
+</script>
+
 {% endblock %}
