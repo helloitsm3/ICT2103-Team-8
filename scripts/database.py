@@ -64,7 +64,7 @@ class Database:
 
                 self.db_conn.autocommit = True
                 self.db_cursor = self.db_conn.cursor()
-                print("Successfully connected to MySQL AWS Database")
+                print("Successfully connected to MySQL Alicloud Database")
             except mysql.connector.errors.InterfaceError:
                 try:
                     self.db_conn = mysql.connector.connect(

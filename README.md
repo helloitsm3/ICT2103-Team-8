@@ -126,6 +126,9 @@ CMD
 
 # Runs the flask project
 5. flask run
+
+# Alternatively you can just run this
+1. startup_cmd.bat
 ```
 
 Powershell
@@ -149,6 +152,9 @@ Powershell
 
 # Runs the flask project
 5. python -m flask run
+
+# Alternatively you can just run this
+1. ./startup_ps.ps1
 ```
 
 <!-- LICENSE -->
