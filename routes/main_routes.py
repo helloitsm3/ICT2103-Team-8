@@ -175,3 +175,11 @@ def register_user():
 
     else:
         return render_template("register.html")
+
+
+@data.route("/search", methods=["GET", "POST"])
+def search_movie():
+    if request.method == "POST":
+        return "POST"
+    else:
+        return render_template("search.html")

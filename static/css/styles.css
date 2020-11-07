@@ -93,6 +93,7 @@ header.masthead-show {
 .page-section {
   background-color: #2c2f33;
   padding: 8rem 0;
+  min-height: 100vh;
 }
 
 /* MOVIENAME.HTML STYLES */
@@ -178,4 +179,26 @@ header.masthead-show {
 
 .form-group {
   color: black;
+}
+
+.width_seventy-five {
+  width: 75%;
+  min-width: 240px;
+}
+
+.width_twenty-five {
+  width: 25%;
+  min-width: 80px;
+}
+.width_one-hundred {
+  width: 100%;
+}
+
+#form-search {
+  display: inline;
+}
+
+input {
+  padding: 8px;
+  margin: 4px;
 }

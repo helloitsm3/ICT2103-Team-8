@@ -1,0 +1,27 @@
+{% if session.get("logged_in") %}
+{% extends 'authenticated/auth_base.html' %}
+{% else %}
+{% extends 'base.html' %}
+{% endif %}
+
+{% block title %} Search {% endblock %}
+
+{% block content %}
+
+<section class="page-section">
+    <div class="container-fluid">
+        <form action="/search" method="POST" class="row justify-content-center width_one-hundred" id="form-search">
+            <input class="width_seventy-five" list="movieTitle" name="movieTitle" id="movieTitle">
+            <datalist id="movieTitle">
+                <option value="Edge">
+                <option value="Firefox">
+                <option value="Chrome">
+                <option value="Opera">
+                <option value="Safari">
+            </datalist>
+            <button type="submit" class="btn btn-primary width_twenty-five">Search</button>
+        </form>
+    </div>
+</section>
+
+{% endblock %}
