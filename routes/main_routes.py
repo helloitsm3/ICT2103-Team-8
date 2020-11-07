@@ -30,8 +30,8 @@ def main():
     images = movie_controller.getCathayMainPosters()
     isLoggedIn = session.get("logged_in")
 
-    db = Database()
-    db.initMySQLTable()
+    db = Database(database="mongo")
+    # db.initMySQLTable()
 
     if isLoggedIn:
         return render_template("authenticated/auth_main.html", images=images)
@@ -44,6 +44,12 @@ def getNowShowingMovies(moviename):
     db = Database()
     movie_det = db.fetchMovieByName(moviename)
     movie_details = []
+    reviews = [
+        {"author": "abc", "reviews": "This movie is great"},
+        {"author": "abc", "reviews": "This movie is great"},
+        {"author": "abc", "reviews": "This movie is great"},
+        {"author": "abc", "reviews": "This movie is great"},
+    ]
 
     isLoggedIn = session.get("logged_in")
 
@@ -81,10 +87,14 @@ def getNowShowingMovies(moviename):
         if isLoggedIn:
             session["current_movie"] = movie_id
             return render_template(
-                "authenticated/auth_moviename.html", movie_details=movie_details
+                "authenticated/auth_moviename.html",
+                movie_details=movie_details,
+                reviews=reviews,
             )
         elif not isLoggedIn:
-            return render_template("moviename.html", movie_details=movie_details)
+            return render_template(
+                "moviename.html", movie_details=movie_details, reviews=reviews
+            )
 
     return "Error 404: Movie not found in our database"
 

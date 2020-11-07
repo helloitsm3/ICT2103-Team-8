@@ -1,17 +1,15 @@
 {
-    "python.pythonPath": "venv\\Scripts\\python.exe",
-    "python.formatting.autopep8Args": [
-        "--max-line-length=200"
-    ],
-    "editor.wordWrapColumn": 200,
-    "python.linting.pylintEnabled": true,
-    "python.linting.enabled": true,
-    "editor.formatOnSave": true,
-    "python.formatting.provider": "black",
-    "[html]": {
-        "editor.defaultFormatter": "esbenp.prettier-vscode"
-    },
-    "[css]": {
-        "editor.defaultFormatter": "esbenp.prettier-vscode"
-    }
+  "python.pythonPath": "venv\\Scripts\\python.exe",
+  "python.formatting.autopep8Args": ["--max-line-length=200"],
+  "editor.wordWrapColumn": 200,
+  "python.linting.pylintEnabled": true,
+  "python.linting.enabled": true,
+  "editor.formatOnSave": true,
+  "python.formatting.provider": "black",
+  "[html]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[css]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
 }

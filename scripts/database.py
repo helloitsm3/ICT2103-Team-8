@@ -95,42 +95,51 @@ class Database:
     def getDBConn(self):
         return self.db_conn
 
-    # insert a movie into DB
+    # Insert a movie into DB
     # TODO ADD "NOT EXIST" clause so that it doesn't insert duplicate movie
     def insertMovie(self, runtime, poster, plot, title, release):
-        try:
-            insert_movie = (
-                "INSERT INTO Movie "
-                "(ratings, run_time, poster_path, plot, title,release_date) "
-                "VALUES (%s, %s, %s, %s, %s, %s)"
-            )
-            data_movie = ("4", runtime, poster, plot, title, release)
+        if "mongo" not in self.database:
+            try:
+                insert_movie = (
+                    "INSERT INTO Movie "
+                    "(ratings, run_time, poster_path, plot, title,release_date) "
+                    "VALUES (%s, %s, %s, %s, %s, %s)"
+                )
+                data_movie = ("4", runtime, poster, plot, title, release)
 
-            self.db_cursor.execute(insert_movie, data_movie)
-        except IntegrityError:
-            print("Failed to insert Movie: {0} as it already exist".format(title))
+                self.db_cursor.execute(insert_movie, data_movie)
+            except IntegrityError:
+                print("Failed to insert Movie: {0} as it already exist".format(title))
+        
+        return ""
 
-    # select a movie from db using poster url
+    # Select a movie from db using poster url
     def fetchMovie(self, url):
-        fetch_movie = "SELECT * FROM Movie WHERE poster_path=%s"
+        if "mongo" not in self.database:
+            fetch_movie = "SELECT * FROM Movie WHERE poster_path=%s"
 
-        self.db_cursor.execute(fetch_movie, (url,))
-        movie_data = self.db_cursor.fetchall()
-        self.db_cursor.close()
-        self.db_conn.close()
+            self.db_cursor.execute(fetch_movie, (url,))
+            movie_data = self.db_cursor.fetchall()
+            self.db_cursor.close()
+            self.db_conn.close()
+            return movie_data
+        
+        return ""
 
-        return movie_data
 
     def fetchMovieByName(self, name):
-        fetch_movie = "SELECT * FROM Movie WHERE LOWER(title)=%s"
-        filtered_name = name.replace("-", " ")
+        if "mongo" not in self.database:
+            fetch_movie = "SELECT * FROM Movie WHERE LOWER(title)=%s"
+            filtered_name = name.replace("-", " ")
 
-        self.db_cursor.execute(fetch_movie, (filtered_name,))
-        movie_data = self.db_cursor.fetchall()
-        self.db_cursor.close()
-        self.db_conn.close()
+            self.db_cursor.execute(fetch_movie, (filtered_name,))
+            movie_data = self.db_cursor.fetchall()
+            self.db_cursor.close()
+            self.db_conn.close()
 
-        return movie_data
+            return movie_data
+
+        return ""
 
     def cleanConnection(self):
         self.db_cursor.close()
@@ -247,16 +256,18 @@ class Database:
                 "Failed to get DB Cursor. Are you trying to use cursor when querying mongodb? Try switch to PostgreSQL or MySQL"
             )
 
+    # Function to insert reviews
     def userSubmitReview(self, author_id, movie_id, points, review):
-        submit_review = "INSERT INTO review (author_id, movie_id, points, review) VALUES (%s, %s, %s, %s)"
+        if "mongo" not in self.database:
+            submit_review = "INSERT INTO review (author_id, movie_id, points, review) VALUES (%s, %s, %s, %s)"
 
-        self.db_cursor.execute(
-            submit_review,
-            (
-                author_id,
-                movie_id,
-                points,
-                review,
-            ),
-        )
-        self.cleanConnection()
+            self.db_cursor.execute(
+                submit_review,
+                (
+                    author_id,
+                    movie_id,
+                    points,
+                    review,
+                ),
+            )
+            self.cleanConnection()

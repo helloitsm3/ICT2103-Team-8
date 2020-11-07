@@ -10,15 +10,11 @@
 }
 
 #mainNav .navbar-brand {
-  font-family: "Merriweather Sans", -apple-system, BlinkMacSystemFont,
-    "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif,
-    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  font-family: "Merriweather Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   font-weight: 700;
 }
 #mainNav .navbar-nav .nav-item .nav-link {
-  font-family: "Merriweather Sans", -apple-system, BlinkMacSystemFont,
-    "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif,
-    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  font-family: "Merriweather Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   font-weight: 700;
   font-size: 0.9rem;
   padding: 0.75rem 0;
@@ -30,12 +26,7 @@
 header.masthead {
   padding-top: 10rem;
   padding-bottom: calc(10rem - 4.5rem);
-  background: linear-gradient(
-      to bottom,
-      rgba(35, 39, 42, 0.8) 0%,
-      rgba(35, 39, 42, 0.8) 100%
-    ),
-    url("/static/assets/bg.jpg");
+  background: linear-gradient(to bottom, rgba(35, 39, 42, 0.8) 0%, rgba(35, 39, 42, 0.8) 100%), url("/static/assets/bg.jpg");
   background-position: center;
   background-repeat: no-repeat;
   background-attachment: scroll;
@@ -178,4 +169,47 @@ header.masthead-show {
 
 .form-group {
   color: black;
+}
+
+.text-white {
+  color: white;
+}
+
+.register_container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+  height: 66vh;
+}
+
+#form_inputs {
+  display: flex;
+  flex-direction: column;
+  width: 30%;
+  color: white;
+  margin-top: -60px;
+}
+
+#form_inputs div {
+  margin-top: 20px;
+}
+
+.reg-btn {
+  margin-top: 40px;
+}
+
+.card-img-top {
+  height: 350px;
+}
+
+#reviews_container {
+  color: white;
+  margin-top: 55px;
+}
+
+.card {
+  background-color: #3c3741;
+  margin-top: 5px;
+  width: 100%;
 }

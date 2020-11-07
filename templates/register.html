@@ -1,28 +1,40 @@
-{% extends 'base.html' %} 
+{% extends 'base.html' %} {% block title %} Login Page {% endblock %} {% block content %}
 
-{% block title %} Login Page {% endblock %} 
-
-{% block content %}
-
-<section class="page-section" id="about">
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-lg-8 text-center">
-
-            </div>
-        </div>
-
-        <div class="row justify-content-center">
-
-            <form action="/register" method="POST">
-                <input type="username" name="username" placeholder="Username">
-                <input type="email" name="email" placeholder="Email">
-                <input type="password" name="password" placeholder="Password">
-                <input type="password" name="confirmpassword" placeholder="Confirm Password...">
-                <input type="submit" value="Register">
-            </form>
-        </div>
+<section class="page-section" id="register">
+  <div class="register_container">
+    <div class="text-center text-white">
+      <h1>Register an account</h1>
     </div>
+
+    <form action="/register" method="POST" id="form_inputs">
+      <!-- USERNAME INPUT -->
+      <div>
+        <label for="username_input">Username</label>
+        <input type="username" name="username" class="form-control" placeholder="Username" id="username_input" aria-describedby="username" />
+      </div>
+
+      <!-- EMAIL INPUT -->
+      <div>
+        <label for="email_input">Email</label>
+        <input type="email" name="email" class="form-control" placeholder="Email" id="email_input" aria-describedby="email" />
+      </div>
+
+      <!-- PASSWORD INPUT -->
+      <div>
+        <label for="email_input">Password</label>
+        <input type="password" class="form-control" name="password" placeholder="Password" />
+      </div>
+
+      <!-- CONFIRM PASSWORD INPUT -->
+      <div>
+        <label for="email_input">Confirm Password</label>
+        <input type="password" class="form-control" name="confirmpassword" placeholder="Confirm Password..." />
+      </div>
+
+      <!-- SUBMIT BUTTON -->
+      <input type="submit" value="Register" class="btn btn-primary reg-btn" />
+    </form>
+  </div>
 </section>
 
 {% endblock %}
