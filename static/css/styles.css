@@ -240,3 +240,11 @@ input {
   margin-top: 5px;
   width: 100%;
 }
+
+.card-deck-search {
+  max-width: 330px;
+  min-width: 200px;
+  display: inline-block;
+  margin: 8px;
+  color: white;
+}
