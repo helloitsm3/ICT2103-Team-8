@@ -33,8 +33,8 @@ def main():
             "main.html", images=images, isLoggedIn=isLoggedIn, user_data=user_data
         )
 
-    db = Database(database="mongo")
-    db.initMongoDB()
+    db = Database(database="mysql")
+    # db.initMongoDB()
     # db.initMySQLTable()
 
     return render_template("main.html", images=images, isLoggedIn=isLoggedIn)
@@ -54,7 +54,12 @@ def getNowShowingMovies(moviename):
 
     for movie_data in movie_det:
         movie_id = movie_data[0]
-        movie_ratings = movie_data[1]
+        ratings = (
+            float(db.getData("FETCH_RATINGS", movie_id)[0][0])
+            if db.getData("FETCH_RATINGS", movie_id)[0][0] != None
+            else movie_data[1]
+        )
+        movie_ratings = ratings
         movie_genre = movie_data[2]
         movie_country = movie_data[3]
         movie_director = movie_data[4]

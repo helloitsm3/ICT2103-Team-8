@@ -48,8 +48,9 @@
     {% for review in reviews %}
 
     <div class="card-review">
-      <div class="card-body">
+      <div class="card-body card-body-cont">
         <p class="card-text"><strong>{{ review[0] }}:</strong> {{ review[1] }}</p>
+        <p>{{ review[2] }}</p>
       </div>
     </div>
 

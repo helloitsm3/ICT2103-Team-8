@@ -259,3 +259,14 @@ input {
 .card-search {
   background-color: #3c3741;
 }
+
+.card-body-cont {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding-bottom: -100px;
+}
+
+.card-text {
+  width: 95%;
+}
