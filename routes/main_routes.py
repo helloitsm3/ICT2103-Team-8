@@ -44,13 +44,6 @@ def getNowShowingMovies(moviename):
     db = Database()
     movie_det = db.fetchMovieByName(moviename)
     movie_details = []
-    reviews = [
-        {"author": "abc", "reviews": "This movie is great"},
-        {"author": "abc", "reviews": "This movie is great"},
-        {"author": "abc", "reviews": "This movie is great"},
-        {"author": "abc", "reviews": "This movie is great"},
-    ]
-
     isLoggedIn = session.get("logged_in")
 
     for movie_data in movie_det:
@@ -84,8 +77,11 @@ def getNowShowingMovies(moviename):
         ]
 
     if len(movie_details) > 0:
+        session["current_movie"] = movie_id
+        reviews = db.getData("FETCH_ALL_REVIEW", movie_id)
+
         if isLoggedIn:
-            session["current_movie"] = movie_id
+
             return render_template(
                 "authenticated/auth_moviename.html",
                 movie_details=movie_details,
@@ -95,6 +91,7 @@ def getNowShowingMovies(moviename):
             return render_template(
                 "moviename.html", movie_details=movie_details, reviews=reviews
             )
+        db.cleanConnection()
 
     return "Error 404: Movie not found in our database"
 
@@ -149,6 +146,7 @@ def submit_review():
 
             db = Database()
             db.userSubmitReview(author_id, movie_id, rating, review)
+            db.cleanConnection()
             print("Successfully submitted review")
     return redirect(url_for("main_api.main"))
 

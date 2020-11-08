@@ -1,0 +1,12 @@
+{
+    "sql": {
+        "COMMENT #1": "========== ALL INSERT COMMANDS =============",
+        "INSERT_MOVIE": "INSERT INTO Movie (ratings, run_time, poster_path, plot, title,release_date) VALUES (%s, %s, %s, %s, %s, %s)",
+        "INSERT_REVIEW": "INSERT INTO review (author_id, movie_id, points, review) VALUES (%s, %s, %s, %s)",
+
+        "COMMENT #2": "========== ALL FETCH COMMANDS =============",
+        "FETCH_MOVIE": "SELECT * FROM Movie WHERE poster_path=%s",
+        "FETCH_ALL_REVIEW": "SELECT u.username, r.review FROM Review r INNER JOIN User u ON r.author_id = u.user_id AND r.movie_id = %s",
+        "FETCH_MOVIEBYNAME": "SELECT * FROM Movie WHERE LOWER(title)=%s"
+    }
+}

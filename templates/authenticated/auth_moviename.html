@@ -1,13 +1,10 @@
-{% extends 'authenticated/auth_base.html' %} {% block head %} {% endblock %} {%
-block content %}
+{% extends 'authenticated/auth_base.html' %} {% block head %} {% endblock %} {% block content %}
 
 <!-- Now Showing -->
 <section class="page-section" id="about">
   <div class="container movie-content">
     {% for movie in movie_details %}
-    <div class="justify-content-left movie-name-image">
-      <img src={{ movie['poster_path'] }} alt="" />
-    </div>
+    <div class="justify-content-left movie-name-image"><img src={{ movie['poster_path'] }} alt="" /></div>
 
     <div id="details_container">
       <div class="movie-title">
@@ -23,19 +20,10 @@ block content %}
         <ul id="movie-status-container">
           <li>⭐ {{ movie["ratings"] }} / 5</li>
           <li>
-            <button type="button" class="btn btn-primary">
-              ❤️ Add to Wishlist
-            </button>
+            <button type="button" class="btn btn-primary">❤️ Add to Wishlist</button>
           </li>
           <li>
-            <button
-              type="button"
-              class="btn btn-primary"
-              data-toggle="modal"
-              data-target="#reviewModal"
-            >
-              ⭐ Rate Movie
-            </button>
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#reviewModal">⭐ Rate Movie</button>
           </li>
         </ul>
       </div>
@@ -56,24 +44,12 @@ block content %}
       </div>
 
       <!-- Modal -->
-      <div
-        class="modal fade"
-        id="reviewModal"
-        tabindex="-1"
-        role="dialog"
-        aria-labelledby="reviewModalLabel"
-        aria-hidden="true"
-      >
+      <div class="modal fade" id="reviewModal" tabindex="-1" role="dialog" aria-labelledby="reviewModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
           <div class="modal-content">
             <div class="modal-header">
               <h5 class="modal-title" id="reviewModalLabel">Review Movie</h5>
-              <button
-                type="button"
-                class="close"
-                data-dismiss="modal"
-                aria-label="Close"
-              >
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
@@ -82,15 +58,9 @@ block content %}
                 <div class="form-group">
                   <div class="input-group mb-3">
                     <div class="input-group-prepend">
-                      <label class="input-group-text" for="movie_rating">
-                        Rating
-                      </label>
+                      <label class="input-group-text" for="movie_rating"> Rating </label>
                     </div>
-                    <select
-                      class="custom-select"
-                      id="movie_rating"
-                      name="movie_rating"
-                    >
+                    <select class="custom-select" id="movie_rating" name="movie_rating">
                       <option selected>Choose...</option>
                       <option value="1.0">1.0</option>
                       <option value="1.5">1.5</option>
@@ -104,35 +74,33 @@ block content %}
                     </select>
                   </div>
 
-                  <label for="exampleFormControlTextarea1">
-                    Write your review
-                  </label>
-                  <textarea
-                    name="movie_review"
-                    class="form-control"
-                    id="exampleFormControlTextarea1"
-                    placeholder="Review..."
-                    rows="3"
-                  ></textarea>
+                  <label for="exampleFormControlTextarea1"> Write your review </label>
+                  <textarea name="movie_review" class="form-control" id="exampleFormControlTextarea1" placeholder="Review..." rows="3"></textarea>
                 </div>
               </form>
             </div>
             <div class="modal-footer">
-              <button
-                type="button"
-                class="btn btn-secondary"
-                data-dismiss="modal"
-              >
-                Close
-              </button>
-              <button type="submit" class="btn btn-primary" form="review_form">
-                Submit Review
-              </button>
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-primary" form="review_form">Submit Review</button>
             </div>
           </div>
         </div>
       </div>
     </div>
+    {% endfor %}
+  </div>
+
+  <div class="container" id="reviews_container">
+    <h2>Reviews</h2>
+
+    {% for review in reviews %}
+
+    <div class="card-review">
+      <div class="card-body">
+        <p class="card-text"><strong>{{ review[0] }}:</strong> {{ review[1] }}</p>
+      </div>
+    </div>
+
     {% endfor %}
   </div>
 </section>

@@ -1,11 +1,14 @@
 import os
+import json
+import pymongo
 import psycopg2
 import mysql.connector
-import pymongo
 
 from pymongo import MongoClient
 from mysql.connector.errors import IntegrityError
 
+commands_file = open("static/commands.json")
+commands_data = json.load(commands_file)
 
 # POSTGRESQL VAR
 DB_POSTGRESQL_NAME = os.getenv("DB_POSTGRESQL_NAME")
@@ -120,8 +123,6 @@ class Database:
 
             self.db_cursor.execute(fetch_movie, (url,))
             movie_data = self.db_cursor.fetchall()
-            self.db_cursor.close()
-            self.db_conn.close()
             return movie_data
 
         return ""
@@ -133,8 +134,6 @@ class Database:
 
             self.db_cursor.execute(fetch_movie, (filtered_name,))
             movie_data = self.db_cursor.fetchall()
-            self.db_cursor.close()
-            self.db_conn.close()
 
             return movie_data
 
@@ -246,9 +245,6 @@ class Database:
                 )"""
             )
 
-            self.db_cursor.close()
-            self.db_conn.close()
-
             print("Successfully Created Tables")
         except AttributeError:
             print(
@@ -269,7 +265,6 @@ class Database:
                     review,
                 ),
             )
-            self.cleanConnection()
 
     # fetch top 10 movies
     def fetchTopTenMovieName(self):
@@ -280,8 +275,30 @@ class Database:
 
             self.db_cursor.execute(fetch_top10_movie_name)
             movie_top10_name = self.db_cursor.fetchall()
-            self.db_cursor.close()
-            self.db_conn.close()
             return movie_top10_name
 
         return ""
+
+    def getData(self, key, *args):
+        if "mongo" not in self.database:
+            if len(args) <= 0:
+                comd = self.getCommands(key)
+                self.db_cursor.execute(comd)
+                data = self.db_cursor.fetchall()
+
+                return data
+
+            comd = self.getCommands(key)
+            self.db_cursor.execute(comd, args)
+            data = self.db_cursor.fetchall()
+            return data
+
+    def getCommands(self, key_comd):
+        if "mongo" not in self.database:
+            for key, value in commands_data["sql"].items():
+                if key == key_comd:
+                    return value
+
+        for key, value in commands_data["mongo"].items():
+            if key == key_comd:
+                return value
