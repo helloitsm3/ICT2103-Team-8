@@ -13,10 +13,7 @@ def getShowing():
     movies = movie_controller.getCathayMovie()
     isLoggedIn = session.get("logged_in")
 
-    if isLoggedIn:
-        return render_template("authenticated/auth_nowshowing.html", movies=movies)
-
-    return render_template("nowshowing.html", movies=movies)
+    return render_template("nowshowing.html", movies=movies, isLoggedIn=isLoggedIn)
 
 
 @data.route("/moviedetail", methods=["POST"])
@@ -33,10 +30,7 @@ def main():
     db = Database(database="mongo")
     # db.initMySQLTable()
 
-    if isLoggedIn:
-        return render_template("authenticated/auth_main.html", images=images)
-
-    return render_template("main.html", images=images)
+    return render_template("main.html", images=images, isLoggedIn=isLoggedIn)
 
 
 @data.route("/nowshowing/<moviename>", methods=["GET", "POST"])
@@ -81,7 +75,6 @@ def getNowShowingMovies(moviename):
         reviews = db.getData("FETCH_ALL_REVIEW", movie_id)
 
         if isLoggedIn:
-
             return render_template(
                 "authenticated/auth_moviename.html",
                 movie_details=movie_details,
