@@ -90,6 +90,7 @@ def getNowShowingMovies(moviename):
                 "authenticated/auth_moviename.html",
                 movie_details=movie_details,
                 reviews=reviews,
+                isLoggedIn=isLoggedIn,
             )
         elif not isLoggedIn:
             return render_template(
