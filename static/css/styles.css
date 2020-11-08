@@ -249,6 +249,13 @@ input {
   max-width: 330px;
   min-width: 200px;
   display: inline-block;
-  margin: 8px;
+  margin-top: 8px;
+  margin-bottom: 8px;
+  margin-left: 0px;
+  margin-right: 0px;
   color: white;
+}
+
+.card-search {
+  background-color: #3c3741;
 }

@@ -1,8 +1,4 @@
-{% if session.get("logged_in") %}
-{% extends 'authenticated/auth_base.html' %}
-{% else %}
 {% extends 'base.html' %}
-{% endif %}
 
 {% block title %} Search {% endblock %}
 
@@ -29,7 +25,7 @@
             <section class="row justify-content-center width_one-hundred">
             {% for result in results %}
             <section class="card-deck card-deck-search">
-                <div class="card">
+                <div class="card card-search">
                     <img class="card-img-top" src={{result[0]}} alt="{{result[1]}}">
                     <div class="card-body">
                         <h4 class="card-title">{{result[1]}}</h4>

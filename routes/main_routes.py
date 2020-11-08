@@ -189,12 +189,17 @@ def register_user():
 
 @data.route("/search", methods=["GET", "POST"])
 def search_movie():
+    isLoggedIn = session.get("logged_in")
     if request.method == "POST":
         print(request.form["movieTitle"])
         db = Database()
         search_result = db.fetchFromMovieSearch(request.form["movieTitle"])
-        return render_template("search.html", results=search_result)
+        return render_template(
+            "search.html", results=search_result, isLoggedIn=isLoggedIn
+        )
     else:
         db = Database()
         movie_top_ten = db.fetchTopTenMovieName()
-        return render_template("search.html", topTen=movie_top_ten)
+        return render_template(
+            "search.html", topTen=movie_top_ten, isLoggedIn=isLoggedIn
+        )
