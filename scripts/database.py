@@ -284,6 +284,20 @@ class Database:
 
         return ""
 
+    # fetch from movie title search
+    def fetchFromMovieSearch(self, serchTerm):
+        if "mongo" not in self.database:
+            fetch_from_movie_search = "SELECT M.poster_path, M.title, D.director_name, M.run_time, M.ratings \
+                    FROM movie M LEFT JOIN director D ON M.director_id = D.director_id \
+                        WHERE title LIKE %s ORDER BY ratings DESC"
+            self.db_cursor.execute(fetch_from_movie_search, ("%" + serchTerm + "%",))
+            search_results = self.db_cursor.fetchall()
+            self.db_cursor.close()
+            self.db_conn.close()
+            return search_results
+
+        return ""
+        
     def getData(self, key, *args):
         if "mongo" not in self.database:
             if len(args) <= 0:

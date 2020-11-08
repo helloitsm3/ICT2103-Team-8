@@ -1,8 +1,4 @@
-{% if session.get("logged_in") %}
-{% extends 'authenticated/auth_base.html' %}
-{% else %}
 {% extends 'base.html' %}
-{% endif %}
 
 {% block title %} Search {% endblock %}
 
@@ -13,12 +9,38 @@
         <form action="/search" method="POST" class="row justify-content-center width_one-hundred" id="form-search">
             <input class="width_seventy-five" list="movieTitles" name="movieTitle" id="movieTitle" placeholder="Search for a movie">
             <datalist class="width_one-hundred" id="movieTitles">
+            {% if request.method == "GET" %}
                 {% for name in topTen %}
                 <option> {{name[0]}} </option>
                 {% endfor %}
+            {% else %}
+                {% for name in results %}
+                <option> {{name[1]}} </option>
+                {% endfor %}
+            {% endif %}
             </datalist>
             <button type="submit" class="btn btn-primary width_twenty-five">Search</button>
         </form>
+        {% if request.method == "POST" %}
+            <section class="row justify-content-center width_one-hundred">
+            {% for result in results %}
+            <section class="card-deck card-deck-search">
+                <div class="card card-search">
+                    <img class="card-img-top" src={{result[0]}} alt="{{result[1]}}">
+                    <div class="card-body">
+                        <h4 class="card-title">{{result[1]}}</h4>
+                        {% if result[2] != None %}
+                        <p class="card-text">Director: {{result[2]}}</p>
+                        {% endif %}
+                        <p class="card-text">Running Time: {{result[3]}} mins</p>
+                        <p class="card-text">⭐ {{result[4]}} / 5</p>
+                    </div>
+                    <a href="/nowshowing/{{result[1].lower().replace(" ","-")}}" class="stretched-link"></a>
+                </div>
+            </section>
+            {% endfor %}
+            </section>
+        {% endif %}
     </div>
 </section>
 

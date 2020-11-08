@@ -91,6 +91,7 @@ def getNowShowingMovies(moviename):
                 "authenticated/auth_moviename.html",
                 movie_details=movie_details,
                 reviews=reviews,
+                isLoggedIn=isLoggedIn,
             )
         elif not isLoggedIn:
             return render_template(
@@ -190,13 +191,17 @@ def register_user():
 
 @data.route("/search", methods=["GET", "POST"])
 def search_movie():
+    isLoggedIn = session.get("logged_in")
     if request.method == "POST":
-        return request.form["movieTitle"]
+        print(request.form["movieTitle"])
+        db = Database()
+        search_result = db.fetchFromMovieSearch(request.form["movieTitle"])
+        return render_template(
+            "search.html", results=search_result, isLoggedIn=isLoggedIn
+        )
     else:
         db = Database()
         movie_top_ten = db.fetchTopTenMovieName()
-        print(movie_top_ten)
-
-        for i in movie_top_ten:
-            print(i[0])
-        return render_template("search.html", topTen=movie_top_ten)
+        return render_template(
+            "search.html", topTen=movie_top_ten, isLoggedIn=isLoggedIn
+        )
