@@ -16,7 +16,7 @@ class User:
         self.password = ""
         self.id = ""
 
-        # # INSERT USER DATA TO DATABASE
+        # INSERT USER DATA TO DATABASE
         self.db = Database(database="mysql")
         self.cursor = self.db.getDBCursor()
 

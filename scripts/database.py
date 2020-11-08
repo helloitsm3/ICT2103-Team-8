@@ -251,6 +251,11 @@ class Database:
                 "Failed to get DB Cursor. Are you trying to use cursor when querying mongodb? Try switch to PostgreSQL or MySQL"
             )
 
+    def initMongoDB(self):
+        db_names = self.db_conn["moviedb"].collection_names()
+        self.db_conn["moviedb"]["thegod"].insert({"test": "God"})
+        print(db_names)
+
     # Function to insert reviews
     def userSubmitReview(self, author_id, movie_id, points, review):
         if "mongo" not in self.database:
