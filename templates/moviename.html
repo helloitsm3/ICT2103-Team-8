@@ -47,9 +47,9 @@
 
     {% for review in reviews %}
 
-    <div class="card">
+    <div class="card-review">
       <div class="card-body">
-        <p class="card-text">{{ review["author"] }}: {{ review["reviews"] }}</p>
+        <p class="card-text"><strong>{{ review[0] }}:</strong> {{ review[1] }}</p>
       </div>
     </div>
 

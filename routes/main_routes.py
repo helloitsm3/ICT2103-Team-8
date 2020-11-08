@@ -13,10 +13,7 @@ def getShowing():
     movies = movie_controller.getCathayMovie()
     isLoggedIn = session.get("logged_in")
 
-    if isLoggedIn:
-        return render_template("authenticated/auth_nowshowing.html", movies=movies)
-
-    return render_template("nowshowing.html", movies=movies)
+    return render_template("nowshowing.html", movies=movies, isLoggedIn=isLoggedIn)
 
 
 @data.route("/moviedetail", methods=["POST"])
@@ -30,13 +27,21 @@ def main():
     images = movie_controller.getCathayMainPosters()
     isLoggedIn = session.get("logged_in")
 
-    db = Database(database="mongo")
+    if isLoggedIn:
+        user_data = session["user_data"]
+        return render_template(
+            "main.html", images=images, isLoggedIn=isLoggedIn, user_data=user_data
+        )
+
+    # db = Database(database="mongo")
     # db.initMySQLTable()
 
-    if isLoggedIn:
-        return render_template("authenticated/auth_main.html", images=images)
+    return render_template("main.html", images=images, isLoggedIn=isLoggedIn)
 
-    return render_template("main.html", images=images)
+
+@data.route("/analytics")
+def analytics():
+    return render_template("main.html")
 
 
 @data.route("/nowshowing/<moviename>", methods=["GET", "POST"])
@@ -44,13 +49,6 @@ def getNowShowingMovies(moviename):
     db = Database()
     movie_det = db.fetchMovieByName(moviename)
     movie_details = []
-    reviews = [
-        {"author": "abc", "reviews": "This movie is great"},
-        {"author": "abc", "reviews": "This movie is great"},
-        {"author": "abc", "reviews": "This movie is great"},
-        {"author": "abc", "reviews": "This movie is great"},
-    ]
-
     isLoggedIn = session.get("logged_in")
 
     for movie_data in movie_det:
@@ -84,8 +82,10 @@ def getNowShowingMovies(moviename):
         ]
 
     if len(movie_details) > 0:
+        session["current_movie"] = movie_id
+        reviews = db.getData("FETCH_ALL_REVIEW", movie_id)
+
         if isLoggedIn:
-            session["current_movie"] = movie_id
             return render_template(
                 "authenticated/auth_moviename.html",
                 movie_details=movie_details,
@@ -95,6 +95,7 @@ def getNowShowingMovies(moviename):
             return render_template(
                 "moviename.html", movie_details=movie_details, reviews=reviews
             )
+        db.cleanConnection()
 
     return "Error 404: Movie not found in our database"
 
@@ -123,8 +124,6 @@ def do_admin_login():
             flash("You have already signed in", "info")
             return redirect(url_for("main_api.main"))
 
-    # return redirect(url_for("main_api.main"))
-
 
 @data.route("/logout")
 def logout():
@@ -149,6 +148,7 @@ def submit_review():
 
             db = Database()
             db.userSubmitReview(author_id, movie_id, rating, review)
+            db.cleanConnection()
             print("Successfully submitted review")
     return redirect(url_for("main_api.main"))
 
