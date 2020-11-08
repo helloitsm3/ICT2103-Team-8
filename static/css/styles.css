@@ -59,28 +59,32 @@ header.masthead h2 {
     height: 70vh;
   }
 }
-.card {
+.movie-card {
   background-color: transparent;
   margin-right: 10px;
   width: 15rem;
 }
+
 header.masthead-show {
   height: 20vh;
   min-height: 40rem;
   padding-top: 4.5rem;
   padding-bottom: 0;
 }
+
 .btn-primary {
   color: #fff;
   padding: 2rem, 0.5rem, 2rem, 0.5rem;
   background-color: #7289da;
   border-color: #7289da;
 }
+
 .btn-primary:hover {
   color: #fff;
   background-color: #5b6dae;
   border-color: #5b6dae;
 }
+
 .page-section {
   background-color: #2c2f33;
   padding: 8rem 0;

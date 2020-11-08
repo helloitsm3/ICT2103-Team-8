@@ -27,10 +27,21 @@ def main():
     images = movie_controller.getCathayMainPosters()
     isLoggedIn = session.get("logged_in")
 
-    db = Database(database="mongo")
+    if isLoggedIn:
+        user_data = session["user_data"]
+        return render_template(
+            "main.html", images=images, isLoggedIn=isLoggedIn, user_data=user_data
+        )
+
+    # db = Database(database="mongo")
     # db.initMySQLTable()
 
     return render_template("main.html", images=images, isLoggedIn=isLoggedIn)
+
+
+@data.route("/analytics")
+def analytics():
+    return render_template("main.html")
 
 
 @data.route("/nowshowing/<moviename>", methods=["GET", "POST"])
@@ -112,8 +123,6 @@ def do_admin_login():
         else:
             flash("You have already signed in", "info")
             return redirect(url_for("main_api.main"))
-
-    # return redirect(url_for("main_api.main"))
 
 
 @data.route("/logout")
