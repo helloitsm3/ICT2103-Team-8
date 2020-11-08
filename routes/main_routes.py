@@ -33,8 +33,8 @@ def main():
             "main.html", images=images, isLoggedIn=isLoggedIn, user_data=user_data
         )
 
-    db = Database(database="mysql")
-    # db.initMongoDB()
+    db = Database(database="mongodb")
+    db.initMongoDB()
     # db.initMySQLTable()
 
     return render_template("main.html", images=images, isLoggedIn=isLoggedIn)

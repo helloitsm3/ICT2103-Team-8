@@ -98,6 +98,9 @@ class Database:
     def getDBConn(self):
         return self.db_conn
 
+    def getDB(self):
+        return self.database
+
     # Insert a movie into DB
     # TODO ADD "NOT EXIST" clause so that it doesn't insert duplicate movie
     def insertMovie(self, runtime, poster, plot, title, release):
@@ -114,7 +117,30 @@ class Database:
             except IntegrityError:
                 print("Failed to insert Movie: {0} as it already exist".format(title))
 
-        return ""
+        try:
+            self.db_conn["moviedb"]["movies"].insert_one(
+                {
+                    "_id": {"title": title, "release": release},
+                    "ratings": "4",
+                    "run_time": runtime,
+                    "poster": poster,
+                }
+            )
+        except pymongo.errors.DuplicateKeyError:
+            print("Fail to insert. Movie: {0} already exists".format(title))
+        # self.db_conn["moviedb"]["movies"].update_one(
+        #     {"title": title, "release": release},
+        #     {
+        #         "$set": {
+        #             "ratings": "4",
+        #             "run_time": runtime,
+        #             "poster": poster,
+        #             "title": title,
+        #             "release": release,
+        #         }
+        #     },
+        #     upsert=True,
+        # )
 
     # Select a movie from db using poster url
     def fetchMovie(self, url):
@@ -253,7 +279,6 @@ class Database:
 
     def initMongoDB(self, **kwargs):
         db_names = self.db_conn["moviedb"].collection_names()
-        self.db_conn["moviedb"]["thegod"].insert({"test": "God"})
 
     # Function to insert reviews
     def userSubmitReview(self, author_id, movie_id, points, review):
@@ -316,7 +341,3 @@ class Database:
             for key, value in commands_data["sql"].items():
                 if key == key_comd:
                     return value
-
-        for key, value in commands_data["mongo"].items():
-            if key == key_comd:
-                return value
