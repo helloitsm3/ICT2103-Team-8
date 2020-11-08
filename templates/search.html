@@ -9,15 +9,13 @@
 {% block content %}
 
 <section class="page-section">
-    <div class="container-fluid">
+    <div class="container-fluid" id="container-search">
         <form action="/search" method="POST" class="row justify-content-center width_one-hundred" id="form-search">
-            <input class="width_seventy-five" list="movieTitle" name="movieTitle" id="movieTitle">
-            <datalist id="movieTitle">
-                <option value="Edge">
-                <option value="Firefox">
-                <option value="Chrome">
-                <option value="Opera">
-                <option value="Safari">
+            <input class="width_seventy-five" list="movieTitles" name="movieTitle" id="movieTitle" placeholder="Search for a movie">
+            <datalist class="width_one-hundred" id="movieTitles">
+                {% for name in topTen %}
+                <option> {{name[0]}} </option>
+                {% endfor %}
             </datalist>
             <button type="submit" class="btn btn-primary width_twenty-five">Search</button>
         </form>

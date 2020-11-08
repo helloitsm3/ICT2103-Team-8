@@ -110,7 +110,7 @@ class Database:
                 self.db_cursor.execute(insert_movie, data_movie)
             except IntegrityError:
                 print("Failed to insert Movie: {0} as it already exist".format(title))
-        
+
         return ""
 
     # Select a movie from db using poster url
@@ -123,9 +123,8 @@ class Database:
             self.db_cursor.close()
             self.db_conn.close()
             return movie_data
-        
-        return ""
 
+        return ""
 
     def fetchMovieByName(self, name):
         if "mongo" not in self.database:
@@ -271,3 +270,18 @@ class Database:
                 ),
             )
             self.cleanConnection()
+
+    # fetch top 10 movies
+    def fetchTopTenMovieName(self):
+        if "mongo" not in self.database:
+            fetch_top10_movie_name = (
+                "SELECT title FROM movie ORDER BY ratings DESC LIMIT 10"
+            )
+
+            self.db_cursor.execute(fetch_top10_movie_name)
+            movie_top10_name = self.db_cursor.fetchall()
+            self.db_cursor.close()
+            self.db_conn.close()
+            return movie_top10_name
+
+        return ""

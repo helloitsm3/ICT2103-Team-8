@@ -185,6 +185,10 @@ header.masthead-show {
   width: 100%;
 }
 
+#container-search {
+  padding-left: 30px;
+}
+
 #form-search {
   display: inline;
 }

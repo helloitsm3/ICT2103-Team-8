@@ -190,6 +190,12 @@ def register_user():
 @data.route("/search", methods=["GET", "POST"])
 def search_movie():
     if request.method == "POST":
-        return "POST"
+        return request.form["movieTitle"]
     else:
-        return render_template("search.html")
+        db = Database()
+        movie_top_ten = db.fetchTopTenMovieName()
+        print(movie_top_ten)
+
+        for i in movie_top_ten:
+            print(i[0])
+        return render_template("search.html", topTen=movie_top_ten)
