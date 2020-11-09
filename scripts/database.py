@@ -11,6 +11,7 @@ from mysql.connector.errors import IntegrityError
 commands_file = open("static/commands.json")
 commands_data = json.load(commands_file)
 
+
 # POSTGRESQL VAR
 DB_POSTGRESQL_NAME = os.getenv("DB_POSTGRESQL_NAME")
 DB_POSTGRESQL_HOST = os.getenv("DB_POSTGRESQL_HOST")
@@ -34,9 +35,15 @@ DB_MONGO_URL = os.getenv("DB_MONGO_URL")
 
 
 class Database:
-    def __init__(self, database="mysql"):
-        self.database = database
-        if database == "postgresql":
+    def __init__(self):
+        config_file = open("static/config.json")
+        config_data = json.load(config_file)
+        CURRENT_DATABASE = config_data["current_database"]
+        self.database = CURRENT_DATABASE
+
+        print(self.database)
+
+        if self.database == "postgresql":
             try:
                 self.db_conn = psycopg2.connect(
                     """
@@ -57,7 +64,7 @@ class Database:
             except:
                 print("Failed to connect to PostgreSQL AWS Database")
 
-        elif database == "mysql":
+        elif "mysql" in self.database:
             try:
                 self.db_conn = mysql.connector.connect(
                     host=DB_MYSQL_HOST,
@@ -84,7 +91,7 @@ class Database:
                 except:
                     print("Failed to connect to MySQL Database")
 
-        elif "mongo" in database:
+        elif "mongo" in self.database:
             try:
                 self.db_conn = MongoClient(DB_MONGO_URL)
                 print("Successfully connected to Mongo Database")
@@ -272,10 +279,11 @@ class Database:
             )
 
     def initMongoDB(self, **kwargs):
-        collection = self.db_conn["moviedb"]["movies"]
+        if "mongo" in self.database:
+            collection = self.db_conn["moviedb"]["movies"]
 
-        # Created an Index for title so that it is much faster when returning queries
-        collection.create_index("title")
+            # Created an Index for title so that it is much faster when returning queries
+            collection.create_index("title")
 
     # Function to insert reviews
     def userSubmitReview(self, author_id, movie_id, points, review):

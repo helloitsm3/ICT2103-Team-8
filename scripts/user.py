@@ -17,7 +17,7 @@ class User:
         self.id = ""
 
         # INSERT USER DATA TO DATABASE
-        self.db = Database(database="mongo")
+        self.db = Database()
         # self.cursor = self.db.getDBCursor()
         self.db_conn = self.db.getDBConn()
 

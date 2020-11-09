@@ -33,8 +33,8 @@ def main():
             "main.html", images=images, isLoggedIn=isLoggedIn, user_data=user_data
         )
 
-    db = Database(database="mongodb")
-    db.initMongoDB()
+    db = Database()
+    # db.initMongoDB()
     # db.initMySQLTable()
 
     return render_template("main.html", images=images, isLoggedIn=isLoggedIn)
@@ -48,7 +48,7 @@ def analytics():
 @data.route("/nowshowing/<moviename>", methods=["GET", "POST"])
 def getNowShowingMovies(moviename):
     init_database = "mongo"
-    db = Database(database=init_database)
+    db = Database()
     isLoggedIn = session.get("logged_in")
     movie_details = []
 
