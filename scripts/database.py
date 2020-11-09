@@ -1,4 +1,5 @@
 import os
+import re
 import json
 import pymongo
 import psycopg2
@@ -121,26 +122,16 @@ class Database:
             self.db_conn["moviedb"]["movies"].insert_one(
                 {
                     "_id": {"title": title, "release": release},
-                    "ratings": "4",
+                    "title": title,
                     "run_time": runtime,
                     "poster": poster,
+                    "release": release,
+                    "plot": plot,
+                    "reviews": [],
                 }
             )
         except pymongo.errors.DuplicateKeyError:
             print("Fail to insert. Movie: {0} already exists".format(title))
-        # self.db_conn["moviedb"]["movies"].update_one(
-        #     {"title": title, "release": release},
-        #     {
-        #         "$set": {
-        #             "ratings": "4",
-        #             "run_time": runtime,
-        #             "poster": poster,
-        #             "title": title,
-        #             "release": release,
-        #         }
-        #     },
-        #     upsert=True,
-        # )
 
     # Select a movie from db using poster url
     def fetchMovie(self, url):
@@ -154,16 +145,19 @@ class Database:
         return ""
 
     def fetchMovieByName(self, name):
+        filtered_name = name.replace("-", " ")
         if "mongo" not in self.database:
             fetch_movie = "SELECT * FROM Movie WHERE LOWER(title)=%s"
-            filtered_name = name.replace("-", " ")
 
             self.db_cursor.execute(fetch_movie, (filtered_name,))
             movie_data = self.db_cursor.fetchall()
 
             return movie_data
 
-        return ""
+        # FETCHING FROM MONGO DB
+        return self.db_conn["moviedb"]["movies"].find_one(
+            {"title": re.compile("^" + filtered_name + "$", re.IGNORECASE)}
+        )
 
     def cleanConnection(self):
         self.db_cursor.close()
@@ -278,7 +272,10 @@ class Database:
             )
 
     def initMongoDB(self, **kwargs):
-        db_names = self.db_conn["moviedb"].collection_names()
+        collection = self.db_conn["moviedb"]["movies"]
+
+        # Created an Index for title so that it is much faster when returning queries
+        collection.create_index("title")
 
     # Function to insert reviews
     def userSubmitReview(self, author_id, movie_id, points, review):
@@ -341,3 +338,28 @@ class Database:
             for key, value in commands_data["sql"].items():
                 if key == key_comd:
                     return value
+
+    def fetchMovieReviews(self, moviename):
+        if "mongo" in self.database:
+            # $unwind - Deconstruct the value in the array to be used as variables
+            # $group  - Group the document by ID
+            # $push   - Preserves the original array by returning an array of all it's values
+
+            filtered_name = moviename.replace("-", " ")
+            filter_query = re.compile("^" + filtered_name + "$", re.IGNORECASE)
+
+            pipeline = [
+                {"$unwind": "$reviews"},
+                {"$match": {"title": filter_query}},
+                {
+                    "$group": {
+                        "_id": "$title",
+                        "ratings": {"$push": "$reviews.ratings"},
+                        "ratings_avg": {"$avg": "$reviews.ratings"},
+                    }
+                },
+            ]
+            data = self.db_conn["moviedb"]["movies"].aggregate(pipeline)
+
+            for i in data:
+                return i

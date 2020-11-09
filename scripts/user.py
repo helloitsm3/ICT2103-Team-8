@@ -39,7 +39,6 @@ class User:
                     "email": self.email,
                     "password": self.password,
                     "role": self.role,
-                    "reviews": [{"movie_id": "", "ratings": "", "review": ""}],
                 }
             )
 
