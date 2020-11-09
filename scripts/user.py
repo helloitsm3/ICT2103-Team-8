@@ -74,6 +74,7 @@ class User:
                     return False
             self.db.cleanConnection()
         else:
+            # FOR ALL MONGO QUERIES
             data = self.db_conn["moviedb"]["users"].find_one(
                 {"_id": {"username": username}}
             )

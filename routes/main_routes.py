@@ -47,12 +47,12 @@ def analytics():
 
 @data.route("/nowshowing/<moviename>", methods=["GET", "POST"])
 def getNowShowingMovies(moviename):
-    init_database = "mongo"
     db = Database()
+    current_db = db.getDB()
     isLoggedIn = session.get("logged_in")
     movie_details = []
 
-    if "mongo" not in init_database:
+    if "mongo" not in current_db:
         movie_det = db.fetchMovieByName(moviename)
 
         for movie_data in movie_det:
@@ -109,6 +109,7 @@ def getNowShowingMovies(moviename):
                 )
             db.cleanConnection()
     else:
+        # FOR ALL MONGO QUERIES
         movie_data = db.fetchMovieByName(moviename)
         movie_ratings = db.fetchMovieReviews(moviename)
         movie_reviews = ""

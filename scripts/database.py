@@ -124,21 +124,22 @@ class Database:
                 self.db_cursor.execute(insert_movie, data_movie)
             except IntegrityError:
                 print("Failed to insert Movie: {0} as it already exist".format(title))
-
-        try:
-            self.db_conn["moviedb"]["movies"].insert_one(
-                {
-                    "_id": {"title": title, "release": release},
-                    "title": title,
-                    "run_time": runtime,
-                    "poster": poster,
-                    "release": release,
-                    "plot": plot,
-                    "reviews": [],
-                }
-            )
-        except pymongo.errors.DuplicateKeyError:
-            print("Fail to insert. Movie: {0} already exists".format(title))
+        else:
+            # FOR ALL MONGO QUERIES
+            try:
+                self.db_conn["moviedb"]["movies"].insert_one(
+                    {
+                        "_id": {"title": title, "release": release},
+                        "title": title,
+                        "run_time": runtime,
+                        "poster": poster,
+                        "release": release,
+                        "plot": plot,
+                        "reviews": [],
+                    }
+                )
+            except pymongo.errors.DuplicateKeyError:
+                print("Fail to insert. Movie: {0} already exists".format(title))
 
     # Select a movie from db using poster url
     def fetchMovie(self, url):
@@ -148,8 +149,6 @@ class Database:
             self.db_cursor.execute(fetch_movie, (url,))
             movie_data = self.db_cursor.fetchall()
             return movie_data
-
-        return ""
 
     def fetchMovieByName(self, name):
         filtered_name = name.replace("-", " ")
@@ -161,14 +160,17 @@ class Database:
 
             return movie_data
 
-        # FETCHING FROM MONGO DB
-        return self.db_conn["moviedb"]["movies"].find_one(
-            {"title": re.compile("^" + filtered_name + "$", re.IGNORECASE)}
-        )
+        else:
+            # FOR ALL MONGO QUERIES
+            # FETCHING FROM MONGO DB
+            return self.db_conn["moviedb"]["movies"].find_one(
+                {"title": re.compile("^" + filtered_name + "$", re.IGNORECASE)}
+            )
 
     def cleanConnection(self):
-        self.db_cursor.close()
-        self.db_conn.close()
+        if "mongo" not in self.database:
+            self.db_cursor.close()
+            self.db_conn.close()
 
     # Function to create all necessary tables
     def initMySQLTable(self):
@@ -311,8 +313,6 @@ class Database:
             movie_top10_name = self.db_cursor.fetchall()
             return movie_top10_name
 
-        return ""
-
     # fetch from movie title search
     def fetchFromMovieSearch(self, serchTerm):
         if "mongo" not in self.database:
@@ -324,8 +324,6 @@ class Database:
             self.db_cursor.close()
             self.db_conn.close()
             return search_results
-
-        return ""
 
     def getData(self, key, *args):
         if "mongo" not in self.database:
