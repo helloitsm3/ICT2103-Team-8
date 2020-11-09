@@ -55,6 +55,7 @@ This function also INSERTS MOVIES INTO THE DATABASE.
 
 def getCathayMovie():
     db = Database(database="mongo")
+    db.initMongoDB()
     movies = []
     movielist = scrapper_lib.cathay_scraper()
 

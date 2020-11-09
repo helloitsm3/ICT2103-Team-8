@@ -47,62 +47,119 @@ def analytics():
 
 @data.route("/nowshowing/<moviename>", methods=["GET", "POST"])
 def getNowShowingMovies(moviename):
-    db = Database()
-    movie_det = db.fetchMovieByName(moviename)
-    movie_details = []
+    init_database = "mongo"
+    db = Database(database=init_database)
     isLoggedIn = session.get("logged_in")
+    movie_details = []
 
-    for movie_data in movie_det:
-        movie_id = movie_data[0]
-        ratings = (
-            float(db.getData("FETCH_RATINGS", movie_id)[0][0])
-            if db.getData("FETCH_RATINGS", movie_id)[0][0] != None
-            else movie_data[1]
-        )
-        movie_ratings = ratings
-        movie_genre = movie_data[2]
-        movie_country = movie_data[3]
-        movie_director = movie_data[4]
-        movie_runtime = movie_data[5]
-        movie_poster_path = movie_data[6]
-        movie_plot = movie_data[7]
-        movie_title = movie_data[8]
-        movie_release_date = datetime.strptime(str(movie_data[13]), "%Y-%m-%d %H:%M:%S")
+    if "mongo" not in init_database:
+        movie_det = db.fetchMovieByName(moviename)
+
+        for movie_data in movie_det:
+            movie_id = movie_data[0]
+            ratings = (
+                float(db.getData("FETCH_RATINGS", movie_id)[0][0])
+                if db.getData("FETCH_RATINGS", movie_id)[0][0] != None
+                else movie_data[1]
+            )
+            movie_ratings = ratings
+            movie_genre = movie_data[2]
+            movie_country = movie_data[3]
+            movie_director = movie_data[4]
+            movie_runtime = movie_data[5]
+            movie_poster_path = movie_data[6]
+            movie_plot = movie_data[7]
+            movie_title = movie_data[8]
+            movie_release_date = datetime.strptime(
+                str(movie_data[13]), "%Y-%m-%d %H:%M:%S"
+            )
+
+            movie_details = [
+                {
+                    "id": movie_id,
+                    "title": movie_title,
+                    "poster_path": movie_poster_path,
+                    "ratings": movie_ratings,
+                    "genre": "Family, Animation, Adventure, Comedy, Mystery",
+                    "country": "US",
+                    "run_time": movie_runtime,
+                    "plot": movie_plot,
+                    "overview": "",
+                    "original_language": "English",
+                    "writers": "Daniel Chong, Charlie Parisi, Quinne Larsen, Sooyeon Lee, Yvonne Hsuan Ho",
+                    "casts": "Pedro Pascal, Carl Weathers, Emily Swallow, Nick Nolte, Rio Hackford, Misty Rosas",
+                    "release_date": movie_release_date,
+                }
+            ]
+
+        if len(movie_details) > 0:
+            session["current_movie"] = movie_id
+            reviews = db.getData("FETCH_ALL_REVIEW", movie_id)
+
+            if isLoggedIn:
+                return render_template(
+                    "authenticated/auth_moviename.html",
+                    movie_details=movie_details,
+                    reviews=reviews,
+                    isLoggedIn=isLoggedIn,
+                )
+            elif not isLoggedIn:
+                return render_template(
+                    "moviename.html", movie_details=movie_details, reviews=reviews
+                )
+            db.cleanConnection()
+    else:
+        movie_data = db.fetchMovieByName(moviename)
+        movie_ratings = db.fetchMovieReviews(moviename)
+        movie_reviews = ""
+        movie_review_list = []
+
+        for i in movie_data["reviews"]:
+            author = ""
+            review = ""
+            rating = ""
+
+            for key, values in i.items():
+                if "author" in key:
+                    author = values
+                elif "review" in key:
+                    review = values
+                elif "rating" in key:
+                    rating = values
+
+            movie_reviews = (author, review, rating)
+            movie_review_list.append(movie_reviews)
 
         movie_details = [
             {
-                "id": movie_id,
-                "title": movie_title,
-                "poster_path": movie_poster_path,
-                "ratings": movie_ratings,
+                "id": movie_data["_id"],
+                "title": movie_data["title"],
+                "poster_path": movie_data["poster"],
+                "ratings": movie_ratings["ratings_avg"],
+                "reviews": movie_data["reviews"],
                 "genre": "Family, Animation, Adventure, Comedy, Mystery",
                 "country": "US",
-                "run_time": movie_runtime,
-                "plot": movie_plot,
+                "run_time": movie_data["run_time"],
+                "plot": movie_data["plot"],
                 "overview": "",
                 "original_language": "English",
                 "writers": "Daniel Chong, Charlie Parisi, Quinne Larsen, Sooyeon Lee, Yvonne Hsuan Ho",
                 "casts": "Pedro Pascal, Carl Weathers, Emily Swallow, Nick Nolte, Rio Hackford, Misty Rosas",
-                "release_date": movie_release_date,
+                "release_date": movie_data["release"],
             }
         ]
-
-    if len(movie_details) > 0:
-        session["current_movie"] = movie_id
-        reviews = db.getData("FETCH_ALL_REVIEW", movie_id)
 
         if isLoggedIn:
             return render_template(
                 "authenticated/auth_moviename.html",
                 movie_details=movie_details,
-                reviews=reviews,
                 isLoggedIn=isLoggedIn,
+                reviews=movie_reviews,
             )
         elif not isLoggedIn:
             return render_template(
-                "moviename.html", movie_details=movie_details, reviews=reviews
+                "moviename.html", movie_details=movie_details, reviews=movie_review_list
             )
-        db.cleanConnection()
 
     return "Error 404: Movie not found in our database"
 
