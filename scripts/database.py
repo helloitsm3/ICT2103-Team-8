@@ -6,10 +6,8 @@ import psycopg2
 import mysql.connector
 
 from pymongo import MongoClient
+from scripts.commands import *
 from mysql.connector.errors import IntegrityError
-
-commands_file = open("static/commands.json")
-commands_data = json.load(commands_file)
 
 
 # POSTGRESQL VAR
@@ -40,8 +38,6 @@ class Database:
         config_data = json.load(config_file)
         CURRENT_DATABASE = config_data["current_database"]
         self.database = CURRENT_DATABASE
-
-        print(self.database)
 
         if self.database == "postgresql":
             try:
@@ -114,11 +110,7 @@ class Database:
     def insertMovie(self, runtime, poster, plot, title, release):
         if "mongo" not in self.database:
             try:
-                insert_movie = (
-                    "INSERT INTO Movie "
-                    "(ratings, run_time, poster_path, plot, title,release_date) "
-                    "VALUES (%s, %s, %s, %s, %s, %s)"
-                )
+                insert_movie = INSERT_MOVIE
                 data_movie = ("4", runtime, poster, plot, title, release)
 
                 self.db_cursor.execute(insert_movie, data_movie)
@@ -144,7 +136,7 @@ class Database:
     # Select a movie from db using poster url
     def fetchMovie(self, url):
         if "mongo" not in self.database:
-            fetch_movie = "SELECT * FROM Movie WHERE poster_path=%s"
+            fetch_movie = FETCH_MOVIE
 
             self.db_cursor.execute(fetch_movie, (url,))
             movie_data = self.db_cursor.fetchall()
@@ -153,7 +145,7 @@ class Database:
     def fetchMovieByName(self, name):
         filtered_name = name.replace("-", " ")
         if "mongo" not in self.database:
-            fetch_movie = "SELECT * FROM Movie WHERE LOWER(title)=%s"
+            fetch_movie = FETCH_MOVIE_BY_NAME
 
             self.db_cursor.execute(fetch_movie, (filtered_name,))
             movie_data = self.db_cursor.fetchall()
@@ -290,7 +282,7 @@ class Database:
     # Function to insert reviews
     def userSubmitReview(self, author_id, movie_id, points, review):
         if "mongo" not in self.database:
-            submit_review = "INSERT INTO review (author_id, movie_id, points, review) VALUES (%s, %s, %s, %s)"
+            submit_review = INSERT_REVIEW
 
             self.db_cursor.execute(
                 submit_review,
@@ -328,22 +320,14 @@ class Database:
     def getData(self, key, *args):
         if "mongo" not in self.database:
             if len(args) <= 0:
-                comd = self.getCommands(key)
-                self.db_cursor.execute(comd)
+                self.db_cursor.execute(key)
                 data = self.db_cursor.fetchall()
 
                 return data
 
-            comd = self.getCommands(key)
-            self.db_cursor.execute(comd, args)
+            self.db_cursor.execute(key, args)
             data = self.db_cursor.fetchall()
             return data
-
-    def getCommands(self, key_comd):
-        if "mongo" not in self.database:
-            for key, value in commands_data["sql"].items():
-                if key == key_comd:
-                    return value
 
     def fetchMovieReviews(self, moviename):
         if "mongo" in self.database:

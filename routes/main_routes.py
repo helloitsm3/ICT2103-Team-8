@@ -1,5 +1,6 @@
 from scripts.user import User
 from datetime import datetime
+from scripts.commands import *
 from scripts.database import Database
 from flask import Blueprint, render_template, request, redirect, url_for, session, flash
 
@@ -58,8 +59,8 @@ def getNowShowingMovies(moviename):
         for movie_data in movie_det:
             movie_id = movie_data[0]
             ratings = (
-                float(db.getData("FETCH_RATINGS", movie_id)[0][0])
-                if db.getData("FETCH_RATINGS", movie_id)[0][0] != None
+                float(db.getData(FETCH_RATINGS, movie_id)[0][0])
+                if db.getData(FETCH_RATINGS, movie_id)[0][0] != None
                 else movie_data[1]
             )
             movie_ratings = ratings
@@ -94,7 +95,7 @@ def getNowShowingMovies(moviename):
 
         if len(movie_details) > 0:
             session["current_movie"] = movie_id
-            reviews = db.getData("FETCH_ALL_REVIEW", movie_id)
+            reviews = db.getData(FETCH_ALL_REVIEW, movie_id)
 
             if isLoggedIn:
                 return render_template(
