@@ -115,5 +115,6 @@ class User:
 
         return user_data
 
-    def createMovieList(self, movieId):
+    def addToWishlist(self, movieId, username):
+
         pass

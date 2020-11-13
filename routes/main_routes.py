@@ -159,6 +159,10 @@ def getNowShowingMovies(moviename):
         if isLoggedIn:
             session["current_movie"] = movie_data["_id"]
 
+            # METHOD TO ADD MOVIE TO WISHLIST
+            if request.method == "POST":
+                print(session["current_movie"], session["user_data"])
+
             return render_template(
                 "authenticated/auth_moviename.html",
                 movie_details=movie_details,
@@ -258,7 +262,6 @@ def register_user():
 
             else:
                 flash("Confirm Password is not the same as password", "err")
-                print("Confirm Password is not the same as password")
                 return render_template("register.html")
         else:
             flash("Please enter all fields", "err")
@@ -285,3 +288,27 @@ def search_movie():
         return render_template(
             "search.html", topTen=movie_top_ten, isLoggedIn=isLoggedIn
         )
+
+
+@data.route("/wishlist", methods=["GET", "POST"])
+def movie_wishlist():
+    images = [
+        {
+            "title": "TEST",
+            "poster": "https://m.media-amazon.com/images/M/MV5BNjRkYjlhMjEtYzIwOC00ZWYzLTgyMmQtYjI5M2UzNDJkNTU2XkEyXkFqcGdeQXVyMTkxNjUyNQ@@._V1_SX300.jpg",
+        },
+        {
+            "title": "TEST2",
+            "poster": "https://m.media-amazon.com/images/M/MV5BNjRkYjlhMjEtYzIwOC00ZWYzLTgyMmQtYjI5M2UzNDJkNTU2XkEyXkFqcGdeQXVyMTkxNjUyNQ@@._V1_SX300.jpg",
+        },
+        {
+            "title": "TEST3",
+            "poster": "https://m.media-amazon.com/images/M/MV5BNjRkYjlhMjEtYzIwOC00ZWYzLTgyMmQtYjI5M2UzNDJkNTU2XkEyXkFqcGdeQXVyMTkxNjUyNQ@@._V1_SX300.jpg",
+        },
+        {
+            "title": "TEST4",
+            "poster": "https://m.media-amazon.com/images/M/MV5BNjRkYjlhMjEtYzIwOC00ZWYzLTgyMmQtYjI5M2UzNDJkNTU2XkEyXkFqcGdeQXVyMTkxNjUyNQ@@._V1_SX300.jpg",
+        },
+    ]
+
+    return render_template("wishlist.html", images=images)

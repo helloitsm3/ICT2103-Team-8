@@ -270,20 +270,6 @@ class Database:
             filtered_name = moviename.replace("-", " ")
             filter_query = re.compile("^" + filtered_name + "$", re.IGNORECASE)
 
-            # pipeline = [
-            #     {"$unwind": "$reviews"},
-            #     {"$match": {"title": filter_query}},
-            #     {
-            #         "$group": {
-            #             "_id": "$title",
-            #             "ratings": {"$push": "$reviews.ratings"},
-            #             "ratings_avg": {
-            #                 "$avg": "$reviews.ratings",
-            #             },
-            #         },
-            #     },
-            # ]
-
             pipeline = [
                 {"$unwind": "$reviews"},
                 {"$match": {"title": filter_query}},

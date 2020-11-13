@@ -1,0 +1,25 @@
+{% extends 'base.html' %} {% block head %} {% endblock %} {% block content %}
+
+<!-- Now Showing -->
+<section class="page-section" id="about">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-8 text-center">
+        <h2 class="text-white mt-0">Your wishlist</h2>
+        <hr class="divider light my-4" />
+        <p class="text-white-50 mb-4">Select your movies to delete or add more movies to the wishlist</p>
+      </div>
+    </div>
+
+    <div class="row justify-content-center">
+      {% for image in images%}
+      <div class="movie-card">
+        <a href="/nowshowing/{{ image['title'] }}">
+          <img class="card-img-top" src="{{image['poster']}}" alt="Card image cap" />
+        </a>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}
