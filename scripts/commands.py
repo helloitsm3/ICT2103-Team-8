@@ -55,3 +55,79 @@ CREATE_USER_TBL = """
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP 
     )
 """
+
+CREATE_DIRECTOR_TBL = """
+    CREATE TABLE IF NOT EXISTS Director (
+        director_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+        director_name VARCHAR(100) NOT NULL UNIQUE
+    )
+"""
+
+CREATE_MOVIE_TBL = """
+    CREATE TABLE IF NOT EXISTS Movie (
+        movie_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+        ratings DECIMAL(3, 2),
+        genre VARCHAR(100),
+        country VARCHAR(100),
+        director_id INT,
+        run_time INT,
+        poster_path VARCHAR(250),
+        plot VARCHAR(2500),
+        title VARCHAR(150),
+        overview VARCHAR(2500),
+        original_language VARCHAR(25),
+        writers VARCHAR(1000),
+        casts VARCHAR(1000),
+        release_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+
+        CHECK (ratings > 0 AND ratings <= 5),
+        FOREIGN KEY (director_id) REFERENCES Director(director_id),
+        CONSTRAINT UC_Movie UNIQUE (title, poster_path, release_date)
+    )
+"""
+
+CREATE_REVIEW_TBL = """
+CREATE TABLE IF NOT EXISTS Review (
+    review_id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
+    author_id INT,                        
+    movie_id INT,
+    points DECIMAL(3, 2),
+    review VARCHAR(2500),
+    date_create DATETIME DEFAULT CURRENT_TIMESTAMP,                       
+                        
+    CHECK (points > 0 AND points <= 5),
+    FOREIGN KEY (author_id) REFERENCES User(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (movie_id) REFERENCES Movie(movie_id) ON DELETE CASCADE
+)
+"""
+
+
+CREATE_MOVIE_LIST_TBL = """
+CREATE TABLE IF NOT EXISTS MovieList (
+    user_id INT,
+    movie_id INT,
+
+    FOREIGN KEY (user_id) REFERENCES User(user_id),
+    FOREIGN KEY (movie_id) REFERENCES Movie(movie_id)
+)
+"""
+
+
+CREATE_TIMESLOT_TBL = """
+CREATE TABLE IF NOT EXISTS Timeslot (
+    showtime_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    slots VARCHAR(100),
+    date_showing DATETIME DEFAULT CURRENT_TIMESTAMP
+)
+"""
+
+
+CREATE_SHOWTIME_TBL = """
+CREATE TABLE IF NOT EXISTS Showtime (
+    movie_id INT,
+    showtime_id INT,
+
+    FOREIGN KEY (showtime_id) REFERENCES Timeslot(showtime_id),
+    FOREIGN KEY (movie_id) REFERENCES Movie(movie_id)
+)
+"""
