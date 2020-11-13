@@ -1,5 +1,6 @@
 from passlib.context import CryptContext
 from scripts.database import Database
+from scripts.commands import *
 
 
 class User:
@@ -28,7 +29,7 @@ class User:
 
         if "mongo" not in self.db.getDB():
             self.cursor.execute(
-                "INSERT INTO User (username, email, password, role_id) VALUES (%s, %s, %s, %s)",
+                INSERT_USER,
                 (self.username, self.email, self.password, self.role),
             )
             self.db.cleanConnection()
@@ -83,22 +84,25 @@ class User:
             temp_pass = ""
             temp_email = ""
 
-            for key, value in data.items():
-                if "_id" in key:
-                    temp_username = value["username"]
-                elif "password" in key:
-                    temp_pass = value
-                elif "email" in key:
-                    temp_email = value
+            try:
+                for key, value in data.items():
+                    if "_id" in key:
+                        temp_username = value["username"]
+                    elif "password" in key:
+                        temp_pass = value
+                    elif "email" in key:
+                        temp_email = value
 
-            if temp_username == username and self.verify_pass(password, temp_pass):
-                self.username = temp_username
-                self.password = temp_pass
-                self.role = "User"
-                self.email = temp_email
-                print("User successfully logged in")
-                return True
-            else:
+                if temp_username == username and self.verify_pass(password, temp_pass):
+                    self.username = temp_username
+                    self.password = temp_pass
+                    self.role = "User"
+                    self.email = temp_email
+                    print("User successfully logged in")
+                    return True
+                else:
+                    return False
+            except AttributeError:
                 return False
 
     def getUserData(self):
@@ -110,3 +114,6 @@ class User:
         }
 
         return user_data
+
+    def createMovieList(self, movieId):
+        pass

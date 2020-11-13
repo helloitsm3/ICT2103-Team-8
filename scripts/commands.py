@@ -17,6 +17,10 @@ INSERT_REVIEW = """
     ) VALUES (%s, %s, %s, %s)
 """
 
+INSERT_USER = """
+    INSERT INTO User (username, email, password, role_id) VALUES (%s, %s, %s, %s)
+"""
+
 
 # SECTION FOR ALL FETCH COMMANDS
 FETCH_MOVIE = """ 
