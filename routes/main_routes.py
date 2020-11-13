@@ -93,22 +93,22 @@ def getNowShowingMovies(moviename):
                 }
             ]
 
-        if len(movie_details) > 0:
-            session["current_movie"] = movie_id
-            reviews = db.getData(FETCH_ALL_REVIEW, movie_id)
+        session["current_movie"] = {"title": movie_id}
 
-            if isLoggedIn:
-                return render_template(
-                    "authenticated/auth_moviename.html",
-                    movie_details=movie_details,
-                    reviews=reviews,
-                    isLoggedIn=isLoggedIn,
-                )
-            elif not isLoggedIn:
-                return render_template(
-                    "moviename.html", movie_details=movie_details, reviews=reviews
-                )
-            db.cleanConnection()
+        reviews = db.getData(FETCH_ALL_REVIEW, movie_id)
+
+        if isLoggedIn:
+            return render_template(
+                "authenticated/auth_moviename.html",
+                movie_details=movie_details,
+                reviews=reviews,
+                isLoggedIn=isLoggedIn,
+            )
+        elif not isLoggedIn:
+            return render_template(
+                "moviename.html", movie_details=movie_details, reviews=reviews
+            )
+        db.cleanConnection()
     else:
         # FOR ALL MONGO QUERIES
         movie_data = db.fetchMovieByName(moviename)
@@ -132,12 +132,17 @@ def getNowShowingMovies(moviename):
             movie_reviews = (author, review, rating)
             movie_review_list.append(movie_reviews)
 
+        try:
+            mv_rate = movie_ratings["ratings_rounded"]
+        except TypeError:
+            mv_rate = "0"
+
         movie_details = [
             {
                 "id": movie_data["_id"],
                 "title": movie_data["title"],
                 "poster_path": movie_data["poster"],
-                "ratings": movie_ratings["ratings_avg"],
+                "ratings": mv_rate,
                 "reviews": movie_data["reviews"],
                 "genre": "Family, Animation, Adventure, Comedy, Mystery",
                 "country": "US",
@@ -152,15 +157,19 @@ def getNowShowingMovies(moviename):
         ]
 
         if isLoggedIn:
+            session["current_movie"] = movie_data["_id"]
+
             return render_template(
                 "authenticated/auth_moviename.html",
                 movie_details=movie_details,
                 isLoggedIn=isLoggedIn,
-                reviews=movie_reviews,
+                reviews=movie_review_list,
             )
         elif not isLoggedIn:
             return render_template(
-                "moviename.html", movie_details=movie_details, reviews=movie_review_list
+                "moviename.html",
+                movie_details=movie_details,
+                reviews=movie_review_list,
             )
 
     return "Error 404: Movie not found in our database"
@@ -201,19 +210,26 @@ def logout():
     return redirect(url_for("main_api.main"))
 
 
-@data.route("/submitreview", methods=["POST"])
+@data.route("/submitreview", methods=["POST", "GET"])
 def submit_review():
     if request.method == "POST":
         isLoggedIn = session.get("logged_in")
 
         if isLoggedIn:
-            author_id = session.get("user_data")["id"]
+            db = Database()
+            author_id = ""
+
+            if "mongo" not in db.getDB():
+                author_id = session.get("user_data")["id"]
+            else:
+                author_id = session.get("user_data")["username"]
+
             rating = request.form["movie_rating"]
             review = request.form["movie_review"]
-            movie_id = session.get("current_movie")
+            movie_title = session.get("current_movie")["title"]
 
             db = Database()
-            db.userSubmitReview(author_id, movie_id, rating, review)
+            db.userSubmitReview(author_id, movie_title, rating, review)
             db.cleanConnection()
             print("Successfully submitted review")
     return redirect(url_for("main_api.main"))

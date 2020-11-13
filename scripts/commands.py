@@ -47,6 +47,15 @@ FETCH_RATINGS = """
     INNER JOIN User u ON r.author_id = u.user_id AND r.movie_id = %s;
 """
 
+FETCH_FROM_MOVIE_SEARCH = """
+    SELECT M.poster_path, M.title, D.director_name, M.run_time, M.ratings
+    FROM
+        movie M
+    LEFT JOIN director D ON M.director_id = D.director_id
+    WHERE
+        title LIKE %s ORDER BY ratings DESC
+"""
+
 # SECTION FOR ALL CREATE TABLE COMMANDS
 CREATE_USER_TBL = """
     CREATE TABLE IF NOT EXISTS User (

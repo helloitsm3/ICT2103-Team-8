@@ -5,7 +5,7 @@ import pymongo
 import psycopg2
 import mysql.connector
 
-from pymongo import MongoClient
+from pymongo import MongoClient, ReturnDocument
 from scripts.commands import *
 from mysql.connector.errors import IntegrityError
 
@@ -204,16 +204,29 @@ class Database:
     # Function to insert reviews
     def userSubmitReview(self, author_id, movie_id, points, review):
         if "mongo" not in self.database:
-            submit_review = INSERT_REVIEW
-
             self.db_cursor.execute(
-                submit_review,
+                INSERT_REVIEW,
                 (
                     author_id,
                     movie_id,
                     points,
                     review,
                 ),
+            )
+        else:
+            # Returns movie title if it's using mongodb
+            data = self.db_conn["moviedb"]["movies"].find_one_and_update(
+                {"title": movie_id},
+                {
+                    "$push": {
+                        "reviews": {
+                            "author": author_id,
+                            "ratings": float(points),
+                            "review": review,
+                        }
+                    }
+                },
+                return_document=ReturnDocument.AFTER,
             )
 
     # fetch top 10 movies
@@ -230,10 +243,7 @@ class Database:
     # fetch from movie title search
     def fetchFromMovieSearch(self, serchTerm):
         if "mongo" not in self.database:
-            fetch_from_movie_search = "SELECT M.poster_path, M.title, D.director_name, M.run_time, M.ratings \
-                    FROM movie M LEFT JOIN director D ON M.director_id = D.director_id \
-                        WHERE title LIKE %s ORDER BY ratings DESC"
-            self.db_cursor.execute(fetch_from_movie_search, ("%" + serchTerm + "%",))
+            self.db_cursor.execute(FETCH_FROM_MOVIE_SEARCH, ("%" + serchTerm + "%",))
             search_results = self.db_cursor.fetchall()
             self.db_cursor.close()
             self.db_conn.close()
@@ -260,6 +270,20 @@ class Database:
             filtered_name = moviename.replace("-", " ")
             filter_query = re.compile("^" + filtered_name + "$", re.IGNORECASE)
 
+            # pipeline = [
+            #     {"$unwind": "$reviews"},
+            #     {"$match": {"title": filter_query}},
+            #     {
+            #         "$group": {
+            #             "_id": "$title",
+            #             "ratings": {"$push": "$reviews.ratings"},
+            #             "ratings_avg": {
+            #                 "$avg": "$reviews.ratings",
+            #             },
+            #         },
+            #     },
+            # ]
+
             pipeline = [
                 {"$unwind": "$reviews"},
                 {"$match": {"title": filter_query}},
@@ -268,9 +292,11 @@ class Database:
                         "_id": "$title",
                         "ratings": {"$push": "$reviews.ratings"},
                         "ratings_avg": {"$avg": "$reviews.ratings"},
-                    }
+                    },
                 },
+                {"$addFields": {"ratings_rounded": {"$round": ["$ratings_avg", 2]}}},
             ]
+
             data = self.db_conn["moviedb"]["movies"].aggregate(pipeline)
 
             for i in data:
