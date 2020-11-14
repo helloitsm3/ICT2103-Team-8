@@ -234,6 +234,10 @@ input {
   height: 350px;
 }
 
+.movie-card-wishlist {
+  margin: 5px;
+}
+
 #reviews_container {
   color: white;
   margin-top: 55px;
