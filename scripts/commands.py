@@ -21,6 +21,9 @@ INSERT_USER = """
     INSERT INTO User (username, email, password, role_id) VALUES (%s, %s, %s, %s)
 """
 
+INSERT_MOVIE_WISHLIST = """
+    INSERT INTO movielist (user_id, movie_id) VALUES (%s, %s)
+"""
 
 # SECTION FOR ALL FETCH COMMANDS
 FETCH_MOVIE = """ 
@@ -54,6 +57,21 @@ FETCH_FROM_MOVIE_SEARCH = """
     LEFT JOIN director D ON M.director_id = D.director_id
     WHERE
         title LIKE %s ORDER BY ratings DESC
+"""
+
+FETCH_USER = """
+    SELECT * FROM User WHERE username = %s
+"""
+
+FETCH_MOVIE_WISHLIST = """
+    SELECT 
+	    m.poster_path,
+        m.title
+    FROM Movielist ml
+    INNER JOIN Movie m ON ml.movie_id = m.movie_id
+    INNER JOIN User u ON ml.user_id = u.user_id
+    WHERE
+	    ml.user_id = %s;
 """
 
 # SECTION FOR ALL CREATE TABLE COMMANDS

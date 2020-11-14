@@ -97,6 +97,8 @@ class Database:
     def getDBCursor(self):
         if "mongo" not in self.database:
             return self.db_cursor
+        else:
+            return ""
 
     # Get DB Connection
     def getDBConn(self):

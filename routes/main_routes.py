@@ -56,59 +56,60 @@ def getNowShowingMovies(moviename):
     if "mongo" not in current_db:
         movie_det = db.fetchMovieByName(moviename)
 
-        for movie_data in movie_det:
-            movie_id = movie_data[0]
-            ratings = (
-                float(db.getData(FETCH_RATINGS, movie_id)[0][0])
-                if db.getData(FETCH_RATINGS, movie_id)[0][0] != None
-                else movie_data[1]
-            )
-            movie_ratings = ratings
-            movie_genre = movie_data[2]
-            movie_country = movie_data[3]
-            movie_director = movie_data[4]
-            movie_runtime = movie_data[5]
-            movie_poster_path = movie_data[6]
-            movie_plot = movie_data[7]
-            movie_title = movie_data[8]
-            movie_release_date = datetime.strptime(
-                str(movie_data[13]), "%Y-%m-%d %H:%M:%S"
-            )
+        if len(movie_det) > 0:
+            for movie_data in movie_det:
+                movie_id = movie_data[0]
+                ratings = (
+                    float(db.getData(FETCH_RATINGS, movie_id)[0][0])
+                    if db.getData(FETCH_RATINGS, movie_id)[0][0] != None
+                    else movie_data[1]
+                )
+                movie_ratings = ratings
+                movie_genre = movie_data[2]
+                movie_country = movie_data[3]
+                movie_director = movie_data[4]
+                movie_runtime = movie_data[5]
+                movie_poster_path = movie_data[6]
+                movie_plot = movie_data[7]
+                movie_title = movie_data[8]
+                movie_release_date = datetime.strptime(
+                    str(movie_data[13]), "%Y-%m-%d %H:%M:%S"
+                )
 
-            movie_details = [
-                {
-                    "id": movie_id,
-                    "title": movie_title,
-                    "poster_path": movie_poster_path,
-                    "ratings": movie_ratings,
-                    "genre": "Family, Animation, Adventure, Comedy, Mystery",
-                    "country": "US",
-                    "run_time": movie_runtime,
-                    "plot": movie_plot,
-                    "overview": "",
-                    "original_language": "English",
-                    "writers": "Daniel Chong, Charlie Parisi, Quinne Larsen, Sooyeon Lee, Yvonne Hsuan Ho",
-                    "casts": "Pedro Pascal, Carl Weathers, Emily Swallow, Nick Nolte, Rio Hackford, Misty Rosas",
-                    "release_date": movie_release_date,
-                }
-            ]
+                movie_details = [
+                    {
+                        "id": movie_id,
+                        "title": movie_title,
+                        "poster_path": movie_poster_path,
+                        "ratings": movie_ratings,
+                        "genre": "Family, Animation, Adventure, Comedy, Mystery",
+                        "country": "US",
+                        "run_time": movie_runtime,
+                        "plot": movie_plot,
+                        "overview": "",
+                        "original_language": "English",
+                        "writers": "Daniel Chong, Charlie Parisi, Quinne Larsen, Sooyeon Lee, Yvonne Hsuan Ho",
+                        "casts": "Pedro Pascal, Carl Weathers, Emily Swallow, Nick Nolte, Rio Hackford, Misty Rosas",
+                        "release_date": movie_release_date,
+                    }
+                ]
 
-        session["current_movie"] = {"title": movie_id}
+            session["current_movie"] = {"title": movie_title, "id": movie_id}
 
-        reviews = db.getData(FETCH_ALL_REVIEW, movie_id)
+            reviews = db.getData(FETCH_ALL_REVIEW, movie_id)
 
-        if isLoggedIn:
-            return render_template(
-                "authenticated/auth_moviename.html",
-                movie_details=movie_details,
-                reviews=reviews,
-                isLoggedIn=isLoggedIn,
-            )
-        elif not isLoggedIn:
-            return render_template(
-                "moviename.html", movie_details=movie_details, reviews=reviews
-            )
-        db.cleanConnection()
+            if isLoggedIn:
+                return render_template(
+                    "authenticated/auth_moviename.html",
+                    movie_details=movie_details,
+                    reviews=reviews,
+                    isLoggedIn=isLoggedIn,
+                )
+            elif not isLoggedIn:
+                return render_template(
+                    "moviename.html", movie_details=movie_details, reviews=reviews
+                )
+            db.cleanConnection()
     else:
         # FOR ALL MONGO QUERIES
         movie_data = db.fetchMovieByName(moviename)
@@ -293,22 +294,23 @@ def movie_wishlist():
     isLoggedIn = session.get("logged_in")
 
     if isLoggedIn:
-        user_name = session["user_data"]["username"]
+        user_id = session["user_data"]["id"]
+        user_name = user_id if user_id != "" else session["user_data"]["username"]
 
     # METHOD TO ADD MOVIE TO WISHLIST
     if request.method == "POST":
         movie_name = session["current_movie"]["title"]
-        release_date = session["current_movie"]["release"]
-
         filtered_name = movie_name.lower().replace(" ", "-")
-        movie_data = {"title": movie_name, "release": release_date}
-        user.addToWishlist(movie_data, user_name)
+
+        user.addToWishlist(session["current_movie"], user_name)
 
         return redirect("/nowshowing/{0}".format(filtered_name))
     else:
         wish_list = user.getWishList(user_name)
 
         if isLoggedIn:
-            return render_template("wishlist.html", wishlist=wish_list)
+            return render_template(
+                "wishlist.html", wishlist=wish_list, isLoggedIn=isLoggedIn
+            )
         else:
             return redirect(url_for("main_api.main"))

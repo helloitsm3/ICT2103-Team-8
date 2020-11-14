@@ -20,7 +20,7 @@ class User:
 
         # INSERT USER DATA TO DATABASE
         self.db = Database()
-        # self.cursor = self.db.getDBCursor()
+        self.cursor = self.db.getDBCursor()
         self.db_conn = self.db.getDBConn()
 
     def createUser(self, username, email, password):
@@ -52,7 +52,7 @@ class User:
 
     def fetchUser(self, username, password):
         if "mongo" not in self.db.getDB():
-            self.cursor.execute("SELECT * FROM User WHERE username = %s", (username,))
+            self.cursor.execute(FETCH_USER, (username,))
 
             user_data = self.cursor.fetchall()
 
@@ -117,10 +117,10 @@ class User:
 
         return user_data
 
-    def addToWishlist(self, movieId, username):
+    def addToWishlist(self, movieId, user):
         if "mongo" in self.db.getDB():
             self.db_conn["moviedb"]["users"].find_one_and_update(
-                {"_id": {"username": username}},
+                {"_id": {"username": user}},
                 {
                     "$push": {
                         "wishlist": {
@@ -134,11 +134,24 @@ class User:
 
             print("Successfully added {0} to wishlist".format(movieId["title"]))
         else:
-            pass
+            movie_id = movieId["id"]
+            user_id = user
+
+            self.cursor.execute(
+                INSERT_MOVIE_WISHLIST,
+                (
+                    user_id,
+                    movie_id,
+                ),
+            )
+
+            self.db.cleanConnection()
+            print("Successfully added movie to wishlist")
 
     def getWishList(self, username):
+        movie_list = []
+
         if "mongo" in self.db.getDB():
-            movie_list = []
             pipeline = [
                 {
                     "$lookup": {
@@ -163,7 +176,13 @@ class User:
             for i in data:
                 filtered_name = i["title"].lower().replace(" ", "-")
                 movie_list.append({"title": filtered_name, "poster": i["poster"]})
-
             return movie_list
         else:
-            pass
+            self.cursor.execute(FETCH_MOVIE_WISHLIST, (username,))
+            data = self.cursor.fetchall()
+
+            for i in data:
+                filtered_name = i[1].lower().replace(" ", "-")
+                movie_list.append({"title": filtered_name, "poster": i[0]})
+
+            return movie_list
