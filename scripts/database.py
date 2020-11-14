@@ -159,6 +159,12 @@ class Database:
                 {"title": re.compile("^" + filtered_name + "$", re.IGNORECASE)}
             )
 
+    def fetchMovieByNameAndDate(self, username):
+        if "mongo" not in self.database:
+            pass
+        else:
+            data = self.db_conn["moviedb"]
+
     def cleanConnection(self):
         if "mongo" not in self.database:
             self.db_cursor.close()

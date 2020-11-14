@@ -159,10 +159,6 @@ def getNowShowingMovies(moviename):
         if isLoggedIn:
             session["current_movie"] = movie_data["_id"]
 
-            # METHOD TO ADD MOVIE TO WISHLIST
-            if request.method == "POST":
-                print(session["current_movie"], session["user_data"])
-
             return render_template(
                 "authenticated/auth_moviename.html",
                 movie_details=movie_details,
@@ -292,23 +288,27 @@ def search_movie():
 
 @data.route("/wishlist", methods=["GET", "POST"])
 def movie_wishlist():
-    images = [
-        {
-            "title": "TEST",
-            "poster": "https://m.media-amazon.com/images/M/MV5BNjRkYjlhMjEtYzIwOC00ZWYzLTgyMmQtYjI5M2UzNDJkNTU2XkEyXkFqcGdeQXVyMTkxNjUyNQ@@._V1_SX300.jpg",
-        },
-        {
-            "title": "TEST2",
-            "poster": "https://m.media-amazon.com/images/M/MV5BNjRkYjlhMjEtYzIwOC00ZWYzLTgyMmQtYjI5M2UzNDJkNTU2XkEyXkFqcGdeQXVyMTkxNjUyNQ@@._V1_SX300.jpg",
-        },
-        {
-            "title": "TEST3",
-            "poster": "https://m.media-amazon.com/images/M/MV5BNjRkYjlhMjEtYzIwOC00ZWYzLTgyMmQtYjI5M2UzNDJkNTU2XkEyXkFqcGdeQXVyMTkxNjUyNQ@@._V1_SX300.jpg",
-        },
-        {
-            "title": "TEST4",
-            "poster": "https://m.media-amazon.com/images/M/MV5BNjRkYjlhMjEtYzIwOC00ZWYzLTgyMmQtYjI5M2UzNDJkNTU2XkEyXkFqcGdeQXVyMTkxNjUyNQ@@._V1_SX300.jpg",
-        },
-    ]
+    user = User()
+    user_name = ""
+    isLoggedIn = session.get("logged_in")
 
-    return render_template("wishlist.html", images=images)
+    if isLoggedIn:
+        user_name = session["user_data"]["username"]
+
+    # METHOD TO ADD MOVIE TO WISHLIST
+    if request.method == "POST":
+        movie_name = session["current_movie"]["title"]
+        release_date = session["current_movie"]["release"]
+
+        filtered_name = movie_name.lower().replace(" ", "-")
+        movie_data = {"title": movie_name, "release": release_date}
+        user.addToWishlist(movie_data, user_name)
+
+        return redirect("/nowshowing/{0}".format(filtered_name))
+    else:
+        wish_list = user.getWishList(user_name)
+
+        if isLoggedIn:
+            return render_template("wishlist.html", wishlist=wish_list)
+        else:
+            return redirect(url_for("main_api.main"))

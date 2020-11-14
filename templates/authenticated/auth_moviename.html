@@ -18,9 +18,9 @@
           <li>{{ movie["run_time"] }} mins</li>
         </ul>
         <ul id="movie-status-container">
-          <li>⭐ {{ movie["ratings"] }} / 5</li>
+          <li>⭐ {{ movie["ratings"] }} / 5.0</li>
           <li>
-            <form method="post">
+            <form method="post" action="/wishlist">
               <input type="submit" value="❤️ Add to Wishlist" class="btn btn-primary" />
             </form>
           </li>

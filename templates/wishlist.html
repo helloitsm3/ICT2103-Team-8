@@ -12,10 +12,10 @@
     </div>
 
     <div class="row justify-content-center">
-      {% for image in images%}
+      {% for wish in wishlist%}
       <div class="movie-card">
-        <a href="/nowshowing/{{ image['title'] }}">
-          <img class="card-img-top" src="{{image['poster']}}" alt="Card image cap" />
+        <a href="/nowshowing/{{ wish['title'] }}">
+          <img class="card-img-top" src="{{wish['poster']}}" alt="Card image cap" />
         </a>
       </div>
       {% endfor %}

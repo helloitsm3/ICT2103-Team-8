@@ -1,6 +1,7 @@
 from passlib.context import CryptContext
 from scripts.database import Database
 from scripts.commands import *
+from pymongo import ReturnDocument
 
 
 class User:
@@ -40,6 +41,7 @@ class User:
                     "email": self.email,
                     "password": self.password,
                     "role": self.role,
+                    "wishlist": [],
                 }
             )
 
@@ -116,5 +118,52 @@ class User:
         return user_data
 
     def addToWishlist(self, movieId, username):
+        if "mongo" in self.db.getDB():
+            self.db_conn["moviedb"]["users"].find_one_and_update(
+                {"_id": {"username": username}},
+                {
+                    "$push": {
+                        "wishlist": {
+                            "title": movieId["title"],
+                            "release": movieId["release"],
+                        }
+                    },
+                },
+                return_document=ReturnDocument.AFTER,
+            )
 
-        pass
+            print("Successfully added {0} to wishlist".format(movieId["title"]))
+        else:
+            pass
+
+    def getWishList(self, username):
+        if "mongo" in self.db.getDB():
+            movie_list = []
+            pipeline = [
+                {
+                    "$lookup": {
+                        "from": "movies",
+                        "localField": "wishlist",
+                        "foreignField": "_id",
+                        "as": "movie_wishlist",
+                    }
+                },
+                {"$match": {"_id.username": username}},
+                {"$unwind": "$movie_wishlist"},
+                {
+                    "$project": {
+                        "title": "$movie_wishlist.title",
+                        "poster": "$movie_wishlist.poster",
+                    }
+                },
+            ]
+
+            data = self.db_conn["moviedb"]["users"].aggregate(pipeline)
+
+            for i in data:
+                filtered_name = i["title"].lower().replace(" ", "-")
+                movie_list.append({"title": filtered_name, "poster": i["poster"]})
+
+            return movie_list
+        else:
+            pass
