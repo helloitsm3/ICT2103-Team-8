@@ -59,11 +59,10 @@ def getNowShowingMovies(moviename):
         if len(movie_det) > 0:
             for movie_data in movie_det:
                 movie_id = movie_data[0]
-                ratings = (
-                    float(db.getData(FETCH_RATINGS, movie_id)[0][0])
-                    if db.getData(FETCH_RATINGS, movie_id)[0][0] != None
-                    else movie_data[1]
-                )
+
+                temp_rate = db.getData(FETCH_RATINGS, movie_id)[0][0]
+                ratings = float(temp_rate) if temp_rate != None else movie_data[1]
+
                 movie_ratings = ratings
                 movie_genre = movie_data[2]
                 movie_country = movie_data[3]

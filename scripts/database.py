@@ -112,10 +112,8 @@ class Database:
     def insertMovie(self, runtime, poster, plot, title, release):
         if "mongo" not in self.database:
             try:
-                insert_movie = INSERT_MOVIE
                 data_movie = ("4", runtime, poster, plot, title, release)
-
-                self.db_cursor.execute(insert_movie, data_movie)
+                self.db_cursor.execute(INSERT_MOVIE, data_movie)
             except IntegrityError:
                 print("Failed to insert Movie: {0} as it already exist".format(title))
         else:
@@ -138,18 +136,14 @@ class Database:
     # Select a movie from db using poster url
     def fetchMovie(self, url):
         if "mongo" not in self.database:
-            fetch_movie = FETCH_MOVIE
-
-            self.db_cursor.execute(fetch_movie, (url,))
+            self.db_cursor.execute(FETCH_MOVIE, (url,))
             movie_data = self.db_cursor.fetchall()
             return movie_data
 
     def fetchMovieByName(self, name):
         filtered_name = name.replace("-", " ")
         if "mongo" not in self.database:
-            fetch_movie = FETCH_MOVIE_BY_NAME
-
-            self.db_cursor.execute(fetch_movie, (filtered_name,))
+            self.db_cursor.execute(FETCH_MOVIE_BY_NAME, (filtered_name,))
             movie_data = self.db_cursor.fetchall()
 
             return movie_data
@@ -160,12 +154,6 @@ class Database:
             return self.db_conn["moviedb"]["movies"].find_one(
                 {"title": re.compile("^" + filtered_name + "$", re.IGNORECASE)}
             )
-
-    def fetchMovieByNameAndDate(self, username):
-        if "mongo" not in self.database:
-            pass
-        else:
-            data = self.db_conn["moviedb"]
 
     def cleanConnection(self):
         if "mongo" not in self.database:
@@ -240,11 +228,7 @@ class Database:
     # fetch top 10 movies
     def fetchTopTenMovieName(self):
         if "mongo" not in self.database:
-            fetch_top10_movie_name = (
-                "SELECT title FROM movie ORDER BY ratings DESC LIMIT 10"
-            )
-
-            self.db_cursor.execute(fetch_top10_movie_name)
+            self.db_cursor.execute(FETCH_TOP_TEN_MOVIE_NAME)
             movie_top10_name = self.db_cursor.fetchall()
             return movie_top10_name
 
