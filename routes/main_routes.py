@@ -226,10 +226,10 @@ def submit_review():
 
             rating = request.form["movie_rating"]
             review = request.form["movie_review"]
-            movie_title = session.get("current_movie")["title"]
+            movie_id = session.get("current_movie")["id"]
 
             db = Database()
-            db.userSubmitReview(author_id, movie_title, rating, review)
+            db.userSubmitReview(author_id, movie_id, rating, review)
             db.cleanConnection()
             print("Successfully submitted review")
     return redirect(url_for("main_api.main"))
