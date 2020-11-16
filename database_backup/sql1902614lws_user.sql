@@ -1,8 +1,8 @@
 -- MySQL dump 10.13  Distrib 8.0.21, for Win64 (x86_64)
 --
--- Host: 127.0.0.1    Database: ictmysql
+-- Host: rm-gs595dd89hu8175hl6o.mysql.singapore.rds.aliyuncs.com    Database: sql1902614lws
 -- ------------------------------------------------------
--- Server version	8.0.21
+-- Server version	8.0.18
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -14,6 +14,14 @@
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+SET @MYSQLDUMP_TEMP_LOG_BIN = @@SESSION.SQL_LOG_BIN;
+SET @@SESSION.SQL_LOG_BIN= 0;
+
+--
+-- GTID state at the beginning of the backup 
+--
+
+SET @@GLOBAL.GTID_PURGED=/*!80000 '+'*/ '8f39c137-fae0-11ea-b0a8-00163e060ab2:1-350129';
 
 --
 -- Table structure for table `user`
@@ -23,8 +31,8 @@ DROP TABLE IF EXISTS `user`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `user` (
-  `user_id` int NOT NULL AUTO_INCREMENT,
-  `movie_id` int DEFAULT NULL,
+  `user_id` int(11) NOT NULL AUTO_INCREMENT,
+  `movie_id` int(11) DEFAULT NULL,
   `username` varchar(50) NOT NULL,
   `email` varchar(50) NOT NULL,
   `password` varchar(255) NOT NULL,
@@ -32,7 +40,7 @@ CREATE TABLE `user` (
   `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`user_id`),
   UNIQUE KEY `username` (`username`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -41,9 +49,10 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1,NULL,'asdf','asdf@gmail.com','$pbkdf2-sha256$30000$B0AIwTjHWMsZg1DqPQfg3A$ruU6ujlOkMgLs7YdyFJtPmPSd2k5lNJqo/SNiveJ2UU','User','2020-11-02 22:34:18');
+INSERT INTO `user` VALUES (1,NULL,'asdf','asdf@gmail.com','$pbkdf2-sha256$30000$a43xXguBUMq5F0KoldLa.w$ycGL/YYTIYaIt1B.cBsktDsJyGs22qXd51xeH.T9FG8','User','2020-11-07 17:54:27'),(2,NULL,'test','test@gmail.com','$pbkdf2-sha256$30000$gjBmDCFkTImRkhJi7N1byw$2pffBTj84QMrJX.skhUo6VYp27dIfYKd8iHPtGC9BHg','Admin','2020-11-07 21:53:20'),(3,NULL,'admin','admin@gm.com','$pbkdf2-sha256$30000$sHZuzRnjPIfwvheidO79nw$WELi4mQS1LOslaQ6mznnlsfMbN.LjBv428K/BUPa7X8','Admin','2020-11-08 17:00:57');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
+SET @@SESSION.SQL_LOG_BIN = @MYSQLDUMP_TEMP_LOG_BIN;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -54,4 +63,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-11-02 22:41:26
+-- Dump completed on 2020-11-16 21:02:57
