@@ -219,7 +219,6 @@ input {
   flex-direction: column;
   width: 30%;
   color: white;
-  margin-top: -60px;
 }
 
 #form_inputs div {
@@ -228,6 +227,15 @@ input {
 
 .reg-btn {
   margin-top: 40px;
+}
+
+#login-form {
+  margin-top: 20px;
+}
+
+#btn-login {
+  width: 130px;
+  height: 43px;
 }
 
 .card-img-top {
@@ -262,6 +270,10 @@ input {
 
 .card-search {
   background-color: #3c3741;
+}
+
+#btn-search {
+  height: 45px;
 }
 
 .card-body-cont {
