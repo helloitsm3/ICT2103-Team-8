@@ -231,6 +231,21 @@ class Database:
             self.db_cursor.execute(FETCH_TOP_TEN_MOVIE_NAME)
             movie_top10_name = self.db_cursor.fetchall()
             return movie_top10_name
+        else:
+            # FETCHING FROM MONGO DB
+            results = []
+            queryStatement = (
+                self.db_conn["moviedb"]["movies"]
+                .find({}, {"title": 1, "_id": 0})
+                .limit(10)
+                .sort("title", -1)
+            )
+            for row in queryStatement:
+                resultRow = []
+                resultRow.append(row["title"])
+                results.append(resultRow)
+            print(results)
+            return results
 
     # fetch from movie title search
     def fetchFromMovieSearch(self, serchTerm):
@@ -240,6 +255,21 @@ class Database:
             self.db_cursor.close()
             self.db_conn.close()
             return search_results
+        else:
+            results = []
+            queryStatement = (
+                self.db_conn["moviedb"]["movies"]
+                .find(
+                    {"title": {"$regex": serchTerm, "$options": "i"}},
+                    {"_id": 0, "poster": 1, "title": 1, "run_time": 1},
+                )
+                .sort("title", -1)
+            )
+            for row in queryStatement:
+                resultRow = row["poster"], row["title"], None, row["run_time"], 4
+                results.append(resultRow)
+            print(results)
+            return results
 
     def getData(self, key, *args):
         if "mongo" not in self.database:
