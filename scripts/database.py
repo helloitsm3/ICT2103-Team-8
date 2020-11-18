@@ -257,18 +257,53 @@ class Database:
             return search_results
         else:
             results = []
+            # query based on searchTerm aka sql LIKE
             queryStatement = (
                 self.db_conn["moviedb"]["movies"]
                 .find(
                     {"title": {"$regex": serchTerm, "$options": "i"}},
-                    {"_id": 0, "poster": 1, "title": 1, "run_time": 1},
+                    {
+                        "_id": 0,
+                        "poster": 1,
+                        "title": 1,
+                        "run_time": 1,
+                        "reviews": 1,
+                    },
                 )
                 .sort("title", -1)
             )
+
             for row in queryStatement:
-                resultRow = row["poster"], row["title"], None, row["run_time"], 4
+                rating = 0
+                # for each movie, average the reviews rating
+                pipeline = [
+                    {"$match": {"title": row["title"]}},
+                    {"$unwind": "$reviews"},
+                    {
+                        "$group": {
+                            "_id": "$title",
+                            "ratings_avg": {"$avg": "$reviews.ratings"},
+                        }
+                    },
+                ]
+
+                data = self.db_conn["moviedb"]["movies"].aggregate(pipeline)
+
+                # get the rating from data object
+                for i in data:
+                    rating = i["ratings_avg"]
+
+                # rearrange column to be same arrange as sql query result
+                resultRow = (
+                    row["poster"],
+                    row["title"],
+                    None,
+                    row["run_time"],
+                    round(rating, 2),
+                )
                 results.append(resultRow)
-            print(results)
+
+            results.sort(key=lambda x: x[4], reverse=True)
             return results
 
     def getData(self, key, *args):

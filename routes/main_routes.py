@@ -272,7 +272,6 @@ def register_user():
 def search_movie():
     isLoggedIn = session.get("logged_in")
     if request.method == "POST":
-        print(request.form["movieTitle"])
         db = Database()
         search_result = db.fetchFromMovieSearch(request.form["movieTitle"])
         return render_template(
