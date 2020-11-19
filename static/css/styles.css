@@ -230,11 +230,14 @@ input {
 }
 
 #login-form {
+  display: flex;
+  flex-direction: column;
   margin-top: 20px;
+  width: 300px;
 }
 
 #btn-login {
-  width: 130px;
+  /* width: 130px; */
   height: 43px;
 }
 
