@@ -5,18 +5,25 @@ from pymongo import ReturnDocument
 
 
 class User:
-    def __init__(self):
+    def __init__(self, user_data=""):
         self.pwd_context = CryptContext(
             schemes=["pbkdf2_sha256"],
             default="pbkdf2_sha256",
             pbkdf2_sha256__default_rounds=30000,
         )
 
-        self.role = "User"
-        self.email = ""
-        self.username = ""
-        self.password = ""
-        self.id = ""
+        if user_data:
+            self.role = "User"
+            self.email = user_data["email"]
+            self.username = user_data["username"]
+            self.password = ""
+            self.id = user_data["id"]
+        else:
+            self.role = "User"
+            self.email = ""
+            self.username = ""
+            self.password = ""
+            self.id = ""
 
         # INSERT USER DATA TO DATABASE
         self.db = Database()

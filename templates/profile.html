@@ -1,0 +1,51 @@
+{% extends 'base.html' %} {% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename = 'css/profile.css') }}" />
+<script src="{{ url_for('static', filename = 'scripts/activity.js') }}"></script>
+{% endblock %} {% block content %}
+
+<!-- Now Showing -->
+<section class="page-section" id="movie_name">
+  <div class="container profile-main-container">
+    <div id="profile-container">
+      <img src="{{ url_for('static', filename='assets/man.svg') }}" alt="profile-pic" />
+      <div class="profile-name">
+        <h1>{{ username }}</h1>
+      </div>
+    </div>
+
+    <div id="activity-stats-container">
+      <p id="activity-stats-title">371 activities this year</p>
+      <div id="activity-stats-tracker">
+        <svg width="1000" height="110" id="activity-svg"></svg>
+      </div>
+    </div>
+
+    <div id="tab-container">
+      <ul class="nav justify-content-center">
+        <li class="nav-item">
+          <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Overview</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Movie wishlist</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">Reviews</a>
+        </li>
+      </ul>
+
+      <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Neque, eveniet earum. Sed accusantium eligendi molestiae quo hic velit nobis et, tempora placeat ratione rem blanditiis voluptates vel ipsam? Facilis, earum!</p>
+        </div>
+        <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Neque, eveniet earum. Sed accusantium eligendi molestiae quo hic velit nobis et, tempora placeat ratione rem blanditiis voluptates vel ipsam? Facilis, earum!</p>
+        </div>
+        <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Neque, eveniet earum. Sed accusantium eligendi molestiae quo hic velit nobis et, tempora placeat ratione rem blanditiis voluptates vel ipsam? Facilis, earum!</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

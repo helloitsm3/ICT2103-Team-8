@@ -141,9 +141,10 @@ CREATE_MOVIE_LIST_TBL = """
 CREATE TABLE IF NOT EXISTS MovieList (
     user_id INT,
     movie_id INT,
+    date_created DATETIME DEFAULT CURRENT_TIMESTAMP,
 
-    FOREIGN KEY (user_id) REFERENCES User(user_id),
-    FOREIGN KEY (movie_id) REFERENCES Movie(movie_id)
+    FOREIGN KEY (user_id) REFERENCES User(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (movie_id) REFERENCES Movie(movie_id) ON DELETE CASCADE
 )
 """
 

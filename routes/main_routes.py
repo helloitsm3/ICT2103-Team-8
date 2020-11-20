@@ -287,13 +287,12 @@ def search_movie():
 
 @data.route("/wishlist", methods=["GET", "POST"])
 def movie_wishlist():
-    user = User()
     user_name = ""
     isLoggedIn = session.get("logged_in")
 
     if isLoggedIn:
-        user_id = session["user_data"]["id"]
-        user_name = user_id if user_id != "" else session["user_data"]["username"]
+        user = User(session["user_data"])
+        user_name = user.id if user.id != "" else user.username
 
     # METHOD TO ADD MOVIE TO WISHLIST
     if request.method == "POST":
@@ -312,3 +311,16 @@ def movie_wishlist():
             )
         else:
             return redirect(url_for("main_api.main"))
+
+
+@data.route("/profile")
+def profile_page():
+    isLoggedIn = session.get("logged_in")
+
+    if isLoggedIn:
+        user = User(session["user_data"])
+        return render_template(
+            "profile.html", isLoggedIn=isLoggedIn, username=user.username
+        )
+
+    return redirect(url_for("main_api.main"))

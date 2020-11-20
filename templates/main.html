@@ -29,7 +29,7 @@
       {% for image in images%}
       <div class="movie-card">
         <a href="/nowshowing/{{ image['title'] }}">
-          <img class="card-img-top" src="{{image['poster']}}" alt="Card image cap" />
+          <img class="card-img-top" src="{{ image['poster'] }}" alt="Card image cap" />
         </a>
       </div>
       {% endfor %}
