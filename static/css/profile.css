@@ -65,7 +65,7 @@
 
 .tab-content {
   color: white;
-  margin-top: 20px;
+  margin-top: 10px;
 }
 
 .iseditable {
@@ -76,4 +76,31 @@
 
 #save-profile-button {
   display: none;
+}
+
+.tab-content .active {
+  display: flex;
+  flex-direction: column;
+  width: 700px;
+}
+
+.tab-content-container div {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.tab-content-container {
+  margin-bottom: 10px;
+  padding: 10px 20px 0 20px;
+  background-color: #3c3741;
+}
+
+#myTabContent {
+  display: flex;
+  justify-content: center;
+}
+
+.tab-content-review-content {
+  margin-top: -10px;
 }

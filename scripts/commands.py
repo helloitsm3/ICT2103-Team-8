@@ -91,14 +91,43 @@ FETCH_USER_REVIEW_ACTIVITY = """
 """
 
 FETCH_TOTAL_ACTIVITY = """
-SELECT SUM(Count)
-FROM (
-	SELECT 
-		COUNT(review) as Count,
-		Date(date_create) as Date
-	FROM Review
-	GROUP BY Date(Review.date_create)
-) as temp
+    SELECT SUM(Count)
+    FROM (
+	    SELECT 
+		    COUNT(review) as Count,
+		    Date(date_create) as Date
+	    FROM Review
+	    GROUP BY Date(Review.date_create)
+    ) as temp
+"""
+
+FETCH_REVIEW_ACTIVITY = """
+    SELECT 
+        r.review,
+        r.date_create,
+        m.title
+    FROM 
+        Review r 
+    INNER JOIN User u ON r.author_id = u.user_id
+    INNER JOIN Movie m ON r.movie_id = m.movie_id
+    WHERE
+        user_id = %s
+    ORDER BY
+        DATE(r.date_create) DESC
+"""
+
+FETCH_MOVIE_WISHLIST_ACTIVITY = """
+    SELECT 
+        ml.date_created,
+        m.title
+    FROM 
+        Movielist ml 
+    INNER JOIN User u ON ml.user_id = u.user_id
+    INNER JOIN Movie m ON ml.movie_id = m.movie_id
+    WHERE
+        ml.user_id = %s
+    ORDER BY
+        DATE(ml.date_created) DESC
 """
 
 # SECTION FOR ALL ALTER COMMANDS

@@ -30,7 +30,7 @@
     <div id="tab-container">
       <ul class="nav justify-content-center">
         <li class="nav-item">
-          <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Overview</a>
+          <a class="nav-link active" id="overview-tab" data-toggle="tab" href="#overview" role="tab" aria-controls="overview" aria-selected="true">Overview</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Movie wishlist</a>
@@ -41,14 +41,35 @@
       </ul>
 
       <div class="tab-content" id="myTabContent">
-        <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
-          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Neque, eveniet earum. Sed accusantium eligendi molestiae quo hic velit nobis et, tempora placeat ratione rem blanditiis voluptates vel ipsam? Facilis, earum!</p>
+        <div class="tab-pane fade show active tab-content" id="overview" role="tabpanel" aria-labelledby="overview-tab">
+          <p>Added Dreamkatcher to Movie Wishlist</p>
+          <p>12 hours ago</p>
         </div>
-        <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Neque, eveniet earum. Sed accusantium eligendi molestiae quo hic velit nobis et, tempora placeat ratione rem blanditiis voluptates vel ipsam? Facilis, earum!</p>
+
+        <!-- MOVIE WISHLIST TAB -->
+        <div class="tab-pane fade tab-content" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+          {% for review in wishlist_activity %}
+          <div class="tab-content-container">
+            <div>
+              <p>Added {{ review[1] }} in movie wishlist</p>
+              <p>{{ review[0] }}</p>
+            </div>
+          </div>
+          {% endfor %}
         </div>
-        <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
-          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Neque, eveniet earum. Sed accusantium eligendi molestiae quo hic velit nobis et, tempora placeat ratione rem blanditiis voluptates vel ipsam? Facilis, earum!</p>
+
+        <!-- REVIEW TAB -->
+        <div class="tab-pane fade tab-content" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+          {% for review in activity[2] %}
+          <div class="tab-content-container">
+            <div>
+              <p>Added a review to {{ review[2] }}</p>
+              <p>{{ review[1] }}</p>
+            </div>
+
+            <p class="tab-content-review-content">{{ review[0] }}</p>
+          </div>
+          {% endfor %}
         </div>
       </div>
     </div>

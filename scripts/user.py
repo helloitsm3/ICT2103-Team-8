@@ -133,8 +133,17 @@ class User:
             activity = self.cursor.fetchall()
             self.cursor.execute(FETCH_TOTAL_ACTIVITY)
             total_activity = self.cursor.fetchall()
+            self.cursor.execute(FETCH_REVIEW_ACTIVITY, (self.id,))
+            review_activity = self.cursor.fetchall()
 
-            return (activity, total_activity)
+            return (activity, total_activity, review_activity)
+
+    def fetchMovieWishListActivity(self):
+        if "mongo" not in self.db.getDB():
+            self.cursor.execute(FETCH_MOVIE_WISHLIST_ACTIVITY, (self.id,))
+            wishlist_activity = self.cursor.fetchall()
+
+            return wishlist_activity
 
     def getUserData(self):
         user_data = {
