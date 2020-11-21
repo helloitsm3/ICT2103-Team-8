@@ -63,6 +63,10 @@ FETCH_USER = """
     SELECT * FROM User WHERE username = %s
 """
 
+FETCH_USER_DESCRIPTION = """
+    SELECT description FROM User WHERE user_id = %s
+"""
+
 FETCH_MOVIE_WISHLIST = """
     SELECT 
 	    m.poster_path,
@@ -78,6 +82,35 @@ FETCH_TOP_TEN_MOVIE_NAME = """
     SELECT title FROM movie ORDER BY ratings DESC LIMIT 10
 """
 
+FETCH_USER_REVIEW_ACTIVITY = """
+    SELECT 
+        COUNT(review),
+        DATE(date_create)
+    FROM Review
+    GROUP BY DATE(Review.date_create)
+"""
+
+FETCH_TOTAL_ACTIVITY = """
+SELECT SUM(Count)
+FROM (
+	SELECT 
+		COUNT(review) as Count,
+		Date(date_create) as Date
+	FROM Review
+	GROUP BY Date(Review.date_create)
+) as temp
+"""
+
+# SECTION FOR ALL ALTER COMMANDS
+ALTER_USER_DESCRIPTION = """
+    UPDATE user
+    SET 
+        description = %s
+    WHERE
+        user_id = %s
+"""
+
+
 # SECTION FOR ALL CREATE TABLE COMMANDS
 CREATE_USER_TBL = """
     CREATE TABLE IF NOT EXISTS User (
@@ -87,6 +120,7 @@ CREATE_USER_TBL = """
         email VARCHAR(50) NOT NULL, 
         password VARCHAR(255) NOT NULL, 
         role_id VARCHAR(25), 
+        description VARCHAR(255),
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP 
     )
 """

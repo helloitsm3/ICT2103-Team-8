@@ -252,8 +252,6 @@ class Database:
         if "mongo" not in self.database:
             self.db_cursor.execute(FETCH_FROM_MOVIE_SEARCH, ("%" + serchTerm + "%",))
             search_results = self.db_cursor.fetchall()
-            self.db_cursor.close()
-            self.db_conn.close()
             return search_results
         else:
             results = []
@@ -344,3 +342,9 @@ class Database:
 
             for i in data:
                 return i
+
+    def updateUserProfile(self, user_id, description):
+        if "mongo" not in self.database:
+            self.db_cursor.execute(ALTER_USER_DESCRIPTION, (description, user_id))
+            search_results = self.db_cursor.fetchall()
+            return search_results

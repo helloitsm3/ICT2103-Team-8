@@ -23,12 +23,18 @@
   display: flex;
   color: white;
   flex-direction: column;
-  margin-top: 40px;
+  margin-top: 20px;
 }
 
 #activity-stats-title {
   font-size: 18px;
   margin-bottom: 8px;
+}
+
+.profile-name {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
 }
 
 #activity-stats-tracker {
@@ -60,4 +66,14 @@
 .tab-content {
   color: white;
   margin-top: 20px;
+}
+
+.iseditable {
+  padding: 10px;
+  border-radius: 3px;
+  background-color: #535c68;
+}
+
+#save-profile-button {
+  display: none;
 }

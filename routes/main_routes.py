@@ -274,12 +274,14 @@ def search_movie():
     if request.method == "POST":
         db = Database()
         search_result = db.fetchFromMovieSearch(request.form["movieTitle"])
+        db.cleanConnection()
         return render_template(
             "search.html", results=search_result, isLoggedIn=isLoggedIn
         )
     else:
         db = Database()
         movie_top_ten = db.fetchTopTenMovieName()
+        db.cleanConnection()
         return render_template(
             "search.html", topTen=movie_top_ten, isLoggedIn=isLoggedIn
         )
@@ -313,14 +315,27 @@ def movie_wishlist():
             return redirect(url_for("main_api.main"))
 
 
-@data.route("/profile")
+@data.route("/profile", methods=["POST", "GET"])
 def profile_page():
     isLoggedIn = session.get("logged_in")
+    db = Database()
 
     if isLoggedIn:
         user = User(session["user_data"])
-        return render_template(
-            "profile.html", isLoggedIn=isLoggedIn, username=user.username
-        )
+
+        if request.method == "GET":
+            user.fetchDescription()
+
+            return render_template(
+                "profile.html",
+                isLoggedIn=isLoggedIn,
+                username=user.username,
+                description=user.description,
+                activity=user.fetchReviewActivity(),
+            )
+        elif request.method == "POST":
+            profile_desc = request.data.decode("utf-8")
+            db.updateUserProfile(user.id, profile_desc)
+            return redirect(url_for("main_api.profile_page"))
 
     return redirect(url_for("main_api.main"))

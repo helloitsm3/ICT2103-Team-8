@@ -16,11 +16,13 @@ class User:
             self.role = "User"
             self.email = user_data["email"]
             self.username = user_data["username"]
-            self.password = ""
+            self.description = user_data["description"]
             self.id = user_data["id"]
+            self.password = ""
         else:
             self.role = "User"
             self.email = ""
+            self.description = ""
             self.username = ""
             self.password = ""
             self.id = ""
@@ -70,6 +72,7 @@ class User:
                 tempEmail = i[3]
                 tempPass = i[4]
                 tempRole = i[5]
+                tempDescription = i[6]
 
                 if tempUsername == username and self.verify_pass(password, tempPass):
                     self.username = tempUsername
@@ -77,6 +80,7 @@ class User:
                     self.role = tempRole
                     self.email = tempEmail
                     self.id = tempId
+                    self.description = tempDescription
                     print("User successfully logged in")
                     return True
                 else:
@@ -92,6 +96,7 @@ class User:
             temp_username = ""
             temp_pass = ""
             temp_email = ""
+            temp_description = ""
 
             try:
                 for key, value in data.items():
@@ -105,8 +110,8 @@ class User:
                 if temp_username == username and self.verify_pass(password, temp_pass):
                     self.username = temp_username
                     self.password = temp_pass
-                    self.role = "User"
                     self.email = temp_email
+                    self.role = "User"
                     print("User successfully logged in")
                     return True
                 else:
@@ -114,12 +119,30 @@ class User:
             except AttributeError:
                 return False
 
+    def fetchDescription(self):
+        if "mongo" not in self.db.getDB():
+            self.cursor.execute(FETCH_USER_DESCRIPTION, (self.id,))
+            description = self.cursor.fetchall()
+
+            for i in description:
+                self.description = i[0]
+
+    def fetchReviewActivity(self):
+        if "mongo" not in self.db.getDB():
+            self.cursor.execute(FETCH_USER_REVIEW_ACTIVITY)
+            activity = self.cursor.fetchall()
+            self.cursor.execute(FETCH_TOTAL_ACTIVITY)
+            total_activity = self.cursor.fetchall()
+
+            return (activity, total_activity)
+
     def getUserData(self):
         user_data = {
             "id": self.id,
             "username": self.username,
             "email": self.email,
             "role": self.role,
+            "description": self.description,
         }
 
         return user_data

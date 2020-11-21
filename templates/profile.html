@@ -10,11 +10,18 @@
       <img src="{{ url_for('static', filename='assets/man.svg') }}" alt="profile-pic" />
       <div class="profile-name">
         <h1>{{ username }}</h1>
+
+        <div id="profile-editable">
+          <p>{{ description }}</p>
+        </div>
+
+        <button type="button" class="btn btn-primary" id="save-profile-button">Save</button>
       </div>
     </div>
 
     <div id="activity-stats-container">
-      <p id="activity-stats-title">371 activities this year</p>
+      <p id="activity-stats-title">{{ activity[1][0][0] }} activities this year</p>
+
       <div id="activity-stats-tracker">
         <svg width="1000" height="110" id="activity-svg"></svg>
       </div>
@@ -47,5 +54,10 @@
     </div>
   </div>
 </section>
+
+<script type="text/javascript">
+  const user_activity = {{ activity[0] | tojson }};
+  getActivityDate(user_activity);
+</script>
 
 {% endblock %}
