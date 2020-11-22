@@ -3,6 +3,7 @@
 let movieListData = [0, 0, 0, 0, 0, 0];
 let reviewListData = [0, 0, 0, 0, 0, 0];
 let monthList = [];
+const month_list = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
 window.chartColors = {
   red: "rgb(255, 99, 132)",
@@ -116,7 +117,6 @@ window.chartColors = {
 })(this);
 
 const getMonthLabel = (date) => {
-  const month_list = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
   const current_month = new Date(date).getMonth();
   let counter = current_month - 6;
 
@@ -128,24 +128,21 @@ const getMonthLabel = (date) => {
   });
 
   monthList.push(month_list[current_month]);
-
   return monthList;
 };
 
 const getMovieListData = (data) => {
   data.map((d) => {
-    movieListData.push(d[1]);
+    let monthIndex = Number(d[0]) % 6;
+    movieListData[monthIndex] = d[1];
   });
-
-  movieListData = movieListData.slice(movieListData.length - 6, movieListData.length);
 };
 
 const getReviewListData = (data) => {
   data.map((d) => {
-    reviewListData.push(d[1]);
+    let monthIndex = Number(d[0]) % 6;
+    reviewListData[monthIndex] = d[1];
   });
-
-  reviewListData = reviewListData.slice(reviewListData.length - 6, reviewListData.length);
 };
 
 const createConfig = (position) => {
