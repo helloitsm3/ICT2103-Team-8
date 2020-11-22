@@ -1,6 +1,10 @@
 {% extends 'base.html' %} {% block head %}
 <link rel="stylesheet" href="{{ url_for('static', filename = 'css/profile.css') }}" />
+<link rel="stylesheet" href="{{ url_for('static', filename = 'css/chart.css') }}" />
 <script src="{{ url_for('static', filename = 'scripts/activity.js') }}"></script>
+<script src="{{ url_for('static', filename = 'scripts/displayChart.js') }}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js" integrity="sha512-d9xgZrVZpmmQlfonhQUvTR7lMPtO7NkZMkA0ABN3PHCbKA5nqylQ/yWlFAyY6hYgdF1Qh6nYiuADWwKB4C2WSw==" crossorigin="anonymous"></script>
+
 {% endblock %} {% block content %}
 
 <!-- Now Showing -->
@@ -43,6 +47,7 @@
       <div class="tab-content" id="myTabContent">
         <!-- MOVIE OVERVIEW TAB -->
         <div class="tab-pane fade show active tab-content" id="overview" role="tabpanel" aria-labelledby="overview-tab">
+          <div class="canvas-container"></div>
           {% for overview in overview_activity %} {% if overview[4] is none %}
           <div class="tab-content-container">
             <div>
