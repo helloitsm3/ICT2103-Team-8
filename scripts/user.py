@@ -145,6 +145,14 @@ class User:
 
             return wishlist_activity
 
+    def fetchOverviewActivity(self):
+        if "mongo" not in self.db.getDB():
+            results = self.cursor.execute(FETCH_OVERVIEW_ACTIVITY, (self.id,), multi=True)
+
+            for i in results:
+                if i.with_rows:
+                    return i.fetchall()
+
     def getUserData(self):
         user_data = {
             "id": self.id,

@@ -325,14 +325,15 @@ def profile_page():
 
         if request.method == "GET":
             user.fetchDescription()
-
+           
             return render_template(
                 "profile.html",
                 isLoggedIn=isLoggedIn,
                 username=user.username,
                 description=user.description,
                 activity=user.fetchReviewActivity(),
-                wishlist_activity=user.fetchMovieWishListActivity(),
+                wishlist_activity=user.fetchMovieWishListActivity(), 
+                overview_activity= user.fetchOverviewActivity()
             )
         elif request.method == "POST":
             profile_desc = request.data.decode("utf-8")

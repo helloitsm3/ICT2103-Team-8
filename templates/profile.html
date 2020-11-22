@@ -41,9 +41,25 @@
       </ul>
 
       <div class="tab-content" id="myTabContent">
+        <!-- MOVIE OVERVIEW TAB -->
         <div class="tab-pane fade show active tab-content" id="overview" role="tabpanel" aria-labelledby="overview-tab">
-          <p>Added Dreamkatcher to Movie Wishlist</p>
-          <p>12 hours ago</p>
+          {% for overview in overview_activity %} {% if overview[4] is none %}
+          <div class="tab-content-container">
+            <div>
+              <p>Added {{ overview[0] }} in movie wishlist</p>
+              <p>{{ overview[1] }}</p>
+            </div>
+          </div>
+          {% else %}
+          <div class="tab-content-container">
+            <div>
+              <p>Added a overview to {{ overview[0] }}</p>
+              <p>{{ overview[1] }}</p>
+            </div>
+
+            <p class="tab-content-review-content">{{ overview[4] }}</p>
+          </div>
+          {% endif %} {% endfor %}
         </div>
 
         <!-- MOVIE WISHLIST TAB -->
