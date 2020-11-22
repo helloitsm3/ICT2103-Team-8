@@ -97,14 +97,20 @@ FETCH_USER_REVIEW_ACTIVITY = """
 """
 
 FETCH_TOTAL_ACTIVITY = """
-    SELECT SUM(Count)
+    SELECT *
     FROM (
-	    SELECT 
-		    COUNT(review) as Count,
-		    Date(date_create) as Date
-	    FROM Review
-	    GROUP BY Date(Review.date_create)
-    ) as temp
+        SELECT DATE(date_created) AS Date, COUNT(*) AS Count
+        FROM movie_list ml
+        WHERE user_id = 1
+        GROUP BY Date
+        
+        UNION ALL
+        
+        SELECT DATE(date_create) AS Date, COUNT(*) AS Count
+        FROM review_list rl
+        WHERE user_id = 1
+        GROUP BY Date
+    ) temp
 """
 
 FETCH_REVIEW_ACTIVITY = """

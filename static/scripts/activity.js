@@ -52,10 +52,10 @@ $(document).ready(() => {
 
   // Add fill to specific date
   date_list.map((dl) => {
-    const dd = dateFormat(dl[1]);
+    const dd = dateFormat(dl[0]);
 
     document.querySelector(`[data-date='${dd}']`).setAttribute("fill", "var(--color-activity-fill)");
-    document.querySelector(`[data-date='${dd}']`).setAttribute("data-original-title", `${dl[0]} activities on ${dd}`);
+    document.querySelector(`[data-date='${dd}']`).setAttribute("data-original-title", `${dl[1]} activities on ${dd}`);
   });
 
   // Make description editable

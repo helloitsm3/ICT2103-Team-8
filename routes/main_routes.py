@@ -325,6 +325,7 @@ def profile_page():
 
         if request.method == "GET":
             user.fetchDescription()
+            total_activity = sum([i[1] for i in user.fetchReviewActivity()[1]])
            
             return render_template(
                 "profile.html",
@@ -333,7 +334,8 @@ def profile_page():
                 description=user.description,
                 activity=user.fetchReviewActivity(),
                 wishlist_activity=user.fetchMovieWishListActivity(), 
-                overview_activity= user.fetchOverviewActivity()
+                overview_activity= user.fetchOverviewActivity(),
+                total_activity=total_activity
             )
         elif request.method == "POST":
             profile_desc = request.data.decode("utf-8")

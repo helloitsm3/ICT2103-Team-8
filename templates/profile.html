@@ -24,7 +24,7 @@
     </div>
 
     <div id="activity-stats-container">
-      <p id="activity-stats-title">{{ activity[1][0][0] }} activities this year</p>
+      <p id="activity-stats-title">{{ total_activity }} activities this year</p>
 
       <div id="activity-stats-tracker">
         <svg width="1000" height="110" id="activity-svg"></svg>
@@ -98,7 +98,7 @@
 </section>
 
 <script type="text/javascript">
-  const user_activity = {{ activity[0] | tojson }};
+  const user_activity = {{ activity[1] | tojson }};
   getActivityDate(user_activity);
 </script>
 
