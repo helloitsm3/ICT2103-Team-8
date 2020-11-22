@@ -1,5 +1,9 @@
 "use strict";
 
+let movieListData = [0, 0, 0, 0, 0, 0];
+let reviewListData = [0, 0, 0, 0, 0, 0];
+let monthList = [];
+
 window.chartColors = {
   red: "rgb(255, 99, 132)",
   orange: "rgb(255, 159, 64)",
@@ -111,24 +115,57 @@ window.chartColors = {
   /* eslint-enable */
 })(this);
 
-function createConfig(position) {
+const getMonthLabel = (date) => {
+  const month_list = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+  const current_month = new Date(date).getMonth();
+  let counter = current_month - 6;
+
+  [...Array(5)].map((e, index) => {
+    counter++;
+    if (counter >= 12) counter = 0;
+
+    monthList.push(month_list[counter]);
+  });
+
+  monthList.push(month_list[current_month]);
+
+  return monthList;
+};
+
+const getMovieListData = (data) => {
+  data.map((d) => {
+    movieListData.push(d[1]);
+  });
+
+  movieListData = movieListData.slice(movieListData.length - 6, movieListData.length);
+};
+
+const getReviewListData = (data) => {
+  data.map((d) => {
+    reviewListData.push(d[1]);
+  });
+
+  reviewListData = reviewListData.slice(reviewListData.length - 6, reviewListData.length);
+};
+
+const createConfig = (position) => {
   return {
     type: "line",
     data: {
-      labels: ["January", "February", "March", "April", "May", "June", "July"],
+      labels: getMonthLabel(new Date()),
       datasets: [
         {
           label: "Movie Wishlist Activity",
           borderColor: window.chartColors.red,
           backgroundColor: window.chartColors.red,
-          data: [10, 30, 46, 2, 8, 50, 0],
+          data: movieListData,
           fill: false,
         },
         {
           label: "User Review Activity",
           borderColor: window.chartColors.blue,
           backgroundColor: window.chartColors.blue,
-          data: [7, 49, 46, 13, 25, 30, 22],
+          data: reviewListData,
           fill: false,
         },
       ],
@@ -173,14 +210,12 @@ function createConfig(position) {
       },
     },
   };
-}
+};
 
 window.onload = function () {
   var container = document.querySelector(".canvas-container");
 
   ["average"].forEach(function (position) {
-    var div = document.createElement("div");
-
     var canvas = document.createElement("canvas");
     container.appendChild(canvas);
 

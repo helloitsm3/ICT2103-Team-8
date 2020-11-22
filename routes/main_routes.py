@@ -335,7 +335,9 @@ def profile_page():
                 activity=user.fetchReviewActivity(),
                 wishlist_activity=user.fetchMovieWishListActivity(), 
                 overview_activity= user.fetchOverviewActivity(),
-                total_activity=total_activity
+                total_activity=total_activity,
+                movie_wishlist_graph=user.fetchMovieListGraphActivity(),
+                review_list_graph=user.fetchReviewListGraphActivity()
             )
         elif request.method == "POST":
             profile_desc = request.data.decode("utf-8")

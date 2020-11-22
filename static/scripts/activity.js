@@ -25,7 +25,7 @@ $(document).ready(() => {
     x.map((y, y_index, y_array) => {
       var length = x_array.length * y_array.length - 1;
       var reverse_yindex = y_array.length * x_index + y_index - length; // Calculation to display date in reverse
-      var get_date = getDate(reverse_yindex);
+      var get_date = getDate(reverse_yindex + 1);
 
       var rect = `
         <rect class="day" 

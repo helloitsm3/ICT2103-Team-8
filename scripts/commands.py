@@ -184,6 +184,20 @@ WHERE
 	temp.user_id = %s
 """
 
+FETCH_MOVIELIST_GRAPH_ACTIVITY = """
+SELECT DATE_FORMAT(date_created, '%m') AS Date_Created, COUNT(DATE_FORMAT(date_created, '%m')) AS activity_count
+FROM movie_list
+WHERE user_id = %s
+GROUP BY DATE_FORMAT(date_created, '%m')
+"""
+
+FETCH_REVIEWLIST_GRAPH_ACTIVITY = """
+SELECT DATE_FORMAT(date_create, '%m') AS Date_Created, COUNT(DATE_FORMAT(date_create, '%m')) AS activity_count
+FROM review_list rl
+WHERE user_id = %s
+GROUP BY DATE_FORMAT(date_create, '%m')
+"""
+
 # SECTION FOR ALL ALTER COMMANDS
 ALTER_USER_DESCRIPTION = """
     UPDATE user

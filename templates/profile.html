@@ -100,6 +100,8 @@
 <script type="text/javascript">
   const user_activity = {{ activity[1] | tojson }};
   getActivityDate(user_activity);
+  getMovieListData({{ movie_wishlist_graph | tojson }});
+  getReviewListData({{ review_list_graph | tojson}});
 </script>
 
 {% endblock %}

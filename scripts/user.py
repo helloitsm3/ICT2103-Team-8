@@ -153,6 +153,21 @@ class User:
                 if i.with_rows:
                     return i.fetchall()
 
+    def fetchMovieListGraphActivity(self):
+        if "mongo" not in self.db.getDB():
+            self.cursor.execute(FETCH_MOVIELIST_GRAPH_ACTIVITY, (self.id,))
+            results = self.cursor.fetchall()
+
+            return results
+
+    def fetchReviewListGraphActivity(self):
+        if "mongo" not in self.db.getDB():
+            self.cursor.execute(FETCH_REVIEWLIST_GRAPH_ACTIVITY, (self.id,))
+            results = self.cursor.fetchall()
+            print(results)
+
+            return results
+
     def getUserData(self):
         user_data = {
             "id": self.id,
