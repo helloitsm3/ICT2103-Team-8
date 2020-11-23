@@ -218,15 +218,18 @@ def submit_review():
         if isLoggedIn:
             db = Database()
             author_id = ""
+            movie_id = ""
 
             if "mongo" not in db.getDB():
                 author_id = session.get("user_data")["id"]
+                movie_id = session.get("current_movie")["id"]
             else:
                 author_id = session.get("user_data")["username"]
+                movie_id = session.get("current_movie")["title"]
 
             rating = request.form["movie_rating"]
             review = request.form["movie_review"]
-            movie_id = session.get("current_movie")["id"]
+            
 
             db = Database()
             db.userSubmitReview(author_id, movie_id, rating, review)

@@ -8,6 +8,7 @@ import mysql.connector
 from pymongo import MongoClient, ReturnDocument
 from scripts.commands import *
 from mysql.connector.errors import IntegrityError
+from datetime import datetime
 
 
 # POSTGRESQL VAR
@@ -219,6 +220,7 @@ class Database:
                             "author": author_id,
                             "ratings": float(points),
                             "review": review,
+                            "date_created": datetime.now()
                         }
                     }
                 },
