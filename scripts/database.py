@@ -300,7 +300,6 @@ class Database:
                 )
                 results.append(resultRow)
 
-            print(results)
             results.sort(key=lambda x: x[4], reverse=True)
             return results
 
@@ -345,6 +344,13 @@ class Database:
 
     def updateUserProfile(self, user_id, description):
         if "mongo" not in self.database:
+            # SQL QUERIES
             self.db_cursor.execute(ALTER_USER_DESCRIPTION, (description, user_id))
             search_results = self.db_cursor.fetchall()
             return search_results
+        else:
+            # MONGO QUERIES
+            self.db_conn["moviedb"]["users"].find_one_and_update(
+                {"_id": {"username": user_id}},
+                { "$set": { "description": description } }
+            )

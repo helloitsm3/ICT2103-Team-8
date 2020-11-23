@@ -24,7 +24,7 @@
     </div>
 
     <div id="activity-stats-container">
-      <p id="activity-stats-title">{{ total_activity }} activities this year</p>
+      <p id="activity-stats-title">{{ activity[3] }} activities this year</p>
 
       <div id="activity-stats-tracker">
         <svg width="1000" height="110" id="activity-svg"></svg>
@@ -48,32 +48,52 @@
         <!-- MOVIE OVERVIEW TAB -->
         <div class="tab-pane fade show active tab-content" id="overview" role="tabpanel" aria-labelledby="overview-tab">
           <div class="canvas-container"></div>
-          {% for overview in overview_activity %} {% if overview[4] is none %}
-          <div class="tab-content-container">
-            <div>
-              <p>Added {{ overview[0] }} in movie wishlist</p>
-              <p>{{ overview[1] }}</p>
-            </div>
-          </div>
-          {% else %}
-          <div class="tab-content-container">
-            <div>
-              <p>Added a overview to {{ overview[0] }}</p>
-              <p>{{ overview[1] }}</p>
-            </div>
+          {% for overview in overview_activity %}
+            {% if "mongo" not in current_db %}
+              {% set user_review  = overview[4] %}
+              {% set movie_title  = overview[0] %}
+              {% set timestamp    = overview[1] %}
+            {% else %}
+              {% set user_review  = "This is bad" %}
+              {% set movie_title  = "test" %}
+              {% set timestamp    = "2020-11-21 12:49:05" %}
+            {% endif %}
 
-            <p class="tab-content-review-content">{{ overview[4] }}</p>
-          </div>
-          {% endif %} {% endfor %}
+            {% if user_review is none %}
+              <div class="tab-content-container">
+                <div>
+                  <p>Added {{ movie_title }} in movie wishlist</p>
+                  <p>{{ timestamp }}</p>
+                </div>
+              </div>
+            {% else %}
+            <div class="tab-content-container">
+              <div>
+                <p>Added a overview to {{ movie_title }}</p>
+                <p>{{ timestamp }}</p>
+              </div>
+
+              <p class="tab-content-review-content">{{ user_review }}</p>
+            </div>
+            {% endif %} 
+          {% endfor %}
         </div>
 
         <!-- MOVIE WISHLIST TAB -->
         <div class="tab-pane fade tab-content" id="profile" role="tabpanel" aria-labelledby="profile-tab">
           {% for review in wishlist_activity %}
+          {% if "mongo" not in current_db %}
+            {% set movie_title = review[1] %}
+            {% set timestamp = review[0] %}
+          {% else %}
+            {% set movie_title = "test" %}
+            {% set timestamp = "2020-11-21 12:49:05" %}
+          {% endif %}
+
           <div class="tab-content-container">
             <div>
-              <p>Added {{ review[1] }} in movie wishlist</p>
-              <p>{{ review[0] }}</p>
+              <p>Added {{ movie_title }} in movie wishlist</p>
+              <p>{{ timestamp }}</p>
             </div>
           </div>
           {% endfor %}
@@ -82,13 +102,23 @@
         <!-- REVIEW TAB -->
         <div class="tab-pane fade tab-content" id="contact" role="tabpanel" aria-labelledby="contact-tab">
           {% for review in activity[2] %}
+          {% if "mongo" not in current_db %}
+            {% set movie_title = review[2] %}
+            {% set movie_review = review[0] %}
+            {% set timestamp = review[1] %}
+          {% else %}
+            {% set movie_title = "test" %}
+            {% set movie_review = "test" %}
+            {% set timestamp = "2020-11-21 12:49:05" %}
+          {% endif %}
+
           <div class="tab-content-container">
             <div>
-              <p>Added a review to {{ review[2] }}</p>
-              <p>{{ review[1] }}</p>
+              <p>Added a review to {{ movie_title }}</p>
+              <p>{{ timestamp }}</p>
             </div>
 
-            <p class="tab-content-review-content">{{ review[0] }}</p>
+            <p class="tab-content-review-content">{{ movie_review }}</p>
           </div>
           {% endfor %}
         </div>

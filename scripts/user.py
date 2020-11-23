@@ -135,10 +135,17 @@ class User:
                 self.description = i[0]
         else:
             # MONGO QUERY
-            data = self.db_conn["moviedb"]["movies"]
+            data = self.db_conn["moviedb"]["users"].find_one(
+                {"_id": {"username": self.username}}
+            )
+            
+            for key, value in data.items():
+                if "description" in key:
+                    self.description = value
 
     def fetchReviewActivity(self):
         if "mongo" not in self.db.getDB():
+            # SQL QUERIES
             self.cursor.execute(FETCH_USER_REVIEW_ACTIVITY)
             activity = self.cursor.fetchall()
             self.cursor.execute(FETCH_TOTAL_ACTIVITY)
@@ -146,36 +153,57 @@ class User:
             self.cursor.execute(FETCH_REVIEW_ACTIVITY, (self.id,))
             review_activity = self.cursor.fetchall()
 
-            return (activity, total_activity, review_activity)
+            total_activity_count = sum([i[1] for i in total_activity])
+
+            return (activity, total_activity, review_activity, total_activity_count)
+        else:
+            # MONGO QUERIES
+            return ([], [], [], [])
 
     def fetchMovieWishListActivity(self):
         if "mongo" not in self.db.getDB():
+            # SQL QUERIES
             self.cursor.execute(FETCH_MOVIE_WISHLIST_ACTIVITY, (self.id,))
             wishlist_activity = self.cursor.fetchall()
 
             return wishlist_activity
+        else:
+            # MONGO QUERIES
+            return []
 
     def fetchOverviewActivity(self):
         if "mongo" not in self.db.getDB():
+            # SQL QUERIES
             results = self.cursor.execute(FETCH_OVERVIEW_ACTIVITY, (self.id,), multi=True)
 
             for i in results:
                 if i.with_rows:
                     return i.fetchall()
+        else:
+            # MONGO QUERIES
+            return []
 
     def fetchMovieListGraphActivity(self):
         if "mongo" not in self.db.getDB():
+            # SQL QUERIES
             self.cursor.execute(FETCH_MOVIELIST_GRAPH_ACTIVITY, (self.id,))
             results = self.cursor.fetchall()
 
             return results
+        else:
+            # MONGO QUERIES
+            return []
 
     def fetchReviewListGraphActivity(self):
         if "mongo" not in self.db.getDB():
+            # SQL QUERIES
             self.cursor.execute(FETCH_REVIEWLIST_GRAPH_ACTIVITY, (self.id,))
             results = self.cursor.fetchall()
 
             return results
+        else:
+            # MONGO QUERIES
+            return []
 
     def getUserData(self):
         user_data = {

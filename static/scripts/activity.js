@@ -70,7 +70,7 @@ $(document).ready(() => {
     var desc_text = document.querySelector("#profile-editable p").textContent;
 
     const http = new XMLHttpRequest();
-    const url = "/profile";
+    const url = "/userprofile";
     http.open("POST", url);
     http.send(desc_text);
 
