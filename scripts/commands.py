@@ -143,59 +143,59 @@ FETCH_MOVIE_WISHLIST_ACTIVITY = """
 """
 
 FETCH_OVERVIEW_ACTIVITY = """
-CREATE OR REPLACE VIEW review_list AS
-SELECT 
-	r.review,
-    r.date_create,
-    m.title,
-    m.movie_id,
-    u.user_id
-FROM 
-	Review r 
-INNER JOIN User u ON r.author_id = u.user_id
-INNER JOIN Movie m ON r.movie_id = m.movie_id
-ORDER BY
-	DATE(r.date_create) DESC;
+    CREATE OR REPLACE VIEW review_list AS
+    SELECT 
+        r.review,
+        r.date_create,
+        m.title,
+        m.movie_id,
+        u.user_id
+    FROM 
+        Review r 
+    INNER JOIN User u ON r.author_id = u.user_id
+    INNER JOIN Movie m ON r.movie_id = m.movie_id
+    ORDER BY
+        DATE(r.date_create) DESC;
 
 
-CREATE OR REPLACE VIEW movie_list AS
-SELECT 
-	ml.date_created,
-	m.title,
-    m.movie_id,
-    ml.user_id
-FROM 
-	Movielist ml 
-INNER JOIN User u ON ml.user_id = u.user_id
-INNER JOIN Movie m ON ml.movie_id = m.movie_id
-ORDER BY
-	DATE(ml.date_created) DESC;
+    CREATE OR REPLACE VIEW movie_list AS
+    SELECT 
+        ml.date_created,
+        m.title,
+        m.movie_id,
+        ml.user_id
+    FROM 
+        Movielist ml 
+    INNER JOIN User u ON ml.user_id = u.user_id
+    INNER JOIN Movie m ON ml.movie_id = m.movie_id
+    ORDER BY
+        DATE(ml.date_created) DESC;
 
 
-SELECT * 
-FROM (
-	SELECT title, date_created, movie_id, user_id, NULL AS review 
-	FROM movie_list ml
-	UNION ALL
-	SELECT title, date_create, movie_id, user_id, review
-	FROM review_list rl
-) temp
-WHERE 
-	temp.user_id = %s
+    SELECT * 
+    FROM (
+        SELECT title, date_created, movie_id, user_id, NULL AS review 
+        FROM movie_list ml
+        UNION ALL
+        SELECT title, date_create, movie_id, user_id, review
+        FROM review_list rl
+    ) temp
+    WHERE 
+        temp.user_id = %s
 """
 
 FETCH_MOVIELIST_GRAPH_ACTIVITY = """
-SELECT DATE_FORMAT(date_created, '%m') AS Date_Created, COUNT(DATE_FORMAT(date_created, '%m')) AS activity_count
-FROM movie_list
-WHERE user_id = %s
-GROUP BY DATE_FORMAT(date_created, '%m')
+    SELECT DATE_FORMAT(date_created, '%m') AS Date_Created, COUNT(DATE_FORMAT(date_created, '%m')) AS activity_count
+    FROM movie_list
+    WHERE user_id = %s
+    GROUP BY DATE_FORMAT(date_created, '%m')
 """
 
 FETCH_REVIEWLIST_GRAPH_ACTIVITY = """
-SELECT DATE_FORMAT(date_create, '%m') AS Date_Created, COUNT(DATE_FORMAT(date_create, '%m')) AS activity_count
-FROM review_list rl
-WHERE user_id = %s
-GROUP BY DATE_FORMAT(date_create, '%m')
+    SELECT DATE_FORMAT(date_create, '%m') AS Date_Created, COUNT(DATE_FORMAT(date_create, '%m')) AS activity_count
+    FROM review_list rl
+    WHERE user_id = %s
+    GROUP BY DATE_FORMAT(date_create, '%m')
 """
 
 # SECTION FOR ALL ALTER COMMANDS

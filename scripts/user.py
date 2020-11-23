@@ -2,6 +2,7 @@ from passlib.context import CryptContext
 from scripts.database import Database
 from scripts.commands import *
 from pymongo import ReturnDocument
+from datetime import datetime
 
 
 class User:
@@ -52,6 +53,7 @@ class User:
                     "password": self.password,
                     "role": self.role,
                     "description": self.description,
+                    "date_created": datetime.now(),
                     "wishlist": [],
                 }
             )
