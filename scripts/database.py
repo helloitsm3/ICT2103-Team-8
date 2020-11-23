@@ -244,7 +244,6 @@ class Database:
                 resultRow = []
                 resultRow.append(row["title"])
                 results.append(resultRow)
-            print(results)
             return results
 
     # fetch from movie title search
@@ -301,6 +300,7 @@ class Database:
                 )
                 results.append(resultRow)
 
+            print(results)
             results.sort(key=lambda x: x[4], reverse=True)
             return results
 

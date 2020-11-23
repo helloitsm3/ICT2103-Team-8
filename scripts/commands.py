@@ -18,7 +18,7 @@ INSERT_REVIEW = """
 """
 
 INSERT_USER = """
-    INSERT INTO User (username, email, password, role_id) VALUES (%s, %s, %s, %s)
+    INSERT INTO User (username, email, password, role_id, description) VALUES (%s, %s, %s, %s, %s)
 """
 
 INSERT_MOVIE_WISHLIST = """

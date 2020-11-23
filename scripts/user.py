@@ -36,11 +36,12 @@ class User:
         self.password = self.pwd_context.encrypt(password)
         self.username = username
         self.email = email
+        self.description = "No description"
 
         if "mongo" not in self.db.getDB():
             self.cursor.execute(
                 INSERT_USER,
-                (self.username, self.email, self.password, self.role),
+                (self.username, self.email, self.password, self.role, self.description),
             )
             self.db.cleanConnection()
         else:
@@ -50,6 +51,7 @@ class User:
                     "email": self.email,
                     "password": self.password,
                     "role": self.role,
+                    "description": self.description,
                     "wishlist": [],
                 }
             )
@@ -98,6 +100,7 @@ class User:
             temp_email = ""
             temp_description = ""
 
+
             try:
                 for key, value in data.items():
                     if "_id" in key:
@@ -106,11 +109,14 @@ class User:
                         temp_pass = value
                     elif "email" in key:
                         temp_email = value
+                    elif "description" in key:
+                        temp_description = value
 
                 if temp_username == username and self.verify_pass(password, temp_pass):
                     self.username = temp_username
                     self.password = temp_pass
                     self.email = temp_email
+                    self.description = temp_description
                     self.role = "User"
                     print("User successfully logged in")
                     return True
@@ -121,11 +127,15 @@ class User:
 
     def fetchDescription(self):
         if "mongo" not in self.db.getDB():
+            # SQL QUERY
             self.cursor.execute(FETCH_USER_DESCRIPTION, (self.id,))
             description = self.cursor.fetchall()
 
             for i in description:
                 self.description = i[0]
+        else:
+            # MONGO QUERY
+            data = self.db_conn["moviedb"]["movies"]
 
     def fetchReviewActivity(self):
         if "mongo" not in self.db.getDB():
@@ -164,7 +174,6 @@ class User:
         if "mongo" not in self.db.getDB():
             self.cursor.execute(FETCH_REVIEWLIST_GRAPH_ACTIVITY, (self.id,))
             results = self.cursor.fetchall()
-            print(results)
 
             return results
 

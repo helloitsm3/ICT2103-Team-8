@@ -343,5 +343,6 @@ def profile_page():
             profile_desc = request.data.decode("utf-8")
             db.updateUserProfile(user.id, profile_desc)
             return redirect(url_for("main_api.profile_page"))
-
+    
+    db.cleanConnection()
     return redirect(url_for("main_api.main"))
