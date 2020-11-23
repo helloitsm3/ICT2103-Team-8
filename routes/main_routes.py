@@ -315,7 +315,7 @@ def movie_wishlist():
             return redirect(url_for("main_api.main"))
 
 
-@data.route("/profile", methods=["POST", "GET"])
+@data.route("/userprofile", methods=["POST", "GET"])
 def profile_page():
     isLoggedIn = session.get("logged_in")
     db = Database()
