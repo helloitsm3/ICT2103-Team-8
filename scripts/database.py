@@ -227,6 +227,22 @@ class Database:
                 return_document=ReturnDocument.AFTER,
             )
 
+            # Insert reviewlist to user document for analytics
+            data = self.db_conn["moviedb"]["users"].find_one_and_update(
+                {"_id": { "username": author_id }},
+                {
+                    "$push": {
+                        "reviewlist": {
+                            "movie_id": movie_id,
+                            "ratings": float(points),
+                            "review": review,
+                            "date_created": datetime.now()
+                        }
+                    }
+                },
+                return_document=ReturnDocument.AFTER,
+            )
+
     # fetch top 10 movies
     def fetchTopTenMovieName(self):
         if "mongo" not in self.database:

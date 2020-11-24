@@ -28,6 +28,14 @@ class User:
             self.password = ""
             self.id = ""
 
+        self.activity = []
+        self.total_activity = []
+        self.review_activity = []
+        self.movie_wishlist = []
+        self.overview_activity = []
+        self.movie_list_graph = []
+        self.total_activity_count = 0
+
         # INSERT USER DATA TO DATABASE
         self.db = Database()
         self.cursor = self.db.getDBCursor()
@@ -55,6 +63,7 @@ class User:
                     "description": self.description,
                     "date_created": datetime.now(),
                     "wishlist": [],
+                    "reviewlist": []
                 }
             )
 
@@ -149,29 +158,67 @@ class User:
         if "mongo" not in self.db.getDB():
             # SQL QUERIES
             self.cursor.execute(FETCH_USER_REVIEW_ACTIVITY)
-            activity = self.cursor.fetchall()
+            self.activity = self.cursor.fetchall()
+
             self.cursor.execute(FETCH_TOTAL_ACTIVITY)
-            total_activity = self.cursor.fetchall()
+            self.total_activity = self.cursor.fetchall()
+
             self.cursor.execute(FETCH_REVIEW_ACTIVITY, (self.id,))
-            review_activity = self.cursor.fetchall()
+            self.review_activity = self.cursor.fetchall()
 
-            total_activity_count = sum([i[1] for i in total_activity])
-
-            return (activity, total_activity, review_activity, total_activity_count)
+            self.total_activity_count = sum([i[1] for i in self.total_activity])
         else:
             # MONGO QUERIES
-            return ([], [], [], [])
+            self.getTotalActivityCount()
+            self.getAllReview()
+
+    def getTotalActivityCount(self):
+        # RETURNS TOTAL ACTIVITY COUNT IN MONGO
+        pipeline = [
+            { "$match": { "_id": {"username": self.username } } },
+            {
+                "$project": {
+                    "total_activity": {
+                        "$size": {
+                            "$concatArrays": ["$reviewlist", "$wishlist"]
+                        }
+                    }
+                }
+            }
+        ]
+
+        data = self.db_conn["moviedb"]["users"].aggregate(pipeline)
+
+        for values in data:
+            self.total_activity_count = values["total_activity"]
+
+    def getActivity(self):
+        # RETURNS ALL USER'S ACTIVITY
+        return {
+            "activity": self.activity,
+            "total_activity": self.total_activity,
+            "review_activity": self.review_activity,
+            "total_activity_count": self.total_activity_count
+        }
+
+    def getAllReview(self):
+        # RETURNS ALL REVIEWS FROM A USER IN MONGODB
+        data = self.db_conn["moviedb"]["users"].find({ "_id": {"username": self.username }}, {"reviewlist": 1})
+
+        for values in data:
+            self.review_activity = values["reviewlist"]
 
     def fetchMovieWishListActivity(self):
+        # RETURNS ALL MOVIES IN USER'S WISHLIST FROM DATABASE
         if "mongo" not in self.db.getDB():
             # SQL QUERIES
             self.cursor.execute(FETCH_MOVIE_WISHLIST_ACTIVITY, (self.id,))
-            wishlist_activity = self.cursor.fetchall()
-
-            return wishlist_activity
+            self.movie_wishlist = self.cursor.fetchall()
         else:
-            # MONGO QUERIES
-            return []
+            data = self.db_conn["moviedb"]["users"].find({ "_id": {"username": self.username }}, {"wishlist": 1})
+
+            for values in data:
+                self.movie_wishlist = values["wishlist"]
 
     def fetchOverviewActivity(self):
         if "mongo" not in self.db.getDB():
@@ -180,18 +227,31 @@ class User:
 
             for i in results:
                 if i.with_rows:
-                    return i.fetchall()
+                    self.overview_activity = i.fetchall()
         else:
             # MONGO QUERIES
-            return []
+            pipeline = [
+                { "$match": { "_id": {"username": self.username } } },
+                {
+                    "$project": {
+                        "overview_activity": {
+                            "$concatArrays": ["$reviewlist", "$wishlist"]
+                        }
+                    }
+                }
+            ]
+
+            data = self.db_conn["moviedb"]["users"].aggregate(pipeline)
+
+            for values in data:
+                self.overview_activity = values["overview_activity"]
 
     def fetchMovieListGraphActivity(self):
+        # RETURNS ALL NECESSARY DATA TO PLOT GRAPH FOR USER'S ACTIVITY WHEN ADDING MOVIES TO WISHLIST
         if "mongo" not in self.db.getDB():
             # SQL QUERIES
             self.cursor.execute(FETCH_MOVIELIST_GRAPH_ACTIVITY, (self.id,))
-            results = self.cursor.fetchall()
-
-            return results
+            self.movie_list_graph = self.cursor.fetchall()
         else:
             # MONGO QUERIES
             return []
@@ -226,7 +286,7 @@ class User:
                     "$push": {
                         "wishlist": {
                             "title": movieId["title"],
-                            "release": movieId["release"],
+                            "release": movieId["release"]
                         }
                     },
                 },
@@ -253,28 +313,57 @@ class User:
         movie_list = []
 
         if "mongo" in self.db.getDB():
+            # INITIAL PIPELINE THAT CHECKS AGAINST MOVIE WISHLIST WITHOUT THE DATE CREATION IN WISHLIST
+            # pipeline = [
+            #     {
+            #         "$lookup": {
+            #             "from": "movies",
+            #             "localField": "wishlist",
+            #             "foreignField": "_id",
+            #             "as": "movie_wishlist",
+            #         }
+            #     },
+            #     {"$match": {"_id.username": username}},
+            #     {"$unwind": "$movie_wishlist"},
+            #     {
+            #         "$project": {
+            #             "title": "$movie_wishlist.title",
+            #             "poster": "$movie_wishlist.poster",
+            #         }
+            #     },
+            # ]
+
             pipeline = [
                 {
                     "$lookup": {
                         "from": "movies",
-                        "localField": "wishlist",
-                        "foreignField": "_id",
-                        "as": "movie_wishlist",
+                        "localField": "wishlist.title",
+                        "foreignField": "title",
+                        "as": "movie_wishlist"
                     }
                 },
-                {"$match": {"_id.username": username}},
+                {"$match": {"_id.username": username }},
+                {
+                    "$lookup": {
+                        "from": "movies",
+                        "localField": "wishlist.release",
+                        "foreignField": "release",
+                        "as": "movie_wishlist"
+                    }
+                },
                 {"$unwind": "$movie_wishlist"},
                 {
                     "$project": {
                         "title": "$movie_wishlist.title",
-                        "poster": "$movie_wishlist.poster",
+                        "poster": "$movie_wishlist.poster"
                     }
-                },
+                }
             ]
 
             data = self.db_conn["moviedb"]["users"].aggregate(pipeline)
 
             for i in data:
+                print(i)
                 filtered_name = i["title"].lower().replace(" ", "-")
                 movie_list.append({"title": filtered_name, "poster": i["poster"]})
             return movie_list

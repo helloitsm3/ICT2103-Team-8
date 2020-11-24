@@ -24,7 +24,7 @@
     </div>
 
     <div id="activity-stats-container">
-      <p id="activity-stats-title">{{ activity[3] }} activities this year</p>
+      <p id="activity-stats-title">{{ activity["total_activity_count"] }} activities this year</p>
 
       <div id="activity-stats-tracker">
         <svg width="1000" height="110" id="activity-svg"></svg>
@@ -54,9 +54,9 @@
               {% set movie_title  = overview[0] %}
               {% set timestamp    = overview[1] %}
             {% else %}
-              {% set user_review  = "This is bad" %}
-              {% set movie_title  = "test" %}
-              {% set timestamp    = "2020-11-21 12:49:05" %}
+              {% set user_review  = overview["review"] %}
+              {% set movie_title  = overview["movie_id"] if overview["movie_id"] else overview["title"] %}
+              {% set timestamp    = overview["date_created"] if overview["date_created"] else overview["release"] %}
             {% endif %}
 
             {% if user_review is none %}
@@ -81,18 +81,18 @@
 
         <!-- MOVIE WISHLIST TAB -->
         <div class="tab-pane fade tab-content" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-          {% for review in wishlist_activity %}
+          {% for wishlistact in wishlist_activity %}
           {% if "mongo" not in current_db %}
-            {% set movie_title = review[1] %}
-            {% set timestamp = review[0] %}
+            {% set movie_title = wishlistact[1] %}
+            {% set timestamp = wishlistact[0] %}
           {% else %}
-            {% set movie_title = "test" %}
-            {% set timestamp = "2020-11-21 12:49:05" %}
+            {% set movie_title = wishlistact["title"] %}
+            {% set timestamp = wishlistact["release"] %}
           {% endif %}
 
           <div class="tab-content-container">
             <div>
-              <p>Added {{ movie_title }} in movie wishlist</p>
+              <p>Added {{ movie_title }} to movie wishlist</p>
               <p>{{ timestamp }}</p>
             </div>
           </div>
@@ -101,15 +101,15 @@
 
         <!-- REVIEW TAB -->
         <div class="tab-pane fade tab-content" id="contact" role="tabpanel" aria-labelledby="contact-tab">
-          {% for review in activity[2] %}
+          {% for review in activity["review_activity"] %}
           {% if "mongo" not in current_db %}
             {% set movie_title = review[2] %}
             {% set movie_review = review[0] %}
             {% set timestamp = review[1] %}
           {% else %}
-            {% set movie_title = "test" %}
-            {% set movie_review = "test" %}
-            {% set timestamp = "2020-11-21 12:49:05" %}
+            {% set movie_title = review["movie_id"] %}
+            {% set movie_review = review["review"] %}
+            {% set timestamp = review["date_created"] %}
           {% endif %}
 
           <div class="tab-content-container">
@@ -128,7 +128,7 @@
 </section>
 
 <script type="text/javascript">
-  const user_activity = {{ activity[1] | tojson }};
+  const user_activity = {{ activity["total_activity"] | tojson }};
   getActivityDate(user_activity);
   getMovieListData({{ movie_wishlist_graph | tojson }});
   getReviewListData({{ review_list_graph | tojson}});

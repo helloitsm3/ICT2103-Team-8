@@ -293,6 +293,7 @@ def search_movie():
 @data.route("/wishlist", methods=["GET", "POST"])
 def movie_wishlist():
     user_name = ""
+    user = ""
     isLoggedIn = session.get("logged_in")
 
     if isLoggedIn:
@@ -308,9 +309,8 @@ def movie_wishlist():
 
         return redirect("/nowshowing/{0}".format(filtered_name))
     else:
-        wish_list = user.getWishList(user_name)
-
         if isLoggedIn:
+            wish_list = user.getWishList(user_name)
             return render_template(
                 "wishlist.html", wishlist=wish_list, isLoggedIn=isLoggedIn
             )
@@ -328,6 +328,10 @@ def profile_page():
 
         if request.method == "GET":
             user.fetchDescription()
+            user.fetchReviewActivity()
+            user.fetchMovieWishListActivity()
+            user.fetchOverviewActivity()
+            user.fetchMovieListGraphActivity()
            
             return render_template(
                 "profile.jinja",
@@ -335,10 +339,10 @@ def profile_page():
                 isLoggedIn=isLoggedIn,
                 username=user.username,
                 description=user.description,
-                activity=user.fetchReviewActivity(),
-                wishlist_activity=user.fetchMovieWishListActivity(), 
-                overview_activity= user.fetchOverviewActivity(),
-                movie_wishlist_graph=user.fetchMovieListGraphActivity(),
+                activity=user.getActivity(),
+                wishlist_activity=user.movie_wishlist, 
+                overview_activity= user.overview_activity,
+                movie_wishlist_graph=user.movie_list_graph,
                 review_list_graph=user.fetchReviewListGraphActivity()
             )
         elif request.method == "POST":
