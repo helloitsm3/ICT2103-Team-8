@@ -145,11 +145,18 @@ const getMovieListData = (data, current_db) => {
   }
 };
 
-const getReviewListData = (data) => {
-  data.map((d) => {
-    let monthIndex = Number(d[0]) % 6;
-    reviewListData[monthIndex] = d[1];
-  });
+const getReviewListData = (data, current_db) => {
+  if (!current_db.includes("mongo")) {
+    data.map((d) => {
+      let monthIndex = Number(d[0]) % 6;
+      reviewListData[monthIndex] = d[1];
+    });
+  } else {
+    data.map((d) => {
+      let monthIndex = Number(d["_id"]) % 6;
+      reviewListData[monthIndex] = d["count"];
+    });
+  }
 };
 
 const createConfig = (position) => {

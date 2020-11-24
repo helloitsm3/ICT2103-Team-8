@@ -1,7 +1,9 @@
 let date_list = [];
+let current_db = "mongo";
 
 // Function to get all activity date
-getActivityDate = (date) => {
+getActivityDate = (date, currentDB) => {
+  current_db = currentDB;
   date_list = date;
 };
 
@@ -52,9 +54,15 @@ $(document).ready(() => {
 
   // Add fill to specific date
   date_list.map((dl) => {
-    const dd = dateFormat(dl[0]);
-    document.querySelector(`[data-date='${dd}']`).setAttribute("fill", "var(--color-activity-fill)");
-    document.querySelector(`[data-date='${dd}']`).setAttribute("data-original-title", `${dl[1]} activities on ${dd}`);
+    if (!current_db.includes("mongo")) {
+      const dd = dateFormat(dl[0]);
+      document.querySelector(`[data-date='${dd}']`).setAttribute("fill", "var(--color-activity-fill)");
+      document.querySelector(`[data-date='${dd}']`).setAttribute("data-original-title", `${dl[1]} activities on ${dd}`);
+    } else {
+      const dd = dateFormat(dl["_id"]);
+      document.querySelector(`[data-date='${dd}']`).setAttribute("fill", "var(--color-activity-fill)");
+      document.querySelector(`[data-date='${dd}']`).setAttribute("data-original-title", `${dl["count"]} activities on ${dd}`);
+    }
   });
 
   // Make description editable

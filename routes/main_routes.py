@@ -332,6 +332,7 @@ def profile_page():
             user.fetchMovieWishListActivity()
             user.fetchOverviewActivity()
             user.fetchMovieListGraphActivity()
+            user.fetchReviewListGraphActivity()
            
             return render_template(
                 "profile.jinja",
@@ -343,7 +344,7 @@ def profile_page():
                 wishlist_activity=user.movie_wishlist, 
                 overview_activity= user.overview_activity,
                 movie_wishlist_graph=user.movie_list_graph,
-                review_list_graph=user.fetchReviewListGraphActivity()
+                review_list_graph=user.review_list_graph
             )
         elif request.method == "POST":
             profile_desc = request.data.decode("utf-8")

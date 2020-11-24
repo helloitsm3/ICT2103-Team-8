@@ -172,6 +172,45 @@ class User:
             # MONGO QUERIES
             self.getTotalActivityCount()
             self.getAllReview()
+            self.getUserDateActivity()
+
+    def getUserDateActivity(self):
+        # Returns all activities by date to be rendered in calendar for profile (Only for mongo)
+        if "mongo" in self.db.getDB():
+            temp_activities = []
+            pipeline = [
+                { "$match": { "_id": { "username": self.username }}},
+                {
+                    "$project": {
+                        "all_activities": {
+                            "$concatArrays": ["$wishlist", "$reviewlist"]
+                        }
+                    }
+                },
+                {
+                    "$unwind": "$all_activities"
+                },
+                {
+                    "$group": {
+                        "_id": {
+                            "$dateToString": {
+                                "format": "%Y-%m-%d",
+                                "date": "$all_activities.date_created"
+                            }
+                        },
+                        "count": {
+                            "$sum": 1
+                        }
+                    }
+                }
+            ]
+
+            data = self.db_conn["moviedb"]["users"].aggregate(pipeline)
+
+            for values in data:
+                temp_activities.append(values)
+            self.total_activity = temp_activities
+
 
     def getTotalActivityCount(self):
         # RETURNS TOTAL ACTIVITY COUNT IN MONGO
@@ -312,12 +351,11 @@ class User:
         if "mongo" not in self.db.getDB():
             # SQL QUERIES
             self.cursor.execute(FETCH_REVIEWLIST_GRAPH_ACTIVITY, (self.id,))
-            results = self.cursor.fetchall()
-
-            return results
+            self.review_list_graph = self.cursor.fetchall()
         else:
             # MONGO QUERIES
-            return []
+            # QUERY ALREADY IMPLEMENTED IN fetchMovieListGraphActivity()
+            pass
 
     def getUserData(self):
         user_data = {
