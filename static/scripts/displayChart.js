@@ -131,11 +131,18 @@ const getMonthLabel = (date) => {
   return monthList;
 };
 
-const getMovieListData = (data) => {
-  data.map((d) => {
-    let monthIndex = Number(d[0]) % 6;
-    movieListData[monthIndex] = d[1];
-  });
+const getMovieListData = (data, current_db) => {
+  if (!current_db.includes("mongo")) {
+    data.map((d) => {
+      let monthIndex = Number(d[0]) % 6;
+      movieListData[monthIndex] = d[1];
+    });
+  } else {
+    data.map((d) => {
+      let monthIndex = Number(d["_id"]) % 6;
+      movieListData[monthIndex] = d["count"];
+    });
+  }
 };
 
 const getReviewListData = (data) => {

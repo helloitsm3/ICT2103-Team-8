@@ -56,7 +56,7 @@
             {% else %}
               {% set user_review  = overview["review"] %}
               {% set movie_title  = overview["movie_id"] if overview["movie_id"] else overview["title"] %}
-              {% set timestamp    = overview["date_created"] if overview["date_created"] else overview["release"] %}
+              {% set timestamp    = overview["date_created"] %}
             {% endif %}
 
             {% if user_review is none %}
@@ -87,7 +87,7 @@
             {% set timestamp = wishlistact[0] %}
           {% else %}
             {% set movie_title = wishlistact["title"] %}
-            {% set timestamp = wishlistact["release"] %}
+            {% set timestamp = wishlistact["date_created"] %}
           {% endif %}
 
           <div class="tab-content-container">
@@ -130,7 +130,7 @@
 <script type="text/javascript">
   const user_activity = {{ activity["total_activity"] | tojson }};
   getActivityDate(user_activity);
-  getMovieListData({{ movie_wishlist_graph | tojson }});
+  getMovieListData({{ movie_wishlist_graph | tojson }}, {{ current_db | tojson }});
   getReviewListData({{ review_list_graph | tojson}});
 </script>
 

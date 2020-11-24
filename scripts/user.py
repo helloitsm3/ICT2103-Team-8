@@ -34,6 +34,7 @@ class User:
         self.movie_wishlist = []
         self.overview_activity = []
         self.movie_list_graph = []
+        self.review_list_graph = []
         self.total_activity_count = 0
 
         # INSERT USER DATA TO DATABASE
@@ -253,8 +254,59 @@ class User:
             self.cursor.execute(FETCH_MOVIELIST_GRAPH_ACTIVITY, (self.id,))
             self.movie_list_graph = self.cursor.fetchall()
         else:
+            # facet allows multiple queries to be done in 1 query
             # MONGO QUERIES
-            return []
+            pipeline = [
+                { "$match": { "_id": {"username": self.username} } },
+                {
+                    "$facet": {
+                        "wishlist_graph": [
+                            {
+                                "$unwind": "$wishlist"
+                            },
+                            {
+                                "$group": {
+                                    "_id": {
+                                        "$month": "$wishlist.date_created"
+                                    },
+                                    "count": {
+                                        "$sum": 1
+                                    }
+                                }
+                            },
+                            {
+                                "$sort": {
+                                    "_id": 1
+                                }
+                            }
+                        ],
+                        "reviewlist_graph": [
+                            {"$unwind": "$reviewlist"},
+                            {
+                                "$group": {
+                                    "_id": {
+                                        "$month": "$reviewlist.date_created"
+                                    },
+                                    "count": {
+                                        "$sum": 1
+                                    }
+                                }
+                            },
+                            {
+                                "$sort": {
+                                    "_id": 1
+                                }
+                            }
+                        ]
+                    }
+                }
+            ]
+
+            data = self.db_conn["moviedb"]["users"].aggregate(pipeline)
+            
+            for values in data:
+                self.movie_list_graph = values["wishlist_graph"]
+                self.review_list_graph = values["reviewlist_graph"]
 
     def fetchReviewListGraphActivity(self):
         if "mongo" not in self.db.getDB():
@@ -286,7 +338,8 @@ class User:
                     "$push": {
                         "wishlist": {
                             "title": movieId["title"],
-                            "release": movieId["release"]
+                            "release": movieId["release"],
+                            "date_created": datetime.now()
                         }
                     },
                 },
