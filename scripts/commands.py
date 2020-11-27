@@ -275,7 +275,8 @@ CREATE TABLE IF NOT EXISTS MovieList (
     date_created DATETIME DEFAULT CURRENT_TIMESTAMP,
 
     FOREIGN KEY (user_id) REFERENCES User(user_id) ON DELETE CASCADE,
-    FOREIGN KEY (movie_id) REFERENCES Movie(movie_id) ON DELETE CASCADE
+    FOREIGN KEY (movie_id) REFERENCES Movie(movie_id) ON DELETE CASCADE,
+    CONSTRAINT uc_movielist UNIQUE (user_id, movie_id) 
 )
 """
 

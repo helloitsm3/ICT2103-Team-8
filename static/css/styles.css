@@ -91,7 +91,7 @@ header.masthead-show {
   min-height: 100vh;
 }
 
-/* MOVIENAME.HTML STYLES */
+/* MOVIENAME.JINJA STYLES */
 .movie-content {
   display: flex;
   flex-direction: row;
@@ -288,4 +288,11 @@ input {
 
 .card-text {
   width: 95%;
+}
+
+#main-header-subtitle {
+  color: white;
+  line-height: 0;
+  font-weight: 700;
+  font-size: 35px;
 }

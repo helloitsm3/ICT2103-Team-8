@@ -1,4 +1,4 @@
-{% extends 'base.html' %} {% block head %} {% endblock %} {% block content %}
+{% extends 'base.jinja' %} {% block head %} {% endblock %} {% block content %}
 
 <!-- masthead -->
 <header class="masthead" style="background-image: linear-gradient(to bottom, rgba(35, 39, 42, 0.8) 0%, rgba(35, 39, 42, 0.8) 100%), url({{ url_for('static', filename='assets/bg.jpg') }})">
@@ -8,7 +8,11 @@
         <h2 class="text-uppercase text-white font-weight-bold">Track films you’ve watched.</h2>
       </div>
       <div class="col-lg-8 align-self-baseline">
+      {% if isLoggedIn %}
+        <h2 id="main-header-subtitle">Welcome to moviesDB!</h2>
+      {% else %}
         <a class="btn btn-primary btn-xl js-scroll-trigger" href="/register">Sign up now!</a>
+      {% endif %}
       </div>
     </div>
   </div>

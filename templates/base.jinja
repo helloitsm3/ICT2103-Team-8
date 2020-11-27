@@ -74,21 +74,29 @@
     <!-- Content -->
     <div>
       <!-- Message Flash -->
-      {% with messages = get_flashed_messages(with_categories=true) %} {% if messages %} {% for category, message in messages %} {% if category=='info'%}
-      <div class="alert flash alert-dismissible fade show" role="alert" id="flash-info">
-        {{message}}
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      {% elif category=='err' %}
-      <div class="alert flash alert-dismissible fade show" role="alert" id="flash-err">
-        {{message}}
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      {% endif %} {% endfor %} {% endif %} {% endwith %} {% block content %}{% endblock %}
+      {% with messages = get_flashed_messages(with_categories=true) %} 
+        {% if messages %} 
+          {% for category, message in messages %} 
+            {% if category=='info'%}
+              <div class="alert flash alert-dismissible fade show" role="alert" id="flash-info">
+                {{message}}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+            {% elif category=='err' %}
+              <div class="alert flash alert-dismissible fade show" role="alert" id="flash-err">
+                {{message}}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+            {% endif %} 
+          {% endfor %} 
+        {% endif %} 
+      {% endwith %} 
+      
+      {% block content %}{% endblock %}
     </div>
 
     <!-- footer-->

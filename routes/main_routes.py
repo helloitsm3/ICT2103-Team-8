@@ -31,19 +31,19 @@ def main():
     if isLoggedIn:
         user_data = session["user_data"]
         return render_template(
-            "main.html", images=images, isLoggedIn=isLoggedIn, user_data=user_data
+            "main.jinja", images=images, isLoggedIn=isLoggedIn, user_data=user_data
         )
 
     db = Database()
     # db.initMongoDB()
     # db.initMySQLTable()
 
-    return render_template("main.html", images=images, isLoggedIn=isLoggedIn)
+    return render_template("main.jinja", images=images, isLoggedIn=isLoggedIn)
 
 
 @data.route("/analytics")
 def analytics():
-    return render_template("main.html")
+    return render_template("main.jinja")
 
 
 @data.route("/nowshowing/<moviename>", methods=["GET", "POST"])
@@ -106,7 +106,7 @@ def getNowShowingMovies(moviename):
                 )
             elif not isLoggedIn:
                 return render_template(
-                    "moviename.html", movie_details=movie_details, reviews=reviews
+                    "moviename.jinja", movie_details=movie_details, reviews=reviews
                 )
             db.cleanConnection()
     else:
@@ -167,7 +167,7 @@ def getNowShowingMovies(moviename):
             )
         elif not isLoggedIn:
             return render_template(
-                "moviename.html",
+                "moviename.jinja",
                 movie_details=movie_details,
                 reviews=movie_review_list,
             )
@@ -305,7 +305,11 @@ def movie_wishlist():
         movie_name = session["current_movie"]["title"]
         filtered_name = movie_name.lower().replace(" ", "-")
 
-        user.addToWishlist(session["current_movie"], user_name)
+        try:
+            user.addToWishlist(session["current_movie"], user_name)
+        except:
+            print("[Error] Movie exists in wishlist.")
+            flash("[Error] Movie already exists in wishlist.", "err")
 
         return redirect("/nowshowing/{0}".format(filtered_name))
     else:
