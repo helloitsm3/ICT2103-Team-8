@@ -177,13 +177,13 @@ header.masthead-show {
 }
 
 .width_seventy-five {
-  width: 75%;
-  min-width: 240px;
+  /* width: 75%; */
+  min-width: 500px;
 }
 
 .width_twenty-five {
-  width: 25%;
-  min-width: 80px;
+  width: 50px;
+  min-width: 150px;
 }
 .width_one-hundred {
   width: 100%;
@@ -199,7 +199,7 @@ header.masthead-show {
 
 input {
   padding: 8px;
-  margin: 4px;
+  margin-right: 10px;
 }
 
 .text-white {
@@ -295,4 +295,10 @@ input {
   line-height: 0;
   font-weight: 700;
   font-size: 35px;
+}
+
+.search_container_button {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
 }

@@ -3,7 +3,10 @@
 <section class="page-section">
   <div class="container-fluid" id="container-search">
     <form action="/search" method="POST" class="row justify-content-center width_one-hundred" id="form-search">
-      <input class="width_seventy-five" list="movieTitles" name="movieTitle" id="movieTitle" placeholder="Search for a movie" />
+      <div class="search_container_button">
+        <input class="width_seventy-five" list="movieTitles" name="movieTitle" id="movieTitle" placeholder="Search for a movie" />
+        <button type="submit" class="btn btn-primary width_twenty-five" id="btn-search">Search</button>
+      </div>
       <datalist class="width_one-hundred" id="movieTitles">
         {% if request.method == "GET" %} {% for name in topTen %}
         <option>{{name[0]}}</option>
@@ -11,7 +14,6 @@
         <option>{{name[1]}}</option>
         {% endfor %} {% endif %}
       </datalist>
-      <button type="submit" class="btn btn-primary width_twenty-five" id="btn-search">Search</button>
     </form>
     {% if request.method == "POST" %}
     <section class="row justify-content-center width_one-hundred">
