@@ -161,7 +161,7 @@ class User:
             self.cursor.execute(FETCH_USER_REVIEW_ACTIVITY)
             self.activity = self.cursor.fetchall()
 
-            self.cursor.execute(FETCH_TOTAL_ACTIVITY)
+            self.cursor.execute(FETCH_TOTAL_ACTIVITY, (self.id, self.id,))
             self.total_activity = self.cursor.fetchall()
 
             self.cursor.execute(FETCH_REVIEW_ACTIVITY, (self.id,))

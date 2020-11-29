@@ -99,7 +99,7 @@ def getNowShowingMovies(moviename):
 
             if isLoggedIn:
                 return render_template(
-                    "authenticated/auth_moviename.html",
+                    "authenticated/auth_moviename.jinja",
                     movie_details=movie_details,
                     reviews=reviews,
                     isLoggedIn=isLoggedIn,
@@ -160,7 +160,7 @@ def getNowShowingMovies(moviename):
             session["current_movie"] = movie_data["_id"]
 
             return render_template(
-                "authenticated/auth_moviename.html",
+                "authenticated/auth_moviename.jinja",
                 movie_details=movie_details,
                 isLoggedIn=isLoggedIn,
                 reviews=movie_review_list,

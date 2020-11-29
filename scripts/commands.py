@@ -101,14 +101,14 @@ FETCH_TOTAL_ACTIVITY = """
     FROM (
         SELECT DATE(date_created) AS Date, COUNT(*) AS Count
         FROM movie_list ml
-        WHERE user_id = 1
+        WHERE user_id = %s
         GROUP BY Date
         
         UNION ALL
         
         SELECT DATE(date_create) AS Date, COUNT(*) AS Count
         FROM review_list rl
-        WHERE user_id = 1
+        WHERE user_id = %s
         GROUP BY Date
     ) temp
 """

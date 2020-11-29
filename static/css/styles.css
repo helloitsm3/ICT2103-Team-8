@@ -302,3 +302,7 @@ input {
   flex-direction: row;
   justify-content: center;
 }
+
+.login-form-container form input {
+  margin-bottom: 10px;
+}
