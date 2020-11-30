@@ -97,20 +97,19 @@ FETCH_USER_REVIEW_ACTIVITY = """
 """
 
 FETCH_TOTAL_ACTIVITY = """
-    SELECT *
+    SELECT Date, Count(Date)
     FROM (
-        SELECT DATE(date_created) AS Date, COUNT(*) AS Count
-        FROM movie_list ml
-        WHERE user_id = %s
-        GROUP BY Date
-        
-        UNION ALL
-        
-        SELECT DATE(date_create) AS Date, COUNT(*) AS Count
-        FROM review_list rl
-        WHERE user_id = %s
-        GROUP BY Date
-    ) temp
+            SELECT DATE(date_created) AS Date
+            FROM movie_list ml
+            WHERE user_id = %s
+            
+            UNION ALL
+            
+            SELECT DATE(date_create) AS Date
+            FROM review_list rl
+            WHERE user_id = %s
+    ) AS temp
+    GROUP BY Date
 """
 
 FETCH_REVIEW_ACTIVITY = """
@@ -216,7 +215,7 @@ CREATE_USER_TBL = """
         username VARCHAR(50) NOT NULL UNIQUE, 
         email VARCHAR(50) NOT NULL, 
         password VARCHAR(255) NOT NULL, 
-        role_id VARCHAR(25), 
+        role VARCHAR(25), 
         description VARCHAR(255),
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP 
     )

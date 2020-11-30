@@ -233,6 +233,7 @@ class User:
             self.total_activity_count = values["total_activity"]
 
     def getActivity(self):
+        print(self.total_activity)
         # RETURNS ALL USER'S ACTIVITY
         return {
             "activity": self.activity,
