@@ -271,6 +271,7 @@ class User:
                     self.overview_activity = i.fetchall()
         else:
             # MONGO QUERIES
+            # THIS IS TO DISPLAY ALL ACTIVITIES IN THE OVERVIEW SECTION
             pipeline = [
                 { "$match": { "_id": {"username": self.username } } },
                 {
@@ -405,26 +406,6 @@ class User:
         movie_list = []
 
         if "mongo" in self.db.getDB():
-            # INITIAL PIPELINE THAT CHECKS AGAINST MOVIE WISHLIST WITHOUT THE DATE CREATION IN WISHLIST
-            # pipeline = [
-            #     {
-            #         "$lookup": {
-            #             "from": "movies",
-            #             "localField": "wishlist",
-            #             "foreignField": "_id",
-            #             "as": "movie_wishlist",
-            #         }
-            #     },
-            #     {"$match": {"_id.username": username}},
-            #     {"$unwind": "$movie_wishlist"},
-            #     {
-            #         "$project": {
-            #             "title": "$movie_wishlist.title",
-            #             "poster": "$movie_wishlist.poster",
-            #         }
-            #     },
-            # ]
-
             pipeline = [
                 {
                     "$lookup": {
