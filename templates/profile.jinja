@@ -131,7 +131,7 @@
   const user_activity = {{ activity["total_activity"] | tojson }};
   const currentDB = {{ current_db | tojson }}
   const movie_wishlist_g = {{ movie_wishlist_graph | tojson }}
-  const review_list_g = {{ review_list_graph | tojson}}
+  const review_list_g = {{ review_list_graph | tojson }}
 
   getActivityDate(user_activity, currentDB);
   getMovieListData(movie_wishlist_g, currentDB);
